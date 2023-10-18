@@ -1,5 +1,6 @@
 import json
 import pandas as pd
+import matplotlib.pyplot as plt
 
 claims = []
 labels = []
@@ -36,3 +37,24 @@ name_dict = {
 
 df = pd.DataFrame(name_dict)
 df.to_csv('./COVIDFACT_dataset.csv', encoding='utf-8')
+
+
+### Label distribution visualization
+
+# REFUTED
+counter_0 = 0
+
+# SUPPORTED
+counter_1 = 1
+
+for l in labels:
+  if l == "REFUTED":
+    counter_0 += 1
+  else:
+    counter_1 += 1
+
+text_labels = ["REFUTED", "SUPPORTED"]
+total = counter_0 + counter_1
+fig, ax = plt.subplots()
+size = [counter_0/total, counter_1/total]
+ax.pie(size, labels=text_labels, autopct='%1.1f%%', shadow=True, startangle=90, colors=["lightcoral", "cornflowerblue"])
