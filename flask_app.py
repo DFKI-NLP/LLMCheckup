@@ -54,8 +54,9 @@ dictConfig({
 })
 
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
+# Try to use all fragmented GPU memory
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "max_split_size_mb:21"
-print(os.environ["PYTORCH_CUDA_ALLOC_CONF"])
 
 # Parse application level configs
 gin.parse_config_file(args.config)

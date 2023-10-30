@@ -898,7 +898,7 @@ class ExplainBot:
             elif "t5" not in self.decoding_model_name:
                 parse_tree, parsed_text = self.compute_parse_text(text)
 
-                if self.decoding_model_name == "mistralai/Mistral-7B-v0.1":
+                if self.decoding_model_name == "mistralai/Mistral-7B-v0.1" or self.decoding_model_name == "meta-llama/Llama-2-7b-chat-hf":
                     ls = parsed_text.split(" ")
                     for (idx, i) in enumerate(ls):
                         if "<s>" in i:
