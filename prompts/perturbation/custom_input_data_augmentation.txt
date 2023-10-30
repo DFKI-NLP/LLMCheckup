@@ -1,0 +1,8 @@
+User: Please augment this input
+Parsed: augment [E]
+
+User: Create a new one similar to this input
+Parsed: augment [E]
+
+User: Do data augmentation on this given instance.
+Parsed: augment [E]

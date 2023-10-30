@@ -1,0 +1,14 @@
+User: Can you modify and generate a new instance from id 100?
+Parsed: filter id 100 and augment [E]
+
+User: Could you produce a new data point based on id 125?
+Parsed: filter id 125 and augment [E]
+
+User: Can I see an instance modification from id 150?
+Parsed: filter id 150 and augment [E]
+
+User: I'd like to view a new example derived from id 175, please.
+Parsed: filter id 175 and augment [E]
+
+User: Kindly generate a new variant based on id 200.
+Parsed: filter id 200 and augment [E]

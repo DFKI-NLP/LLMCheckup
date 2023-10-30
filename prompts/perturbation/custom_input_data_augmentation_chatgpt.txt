@@ -1,0 +1,56 @@
+User: Can you perform data augmentation on this input?
+Parsed: augment [E]
+
+User: I'd like to see an augmented version of this input. Could you create one?
+Parsed: augment [E]
+
+User: Please generate a similar instance by augmenting this input.
+Parsed: augment [E]
+
+User: How can we augment this given input to create variations?
+Parsed: augment [E]
+
+User: Could you apply data augmentation techniques to this instance?
+Parsed: augment [E]
+
+User: Can you augment this input to generate a new one with similar characteristics?
+Parsed: augment [E]
+
+User: I'm interested in seeing an augmented version of this given input. Can you generate it?
+Parsed: augment [E]
+
+User: What techniques can we use to augment this input and create variations?
+Parsed: augment [E]
+
+User: Can you create a new instance similar to this input by performing augmentation?
+Parsed: augment [E]
+
+User: I'd like to explore data augmentation on this input. Could you show me the results?
+Parsed: augment [E]
+
+User: How can we apply augmentation to this given instance to generate variations?
+Parsed: augment [E]
+
+User: Can you augment this input and create a similar instance with some variations?
+Parsed: augment [E]
+
+User: I'm interested in seeing the augmented version of this input. Could you generate it for me?
+Parsed: augment [E]
+
+User: What data augmentation techniques can we use to create variations of this input?
+Parsed: augment [E]
+
+User: Can you perform data augmentation on this given input to generate a new one?
+Parsed: augment [E]
+
+User: I'd like to explore augmentation techniques on this input. Can you show me the results?
+Parsed: augment [E]
+
+User: How can we augment this input to generate variations and create a new instance?
+Parsed: augment [E]
+
+User: Can you create a similar instance to this input by applying data augmentation?
+Parsed: augment [E]
+
+User: I'm interested in seeing the augmented version of this given input. Can you generate it?
+Parsed: augment [E]

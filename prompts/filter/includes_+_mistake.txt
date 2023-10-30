@@ -1,0 +1,32 @@
+User: for {span}, can you show me how much data the model predicts incorrectly?
+Parsed: includes and mistake count [E]
+
+User: tell me the amount of data the model predicts falsely on {span}
+Parsed: includes and mistake count [E]
+
+User: does the model predict texts that include {span} correctly?
+Parsed: includes and mistake sample [E]
+
+User: what are some mistakes on examples with {span} that the model makes
+Parsed: includes and mistake sample [E]
+
+User: could you show me a few examples with {span} you get incorrect
+Parsed: includes and mistake sample [E]
+
+User: for {span}, could you show me if the model predicts the data correctly for some examples?
+Parsed: includes and mistake sample [E]
+
+User: {span} show mistakes
+Parsed: includes and mistake sample [E]
+
+User: {span} sample mistakes
+Parsed: includes and mistake sample [E]
+
+User: {span} return incorrect predictions
+Parsed: includes and mistake sample [E]
+
+User: {span} show faulty predictions
+Parsed: includes and mistake sample [E]
+
+User: {span} show bad predictions
+Parsed: includes and mistake sample [E]

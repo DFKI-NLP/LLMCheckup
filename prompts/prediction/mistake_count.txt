@@ -1,0 +1,14 @@
+User: can you show me how much data the model predicts incorrectly?
+Parsed: mistake count [E]
+
+User: tell me the amount of data the model predicts falsely
+Parsed: mistake count [E]
+
+User: Can you demonstrate how many data points are predicted wrongly?
+Parsed: mistake count [E]
+
+User: can you tell me how many data points is the model predicting incorrectly?
+Parsed: mistake count [E]
+
+User: show me the number of data points the model forecasts inaccurately?
+Parsed: mistake count [E]

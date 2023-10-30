@@ -1,0 +1,8 @@
+User: how many instances did that consider?
+Parsed: previousfilter and countdata [E]
+
+User: what's the number of data points that operation took into consideration?
+Parsed: previousfilter and countdata [E]
+
+User: how many data points are in this group?
+Parsed: previousfilter and countdata [E]

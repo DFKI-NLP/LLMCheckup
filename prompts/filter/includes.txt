@@ -1,0 +1,53 @@
+User: Show me all instances that include the word {span}.
+Parsed: includes [E]
+
+User: Can you display all occurrences that contain word {span}.
+Parsed: includes [E]
+
+User: Please show me all examples that feature word {span}.
+Parsed: includes [E]
+
+User: I would like to see all instances that incorporate word {span}.
+Parsed: includes [E]
+
+User: Can you provide me with all occurrences that comprise word {span}.
+Parsed: includes [E]
+
+User: Show me every example that has word {span}.
+Parsed: includes [E]
+
+User: Can you list all the occurrences that involve word {span}.
+Parsed: includes [E]
+
+User: I'd like to see all instances that feature word {span}.
+Parsed: includes [E]
+
+User: I want to know the cases that entail word {span}.
+Parsed: includes [E]
+
+User: Give information of the cases that contain word {span}.
+Parsed: includes [E]
+
+User: Show me all instances that include the span {span}.
+Parsed: includes [E]
+
+User: Can you display all occurrences that contain the words {span}?
+Parsed: includes [E]
+
+User: Please show me all examples that feature the phrase {span}.
+Parsed: includes [E]
+
+User: I would like to see all instances that incorporate the phrase {span}.
+Parsed: includes [E]
+
+User: Can you provide me with all occurrences that comprise the words {span}?
+Parsed: includes [E]
+
+User: Show me all instances that include my query.
+Parsed: includes [E]
+
+User: I would like to see all instances that are applicable to my search term.
+Parsed: includes [E]
+
+User: Can you display all occurrences where my filter applies?
+Parsed: includes [E]

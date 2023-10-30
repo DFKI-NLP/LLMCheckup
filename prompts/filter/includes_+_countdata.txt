@@ -1,0 +1,17 @@
+User: how many data points have {span} in it
+Parsed: includes and countdata [E]
+
+User: what's the number of instances with {span}
+Parsed: includes and countdata [E]
+
+User: tell me how many instances in the data include {span}
+Parsed: includes and countdata [E]
+
+User: for {span}, how many instances in the data are there?
+Parsed: includes and countdata [E]
+
+User: for those where {span} is part of the input, could you tell me the total number of items in the data
+Parsed: includes and countdata [E]
+
+User: please state the number of {span} in the data
+Parsed: includes and countdata [E]

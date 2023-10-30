@@ -1,0 +1,80 @@
+User: what are the most important features in the data when reasoning about {span} to make decisions?
+Parsed: includes and important all [E]
+
+User: what are the most important features for the model's predictions on all instances that include {span}?
+Parsed: includes and important all [E]
+
+User: could you let me know why you predicted {span}?
+Parsed: includes and important all [E]
+
+User: what's your motivation for deciding the predictions of {span}
+Parsed: includes and important all [E]
+
+User: what set of factors do you leverage on texts including {span} to figure out if they are {class_names}?
+Parsed: includes and important all [E]
+
+User: what set of reasoning do you use to determine if instances containing {span} are {class_names}?
+Parsed: includes and important all [E]
+
+User: what aspects of the subset featuring {span} are important when making decisions?
+Parsed: includes and important all [E]
+
+User: what set of factors do you take into consideration when determining if texts containing {span} are {class_names}?
+Parsed: includes and important all [E]
+
+User: how do you decide whether examples with the words {span} will be {class_names}
+Parsed: includes and important all [E]
+
+User: can you provide me with reasoning for the model's predictions on the subset of examples containing {span}?
+Parsed: includes and important all [E]
+
+User: how do you figure out if some text having {span} will be {class_names}?
+Parsed: includes and important all [E]
+
+User: what set of factors do you leverage on {span} appearances to figure out if the texts are {class_names}
+Parsed: includes and important all [E]
+
+User: what set of reasoning do you use to determine if instances with {span} in them are {class_names}
+Parsed: includes and important all [E]
+
+User: what aspects of the data do you consider when reasoning about examples containing the span {span} to make decisions
+Parsed: includes and important all [E]
+
+User: what set of factors do you take into consideration when determining if instances with {span} are {class_names}
+Parsed: includes and important all [E]
+
+User: how do you decide whether sentences containing the word {span} will be {class_names}
+Parsed: includes and important all [E]
+
+User: how do you figure out if texts which mention {span} will be {class_names}
+Parsed: includes and important all [E]
+
+User: in cases where the word {span} is present, how do you determine the outcome {class_names}
+Parsed: includes and important all [E]
+
+User: in those situations where {span} is included, what are the strategies you use to figure out if the correct prediction is {class_names}
+Parsed: includes and important all [E]
+
+User: Explain the predictions of all the {span} instances
+Parsed: includes and important all [E]
+
+User: Explain predictions of the {span} filter
+Parsed: includes and important all [E]
+
+User: Run explanations on the inputs with {span}
+Parsed: includes and important all [E]
+
+User: What are the reasons the model predicts {span}?
+Parsed: includes and important all [E]
+
+User: I'm trying to figure out why instances with string {span} are predicted.
+Parsed: includes and important all [E]
+
+User: what's the most important feature for the model when it sees {span}?
+Parsed: includes and important topk 1 [E]
+
+User: what are the 3 most important features in the texts that include {span}?
+Parsed: includes and important topk 3 [E]
+
+User: for {span}, what are the nine most important features for the model's predictions?
+Parsed: includes and important topk 9 [E]

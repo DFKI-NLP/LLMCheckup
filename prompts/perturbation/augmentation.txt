@@ -1,0 +1,8 @@
+User: Please augment id 25
+Parsed: filter id 25 and augment [E]
+
+User: Please create a new instance based on id 50
+Parsed: filter id 50 and augment [E]
+
+User: Starting from id 75, how would a new instance look like?
+Parsed: filter id 75 and augment [E]

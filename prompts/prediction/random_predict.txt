@@ -1,0 +1,11 @@
+User: show me a random prediction
+Parsed: randompredict [E]
+
+User: predict one instance from the data at random
+Parsed: randompredict [E]
+
+User: could you randomly select an example and predict it?
+Parsed: randompredict [E]
+
+User: please choose one input text and show the model's outcome
+Parsed: randompredict [E]

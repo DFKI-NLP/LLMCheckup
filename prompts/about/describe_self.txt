@@ -1,0 +1,26 @@
+User: Who are you?
+Parsed: self [E]
+
+User: What are you?
+Parsed: self [E]
+
+User: What is this bot...
+Parsed: self [E]
+
+User: What is this chat?
+Parsed: self [E]
+
+User: What is the purpose of this web application?
+Parsed: self and function [E]
+
+User: Could you tell me what this is
+Parsed: self and function [E]
+
+User: Please explain this bot
+Parsed: self and function [E]
+
+User: Please tell me what you are and what you do!
+Parsed: self and function [E]
+
+User: What do you do and what is the data you're trained on like?
+Parsed: self and function and data [E]

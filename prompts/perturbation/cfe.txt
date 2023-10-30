@@ -1,0 +1,53 @@
+User: What does instance with id 22 need to do to change the prediction?
+Parsed: filter id 22 and cfe [E]
+
+User: show me cfe's for the instance with id 22
+Parsed: filter id 22 and cfe [E]
+
+User: What does instance with id 54 have to do in order to change the prediction?
+Parsed: filter id 54 and cfe [E]
+
+User: Hmm... I was wondering what it would take to flip the prediction of instance with id 9810?
+Parsed: filter id 9810 and cfe [E]
+
+User: Nice. I'm pretty satisfied with the prediction of id 221. But could you tell me how to change the prediction?
+Parsed: filter id 221 and cfe [E]
+
+User: What would it take to change how instance 98387 is predicted?
+Parsed: filter id 98387 and cfe [E]
+
+User: How would you flip the prediction for id 23?
+Parsed: filter id 23 and cfe [E]
+
+User: flip the classification for sample 98?
+Parsed: filter id 98 and cfe [E]
+
+User: flip prediction class data point 2325
+Parsed: filter id 2325 and cfe [E]
+
+User: How do I change the prediction for the data point with id number 34?
+Parsed: filter id 34 and cfe [E]
+
+User: Could you tell me how to change the prediction point for data point 34?
+Parsed: filter id 34 and cfe [E]
+
+User: How can I change the prediction for the data point with an id of 34?
+Parsed: filter id 34 and cfe [E]
+
+User: Could you show me how to change the prediction for the data point 34?
+Parsed: filter id 34 and cfe [E]
+
+User: How do I change the prediction for the data point with the id number 34?
+Parsed: filter id 34 and cfe [E]
+
+User: Would it be possible for you to tell me how to change the prediction for the data point with the id number 34?
+Parsed: filter id 34 and cfe [E]
+
+User: For data point id 34, how would I change the prediction?
+Parsed: filter id 34 and cfe [E]
+
+User: What is the way to change the prediction for the data point with the id number 34?
+Parsed: filter id 34 and cfe [E]
+
+User: Could you please tell me the predictions for id 5132 and what you have to do to flip the prediction?
+Parsed: filter id 54 and predict and cfe [E]

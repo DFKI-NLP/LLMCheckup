@@ -1,0 +1,59 @@
+User: Show me all cases that involve the term {span}.
+Parsed: includes [E]
+
+User: Can you give me a list of all the examples that contain the word {span}?
+Parsed: includes [E]
+
+User: Please display all instances that have the token {span}.
+Parsed: includes [E]
+
+User: Show me all occurrences that feature the token {span}.
+Parsed: includes [E]
+
+User: Can you provide me with all examples that have the term {span}?
+Parsed: includes [E]
+
+User: Please list all cases that contain the token {span}.
+Parsed: includes [E]
+
+User: I want to see all instances that include the word {span}.
+Parsed: includes [E]
+
+User: Give me a list of all examples that include the token {span}.
+Parsed: includes [E]
+
+User: Show me all occurrences that have the term {span}.
+Parsed: includes [E]
+
+User: Can you display all cases that comprise the term {span}?
+Parsed: includes [E]
+
+User: Please provide me with all examples that involve the token {span}.
+Parsed: includes [E]
+
+User: Show me all instances that contain the phrase {span}.
+Parsed: includes [E]
+
+User: Can you give me all the cases that incorporate the phrase {span}?
+Parsed: includes [E]
+
+User: Please display all occurrences that include the words {span}.
+Parsed: includes [E]
+
+User: I would like to see all the examples that contain the phrase {span}.
+Parsed: includes [E]
+
+User: Can you list all cases that have the span {span}?
+Parsed: includes [E]
+
+User: Show me all instances that comprise the phrase {span}.
+Parsed: includes [E]
+
+User: Give me all the occurrences that feature the phrase {span}.
+Parsed: includes [E]
+
+User: Please provide me with all examples that incorporate the words {span}.
+Parsed: includes [E]
+
+User: I want to see all the cases that contain the span {span}.
+Parsed: includes [E]

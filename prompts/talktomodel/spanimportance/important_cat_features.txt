@@ -1,0 +1,32 @@
+User: Could you tell me when {cat_features} is an important feature?
+Parsed: important {cat_features} [E]
+
+User: When do you rank {cat_features} very highly?
+Parsed: important {cat_features} [E]
+
+User: How important is {cat_features} for the predictions?
+Parsed: important {cat_features} [E]
+
+User: Tell me the importance of {cat_features} for the model's predictions?
+Parsed: important {cat_features} [E]
+
+User: Overall, to what degree is {cat_features} important for the model's predictions?
+Parsed: important {cat_features} [E]
+
+User: Could you help me figure out a bit more about the ordering of the feature importances? In particular, I want to figure out when {cat_features} is ranked highly.
+Parsed: important {cat_features} [E]
+
+User: For {cat_features}, could you show for what instances {cat_features} ends up being important?
+Parsed: filter {cat_features} true and important {cat_features} [E]
+
+User: For {cat_features} with {num_features} equal to {num_values}, could you tell me when {cat_features} is a highly ranked feature?
+Parsed: filter {cat_features} true and lengthfilter equal to {num_values} and important {cat_features}. [E]
+
+User: Can you help me identify when {cat_features} is an important feature for {num_features} greater than {num_values}?
+Parsed: lengthfilter greater than {num_values} and important {cat_features} [E]
+
+User: top 10 most important features for predicting {cat_features}
+Parsed: filter {cat_features} true and important topk 10 [E]
+
+User: top three most important features for {cat_features} equal to {cat_values}
+Parsed: filter {cat_features} {cat_values} and important topk 3 [E]

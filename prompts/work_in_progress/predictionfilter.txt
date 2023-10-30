@@ -1,0 +1,26 @@
+User: the model predicts {class_names}
+Parsed: predictionfilter {class_names} and show [E]
+
+User: the model's prediction is {class_names}
+Parsed: predictionfilter {class_names} and show [E]
+
+User: the model predicts {class_names} and the label is {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: the model predicts {class_names} but the label is {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: the model outcome is {class_names} but the label is {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: the model predicts {class_names} but actually are {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: the model predicts {class_names} but whose ground truth label is {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: where they are actually {class_names} but the model predicts {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]
+
+User: who are {class_names} but get predicted as {class_names}
+Parsed: predictionfilter {class_names} and labelfilter {class_names} and show [E]

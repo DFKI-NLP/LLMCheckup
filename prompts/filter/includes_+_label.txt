@@ -1,0 +1,20 @@
+User: what are the labels for texts with {span}
+Parsed: includes and label [E]
+
+User: what's the gold label for {span}
+Parsed: includes and label [E]
+
+User: for {span}, what are the ground truth labels
+Parsed: includes and label [E]
+
+User: what are the ground truth labels in the data for {span}
+Parsed: includes and label [E]
+
+User: what are the data labels for {span}
+Parsed: includes and label [E]
+
+User: just on instances with {span}, show me the labels?
+Parsed: includes and label [E]
+
+User: just on instances with {span}, show me the gold labels?
+Parsed: includes and label [E]

@@ -1,0 +1,89 @@
+User: what are the predictions on instances shorter than {num_values} characters
+Parsed: lengthfilter chars greater than {num_values} and predict [E]
+
+User: What are the predictions for instances with less than {num_values} characters in length?
+Parsed: lengthfilter chars less than {num_values} and predict [E]
+
+User: For datapoints with more than {num_values} characters, please tell me what the model predicts?
+Parsed: lengthfilter chars greater than {num_values} and predict [E]
+
+User: display the predictions on examples with more than {num_values} sentences
+Parsed: lengthfilter sents greater than {num_values} and predict [E]
+
+User: Could you show me predictions for instances with {num_values} words or more?
+Parsed: lengthfilter sents greater than {num_values} and predict [E]
+
+User: Please tell me what the model predicts for instances with at least {num_values} sentences
+Parsed: lengthfilter sents greater equal than {num_values} and predict [E]
+
+User: What are the predictions for those with exactly {num_values} sentences?
+Parsed: lengthfilter sents equal to {num_values} and predict [E]
+
+User: What does the model predict for instances with more than {num_values} sentences?
+Parsed: lengthfilter sents greater than {num_values} and predict [E]
+
+User: Show the predictions on texts longer than {num_values} words
+Parsed: lengthfilter words greater than {num_values} and predict [E]
+
+User: Please tell me what the model predicts on examples with {num_values} words or less?
+Parsed: lengthfilter words less equal than {num_values} and predict [E]
+
+User: What are the predictions for data with less than {num_values} words?
+Parsed: lengthfilter words less than {num_values} and predict [E]
+
+User: What are the predictions for instances with at least {num_values} words?
+Parsed: lengthfilter words greater than {num_values} and predict [E]
+
+User: data with less than {num_values} chars. then predictions
+Parsed: lengthfilter chars less than {num_values} and show and predict [E]
+
+User: What data has more than {num_values} sentences and what does the model predict on this subset?
+Parsed: lengthfilter sents greater than {num_values} and show and predict [E]
+
+User: prediction of text data where more than {num_values} sentences are present followed by showing the data itself
+Parsed: lengthfilter sents less than {num_values} and predict and show [E]
+
+User: could you show me data with a length of no more than {num_values} words and tell me what the model predictions are?
+Parsed: lengthfilter words less equal than {num_values} and show and predict [E]
+
+User: Show the predictions of data with {span} and at least {num_values} characters
+Parsed: includes and lengthfilter chars greater equal than {num_values} and predict [E]
+
+User: Display the predictions of {span} instances with number of characters less than or equal to {num_values}
+Parsed: includes and lengthfilter chars less than or equal to {num_values} and predict [E]
+
+User: Reveal the predictions of {span} filter with a sentence number greater than or equal to {num_values}
+Parsed: includes and lengthfilter sents greater equal than {num_values} and predict [E]
+
+User: What are the predictions on data including {span} and exactly {num_values} sentences?
+Parsed: includes and lengthfilter sents equal to {num_values} and predict [E]
+
+User: What are the model predictions for instances that have {span} and {num_values} words?
+Parsed: includes and lengthfilter words equal to {num_values} and predict [E]
+
+User: Show predictions for {span} subset where the number of words is {num_values} or less
+Parsed: includes and lengthfilter words less than or equal to {num_values} and predict [E]
+
+User: On the {span} subset, show all predictions that have {num_values} or more words
+Parsed: includes and lengthfilter words greater equal than {num_values} and predict [E]
+
+User: Display predictions for the {span} filter where the amount of words is at least {num_values}
+Parsed: includes and lengthfilter words greater equal than {num_values} and predict [E]
+
+User: Return the model's predictions on {span} where the word count is not higher than {num_values}
+Parsed: includes and lengthfilter words less equal than {num_values} and predict [E]
+
+User: Reveal the predictions on {span} or on instances with at least {num_values} words
+Parsed: includes or lengthfilter words greater equal than {num_values} and predict [E]
+
+User: What does the model predict for instances that either feature {span} or that have more than {num_values} words?
+Parsed: includes or lengthfilter words greater than {num_values} and predict [E]
+
+User: Including word counts smaller than {num_values} into the prior data, what are the model's predictions?
+Parsed: previousfilter or lengthfilter words less than {num_values} and predict [E]
+
+User: Only considering examples with more than {num_values} tokens, what are the model's predictions?
+Parsed: previousfilter or lengthfilter words greater than {num_values} and predict [E]
+
+User: Excluding {num_features} greater than or equal to {num_values}, what are the model's predictions?
+Parsed: previousfilter and lengthfilter words greater equal than {num_values} and predict [E]

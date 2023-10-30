@@ -1,0 +1,29 @@
+User: Can you predict the outcome of this input?
+Parsed: predict [E]
+
+User: What's the model's forecast for this data?
+Parsed: predict [E]
+
+User: What output does this input generate according to the model?
+Parsed: predict [E]
+
+User: What can the model foresee for this particular input?
+Parsed: predict [E]
+
+User: What would be the model's prediction for my data point?
+Parsed: predict [E]
+
+User: Could you provide a prediction for this given sentence?
+Parsed: predict [E]
+
+User: How does the model interpret this input?
+Parsed: predict [E]
+
+User: What's the expected result for this input according to the LM?
+Parsed: predict [E]
+
+User: Can the model estimate an outcome for this input?
+Parsed: predict [E]
+
+User: What does the model foresee for this specific text?
+Parsed: predict [E]

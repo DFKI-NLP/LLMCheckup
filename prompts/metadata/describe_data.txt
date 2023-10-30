@@ -1,0 +1,32 @@
+User: describe data
+Parsed: data [E]
+
+User: Tell me a bit more about the data please.
+Parsed: data [E]
+
+User: Give an overview of the data.
+Parsed: data [E]
+
+User: What does the data look like?
+Parsed: data [E]
+
+User: Could you describe the data a bit more?
+Parsed: data [E]
+
+User: What are the features in the data?
+Parsed: data [E]
+
+User: what are the features
+Parsed: data [E]
+
+User: show me the features
+Parsed: data [E]
+
+User: more info about the data and model
+Parsed: data and model [E]
+
+User: Could you describe the data and model?
+Parsed: data and model [E]
+
+User: What's the data like and what can you do?
+Parsed: data and function [E]

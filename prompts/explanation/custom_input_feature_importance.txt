@@ -1,0 +1,8 @@
+User: Show me the feature importance on this input.
+Parsed: nlpattribute [E]
+
+User: Give me the feature importance on sentence level for the given sentence.
+Parsed: nlpattribute sentence [E]
+
+User: Tell me the top 3 most important features for the given input.
+Parsed: nlpattribute topk 3 [E]

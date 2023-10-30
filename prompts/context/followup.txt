@@ -1,0 +1,32 @@
+User: give more description
+Parsed: followup [E]
+
+User: yes
+Parsed: followup [E]
+
+User: could you tell me more?
+Parsed: followup [E]
+
+User: could you give me more information?
+Parsed: followup [E]
+
+User: please provide some more context
+Parsed: followup [E]
+
+User: Could you please give more description?
+Parsed: followup [E]
+
+User: Yes, I would like more description?
+Parsed: followup [E]
+
+User: Could you give some more options?
+Parsed: followup [E]
+
+User: Yeah, show me
+Parsed: followup [E]
+
+User: Yeah, I want to see that
+Parsed: followup [E]
+
+User: Yup, show it to me
+Parsed: followup [E]

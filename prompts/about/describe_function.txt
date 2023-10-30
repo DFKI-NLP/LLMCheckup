@@ -1,0 +1,14 @@
+User: What can you do?
+Parsed: function [E]
+
+User: What are your functions?
+Parsed: function [E]
+
+User: tell me a bit more about what I can do here
+Parsed: function [E]
+
+User: what can i do?
+Parsed: function [E]
+
+User: What's the function of this? What's the data?
+Parsed: function and data [E]

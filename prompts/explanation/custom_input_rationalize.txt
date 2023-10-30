@@ -1,0 +1,11 @@
+User: I'm interested in the rationale of this input.
+Parsed: rationalize [E]
+
+User: Show me the rationale of this input.
+Parsed: rationalize [E]
+
+User: Explain this input in natural language.
+Parsed: rationalize [E]
+
+User: Could you provide me rationalization of this input?
+Parsed: rationalize [E]

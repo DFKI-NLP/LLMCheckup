@@ -1,0 +1,23 @@
+default_language_version:
+  python: python3
+
+default_stages: [commit, push]
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      # - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-added-large-files
+        args: ['--maxkb=2500']
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: mixed-line-ending
+        args: ['--fix=lf']
+
+
+#  - repo: https://github.com/charliermarsh/ruff-pre-commit
+#    rev: 'v0.0.252'
+#    hooks:
+#      - id: ruff

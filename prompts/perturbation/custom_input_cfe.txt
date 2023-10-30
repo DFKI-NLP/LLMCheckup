@@ -1,0 +1,8 @@
+User: show me cfe's for this instance
+Parsed: cfe [E]
+
+User: How would you flip the prediction of this input?
+Parsed: cfe [E]
+
+User: Could you please generate a counterfactual for this?
+Parsed: cfe [E]

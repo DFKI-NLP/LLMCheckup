@@ -1,0 +1,50 @@
+User: What is the probability of this prediction?
+Parsed: previousfilter and likelihood [E]
+
+User: what is the probability of this prediction
+Parsed: previousfilter and likelihood [E]
+
+User: probability of this prediction
+Parsed: previousfilter and likelihood [E]
+
+User: What is the probability of this instance being predicted {class_names}
+Parsed: previousfilter and likelihood [E]
+
+User: How likely is it that the model predicts this instance as {class_names}
+Parsed: previousfilter and likelihood [E]
+
+User: probability of this instance getting predicted "{class_names}"
+Parsed: previousfilter and likelihood [E]
+
+User: How likely are these instances to recieve the outcome {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: What is the likelihood of them getting scored {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: How likely is it these instances are predicted as {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: What is the probability these instances get predicted as {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: What is the probability of the previous data getting predicted as {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: what is the likelihood they're predicted {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: what's the probability they get the predictions of {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: what's the odds they are {class_names}?
+Parsed: previousfilter and likelihood [E]
+
+User: {class_names} is how likely for them?
+Parsed: previousfilter and likelihood [E]
+
+User: how about the prediction probabilities
+Parsed: previousfilter and likelihood [E]
+
+User: prediction probabilities for that data
+Parsed: previousfilter and likelihood [E]

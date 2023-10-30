@@ -1,0 +1,11 @@
+User: tell me what the model is
+Parsed: model [E]
+
+User: It would be very useful if you could provide a description of the model!
+Parsed: model [E]
+
+User: describe the model
+Parsed: model [E]
+
+User: tell me about the model
+Parsed: model [E]

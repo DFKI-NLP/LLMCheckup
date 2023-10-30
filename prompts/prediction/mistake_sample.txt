@@ -1,0 +1,14 @@
+User: could you show me some data the model predicts incorrectly?
+Parsed: mistake sample [E]
+
+User: show me data the model gets wrong
+Parsed: mistake sample [E]
+
+User: show me some data you predict incorrectly
+Parsed: mistake sample [E]
+
+User: what are some data points you get incorrect?
+Parsed: mistake sample [E]
+
+User: could you show me a few examples of data that you get wrong?
+Parsed: mistake sample [E]

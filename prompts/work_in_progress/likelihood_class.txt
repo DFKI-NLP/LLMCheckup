@@ -1,0 +1,5 @@
+User: What's the likelihood of {class_names}?
+Parsed: likelihood [E]
+
+User: What's the probability of {class_names}?
+Parsed: likelihood [E]

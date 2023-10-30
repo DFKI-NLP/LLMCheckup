@@ -1,0 +1,56 @@
+User: does the model predict this instance correctly?
+Parsed: previousfilter and mistake sample [E]
+
+User: does the model predict these instances correctly?
+Parsed: previousfilter and mistake sample [E]
+
+User: do you predict this correctly?
+Parsed: previousfilter and mistake sample [E]
+
+User: is this prediction correct?
+Parsed: previousfilter and mistake sample [E]
+
+User: is this data predicted correctly?
+Parsed: previousfilter and mistake sample [E]
+
+User: what mistakes do you typically make on this data?
+Parsed: previousfilter and mistake typical [E]
+
+User: what types of errors do you make here?
+Parsed: previousfilter and mistake typical [E]
+
+User: please characterize your errors
+Parsed: previousfilter and mistake typical [E]
+
+User: for this data, could you tell me some errors you typically make?
+Parsed: previousfilter and mistake typical [E]
+
+User: for these data points, tell me more about the errors you make
+Parsed: previousfilter and mistake typical [E]
+
+User: characterize your errors on this data plz
+Parsed: previousfilter and mistake typical [E]
+
+User: please summarize any typical mistakes you make on this data
+Parsed: previousfilter and mistake typical [E]
+
+User: what mistakes do the model typically make on this data?
+Parsed: previousfilter and mistake typical [E]
+
+User: what are some common errors the model makes for this data
+Parsed: previousfilter and mistake typical [E]
+
+User: are there any subgroups the model predicts incorrectly here?
+Parsed: previousfilter and mistake typical [E]
+
+User: are there any subgroups the model predicts incorrectly?
+Parsed: previousfilter and mistake typical [E]
+
+User: are there any portions of this population the model predicts wrongly?
+Parsed: previousfilter and mistake typical [E]
+
+User: what types of people does the model typically get wrong for this subset?
+Parsed: previousfilter and mistake typical [E]
+
+User: which are the subgroup populations often predicted incorrectly?
+Parsed: previousfilter and mistake typical [E]

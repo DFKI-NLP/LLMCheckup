@@ -1,0 +1,14 @@
+User: Show me the predictions of all the instances with {span}
+Parsed: includes and predict [E]
+
+User: What does the model predict on the {span} examples?
+Parsed: includes and predict [E]
+
+User: What are the predictions on data including {span}?
+Parsed: includes and predict [E]
+
+User: Could you show me the predictions for the {cat_features} filter?
+Parsed: includes and predict [E]
+
+User: Show the predictions of {span} data
+Parsed: includes and predict [E]

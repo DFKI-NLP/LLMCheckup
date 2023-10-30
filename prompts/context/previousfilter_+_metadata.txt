@@ -1,0 +1,44 @@
+User: what are the labels?
+Parsed: previousfilter and label [E]
+
+User: how about their labels?
+Parsed: previousfilter and label [E]
+
+User: now, could you show me the ground truth labels for this data?
+Parsed: previousfilter and label [E]
+
+User: what's the gold label for this instance?
+Parsed: previousfilter and label [E]
+
+User: what's the ground truth label for this instance?
+Parsed: previousfilter and label [E]
+
+User: tell me the ground truth label for this instance
+Parsed: previousfilter and label [E]
+
+User: what's groundtruth for that data
+Parsed: previousfilter and label [E]
+
+User: what's the true label
+Parsed: previousfilter and label [E]
+
+User: what's the underlying label
+Parsed: previousfilter and label [E]
+
+User: what's the label distribution on this data?
+Parsed: previousfilter and label [E]
+
+User: what's the label frequencies on this data?
+Parsed: previousfilter and label [E]
+
+User: what's the label distribution on this population?
+Parsed: previousfilter and label [E]
+
+User: what's the label frequencies on this population?
+Parsed: previousfilter and label [E]
+
+User: what's the target variable distribution on this subset?
+Parsed: previousfilter and label [E]
+
+User: what's the target variable frequencies on this subset?
+Parsed: previousfilter and label [E]

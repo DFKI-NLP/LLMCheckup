@@ -1,0 +1,1091 @@
+<!-- This code is modified from a script provided in https://studygyaan.com/python/create-web-based-chatbot-in-python-django-flask -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>InterroLang</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/static/styles/style.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+<messagebody>
+    <!-- The text interaction part of the method -->
+    <section class="ttm">
+        <header class="ttm-header">
+            <div class="ttm-header-title">
+                <img src="{{url_for('static', filename='images/logo.png')}}" style="width: 150px; height: 150px; align: center; margin: 5px">
+            </div>
+            <div class="container">
+                <div class="row">
+                    <div id="accordion" class="col-8">
+                        <div class="card">
+                            <div class="card-header" id="headingOne">
+                                <h5 class="mb-0">
+                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
+                                            aria-expanded="true" aria-controls="collapseOne" style="color: red">
+                                        ⚠️ Instructions:
+                                    </button>
+                                </h5>
+                            </div>
+
+                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
+                                 data-parent="#accordion">
+                                <div class="card-body">
+                                    <div class="panel panel-danger">
+                                        <div class="panel-heading"><b>"Input"</b>: enter <b>"quit"</b> can delete the
+                                            entered
+                                            custom
+                                            input if
+                                            available.
+                                        </div>
+                                        <div class="panel-heading"><b>"Custom input"</b>: add your own input instance.
+                                            For
+                                            BoolQ,
+                                            please
+                                            use
+                                            <b>"|"</b> to separate question and passage!
+                                        </div>
+                                        <div class="panel-heading"><b>"Include"</b>: enter a search term to filter the
+                                            dataset.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <button style="float: right; font-size: 20px;" class="opendv">Dataset Viewer</button>
+                    </div>
+                </div>
+            </div>
+        </header>
+        <main class="ttm-chat">
+            <div class="msg left-msg">
+                <div class="msg-bubble">
+                    <div class="msg-text">
+                        Hello 😊, I'm a machine learning model trained to {{ datasetObjective }}.
+                        <br><br>
+                        Let's get started. Ask me something!
+                    </div>
+                </div>
+            </div>
+
+            <div class="slideSideways">
+                <!-- Filter dataset by string ("includes") -->
+                <b>🔍 Filter dataset by text:</b>
+                <form class="filterdata-inputarea">
+                    <input type="text" class="filterdata-input" id="filterdataInput" placeholder="Filter dataset">
+                </form>
+                <h1 style="font: small-caps bold 20px/1 sans-serif; margin-top: 10px">🗃️ {{dataset}} dataset
+                    viewer </h1>
+                <div id="show_data"
+                     style="border-radius: 15px; padding: 5px; overflow-y: scroll; height: 70%;">
+                    {% for entry in entries %}
+                    {% if dataset == 'boolq' %}
+                    <details>
+                        <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
+                        <b>question:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["question"]}}</div>
+                        <b>passage:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["passage"]}}</div>
+                        <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
+                    </details>
+                    {% elif dataset == 'daily_dialog' %}
+                    <details>
+                        <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
+                        <b>dialog:</b>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["dialog"]}}</div>
+                        <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
+                    </details>
+                    {% else %}
+                    <details>
+                        <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
+                        <b>text:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["text"]}}</div>
+                        <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
+                    </details>
+                    {% endif %}
+                    <br>
+                    {% endfor %}
+                    <br>(Showing first 10)
+                </div>
+                <div style="margin-top: 10px;">
+                    <!-- Reset temp dataset -->
+                    <div style="margin-top: 10px">
+                        <button type="button" class="btn btn-primary" id="reset_temp_dataset" style="width: 200px"
+                                onclick="reset_temp_dataset()">Reset the temp
+                            dataset
+                        </button>
+                        <button type="button" class="btn btn-primary" id="includeBtn" style="width: 200px"
+                                onclick="applyInclude()">Apply filtering on dataset
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <form class="ttm-inputarea">
+            <select id="input_source" class="form-select"
+                    style="width: 150px; text-align:center; font-family: Calibri; margin-right: 10px">
+                <option style="text-align:center; " value="0">Input</option>
+                <option style="text-align:center;" value="1">Custom input</option>
+                <option style="text-align:center;" value="2">Include</option>
+            </select>
+            <input onkeyup="checkSubmit(event)" rows="1" cols="50" type="text" class="ttm-input"
+                      id="textInput"
+                      placeholder="Enter your command! Use the ↑ arrow and ↓ arrow to cycle previous commands."></input>
+            <button type="submit" class="ttm-send-btn" id="ttm-send-btn-id">Send</button>
+        </form>
+        <span class="genOptions">👇Help me generate a question about...👇</span>
+
+        <div class="slideDown">
+            <div id="infobox" style="visibility: hidden; color: red; font-style: italic"></div>
+            <div class="dots-cont" id="generation-loading"><span class="dot dot-1"></span> <span
+                    class="dot dot-2"></span> <span class="dot dot-3"></span></div>
+            <div id="knobs"
+                 style="display: table; padding: 10px; width: 100%; margin-top: -10px; margin-left: 15px; margin-right: 15px;">
+                <div class="rowc" id="custom_input_btns" style="display: none">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;"><b>Custom
+                        input</b></div>
+                    <div class="tooltip-wrapper">
+                        <button id="c_pred" class="idea-button" style="background: rgba(253, 186, 54, 0.96);"
+                                onclick="sampleCustomInputPrediction()">
+                            Single prediction
+                        </button>
+                        <span class="tooltip-text">
+                            Lets the model predict a <b>custom single instance</b> provided by you.
+                        </span>
+                    </div>
+                    <div class="tooltip-wrapper">
+                        <button id="c_data" class="idea-button" style="background: rgba(235, 244, 61, 0.96);"
+                                onclick="sampleCustomInputDataAugmentation()">
+                            Data Augmentation
+                        </button>
+                        <span class="tooltip-text">
+                            Generates a <b>modified</b> version of a given <b>single example</b> that can be used as a <b>new data point</b>.
+                        </span>
+                    </div>
+                    <div class="tooltip-wrapper">
+                        <button id="c_cfe" class="idea-button"
+                                style="background: rgba(235, 244, 61, 0.96);"
+                                onclick="sampleCustomInputCounterfactual()">
+                            Counterfactual
+                        </button>
+                        <span class="tooltip-text">
+                            Generates a <b>modified</b> version of a given <b>single example</b> that <b>flips</b> the model's <b>prediction</b> from one label to another.
+                        </span>
+                    </div>
+                    <div class="tooltip-wrapper">
+                        <button id="c_rat" class="idea-button"
+                                style="background: rgba(235, 244, 61, 0.96);"
+                                onclick="sampleCustomInputRationalization()">
+                            Rationalization
+                        </button>
+                        <span class="tooltip-text">
+                            Generates a <b>free-text justification</b> for the model's prediction on a <b>given example</b>.
+                        </span>
+                    </div>
+                </div>
+                <div class="row row1" data-sort="abt_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;"><b>About</b>
+                    </div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="abt_self" class="idea-button" onclick="sampleAboutSelf()">
+                                SGD
+                            </button>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="abt_function" class="idea-button" onclick="sampleAboutFunction()">
+                                System capabilities
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row2" data-sort="md_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;"><b>Metadata</b>
+                    </div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="md_show" class="idea-button" onclick="sampleShow()">
+                                Show example
+                            </button>
+                            <span class="tooltip-text">
+                                Displays a <b>single example</b> from the dataset based on the <b>ID</b> you specify.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="md_train-data-description" class="idea-button"
+                                    onclick="sampleModel()">
+                                Model
+                            </button>
+                            <span class="tooltip-text">
+                                Get meta information about the model.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="md_test-data-description" class="idea-button"
+                                    onclick="sampleDataSummary()">
+                                Data summary
+                            </button>
+                            <span class="tooltip-text">
+                                Describe the summary of data.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="md_count-data" class="idea-button" onclick="sampleCountData()">
+                                Count data
+                            </button>
+                            <span class="tooltip-text">
+                                Shows <b>how many</b> examples there are in the data and what the range of <b>IDs</b> is.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="md_labels" class="idea-button" onclick="sampleLabels()">
+                                True labels
+                            </button>
+                            <span class="tooltip-text">
+                                Shows the <b>distribution</b> of the <b>true labels</b>, i.e. how the examples were annotated by humans.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row3" data-sort="pred_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;">
+                        <b>Prediction</b></div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="pred_predict" class="idea-button" onclick="samplePredict()">
+                                Single prediction
+                            </button>
+                            <span class="tooltip-text">
+                                Lets the model predict a <b>single instance</b> (ID).
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="pred_random" class="idea-button" onclick="sampleRandomPredict()">
+                                Random prediction
+                            </button>
+                            <span class="tooltip-text">
+                                Lets the model predict a <b>randomly selected instance</b> (ID).
+                            </span>
+                        </div> <!-- Move custom input prediction button here -->
+                        <div class="tooltip-wrapper">
+                            <button id="pred_dataset" class="idea-button" onclick="samplePredictDataset()">
+                                Dataset prediction
+                            </button>
+                            <span class="tooltip-text">
+                                Lets the model predict the <b>entire dataset</b> or any subset with <b>multiple instances</b>.
+                            </span>
+                        </div>
+{#                        <div class="tooltip-wrapper">#}
+{#                            <button id="pred_likelihood" class="idea-button" onclick="sampleLikelihood()">#}
+{#                                Likelihood#}
+{#                            </button>#}
+{#                            <span class="tooltip-text">#}
+{#                                For a <b>single example</b> (ID), gets the <b>probability</b> that the model predicts a certain <b>label</b>.#}
+{#                            </span>#}
+{#                        </div>#}
+                        <div class="tooltip-wrapper">
+                            <button id="pred_score" class="idea-button" onclick="samplePerformance()">
+                                Performance
+                            </button>
+                            <span class="tooltip-text">
+                                Gets an overall <b>score</b> for the model performance (Accuracy, Precision, Recall, F1).
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="pred_mistakes-count" class="idea-button" onclick="sampleMistakeCount()">
+                                Count mistakes
+                            </button>
+                            <span class="tooltip-text">
+                                Shows <b>how many</b> examples the model predicts a <b>wrong label</b> for.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="pred_mistakes-sample" class="idea-button" onclick="sampleMistakeSample()">
+                                Sample mistakes
+                            </button>
+                            <span class="tooltip-text">
+                                Shows <b>examples</b> where the model predicts a <b>wrong label</b>.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row4" data-sort="nlu_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;">
+                        <b>Understanding</b></div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="nlu_similar" class="idea-button" onclick="sampleSimilar()">
+                                Similar examples
+                            </button>
+                            <span class="tooltip-text">
+                                Retrieves a number of <b>examples</b> from the dataset that are semantically <b>similar</b> to a given <b>single example</b> (ID).
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="nlu_keyword" class="idea-button" onclick="sampleKeyword()">
+                                Most frequent keywords
+                            </button>
+                            <span class="tooltip-text">
+                                Prints a table of the <b>most frequent keywords</b> in the data.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row5" data-sort="x_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;">
+                        <b>Explanation</b></div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="x_local" class="idea-button" onclick="sampleWhy()">
+                                Local feature importance
+                            </button>
+                            <span class="tooltip-text">
+                                Indicates which <b>tokens</b> for a <b>single example</b> (ID) are <b>most important</b>. Also prints a heatmap visualization.
+                            </span>
+                        </div>
+{#                        <div class="tooltip-wrapper">#}
+{#                            <button id="x_sentence" class="idea-button" onclick="sampleSentence()">#}
+{#                                Sentence-level feature importance#}
+{#                            </button>#}
+{#                            <span class="tooltip-text">#}
+{#                                Indicates which <b>sentences</b> for a <b>single example</b> (ID) are <b>most important</b>.#}
+{#                            </span>#}
+{#                        </div>#}
+                        <div class="tooltip-wrapper">
+                            <button id="x_global" class="idea-button" onclick="sampleImportant()">
+                                Global feature importance
+                            </button>
+                            <span class="tooltip-text">
+                                Indicates which <b>tokens</b> are <b>most important</b> if <b>aggregated</b> over the <b>entire dataset</b>.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="x_class" class="idea-button" onclick="sampleImportantClass()">
+                                Class-based feature importance
+                            </button>
+                            <span class="tooltip-text">
+                                Indicates which <b>tokens</b> are <b>most important</b> if <b>aggregated</b> over one <b>label subset</b> of the data.
+                            </span>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="x_rationalize" class="idea-button" onclick="sampleRationalization()">
+                                Rationalize
+                            </button>
+                            <span class="tooltip-text">
+                                Generates a <b>free-text justification</b> for the model's prediction on a <b>single example</b> (ID).
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                <div class="row row6" data-sort="ptb_" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;">
+                        <b>Perturbation</b></div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="ptb_cfe" class="idea-button" onclick="sampleFlip()">
+                                Counterfactual
+                            </button>
+                            <span class="tooltip-text">
+                                Generates a <b>modified</b> version of a given <b>single example</b> (ID) that <b>flips</b> the model's <b>prediction</b> from one label to another.
+                            </span>
+                        </div>
+{#                        <div class="tooltip-wrapper">#}
+{#                            <button id="ptb_adversarial" class="idea-button" onclick="sampleAdversarial()">#}
+{#                                Adversarial example#}
+{#                            </button>#}
+{#                            <span class="tooltip-text">#}
+{#                                Generates a <b>modified</b> version of a given <b>single example</b> (ID) that <b>flips</b> the model's <b>prediction</b> from correct to <b>wrong</b>.#}
+{#                            </span>#}
+{#                        </div>#}
+                        <div class="tooltip-wrapper">
+                            <button id="ptb_augment" class="idea-button" onclick="sampleAugment()">
+                                Augment
+                            </button>
+                            <span class="tooltip-text">
+                                Generates a <b>modified</b> version of a given <b>single example</b> (ID) that can be used as a <b>new data point</b>.
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </main>
+
+    </section>
+
+    <section>
+        <!-- OLD DATASET VIEWER PLACEMENT -->
+        <!-- Displaying data -->
+        <!-- Referring jinja2 syntax -->
+    </section>
+
+    <!--        <section class="pins" id="my-pins">-->
+    <!--          <header class="pins-header">-->
+    <!--            <div class="pins-header-title">-->
+    <!--             Pins-->
+    <!--            </div>-->
+    <!--          </header>-->
+    <!--            <main class="pins-scroll"> &lt;!&ndash; pinned messages appear here &ndash;&gt;-->
+    <!--                <div class="pin left-msg">-->
+    <!--                  <div class="pin-bubble">-->
+    <!--                    <div class="pin-text">Pin messages and they will appear here!</div>-->
+    <!--                  </div>-->
+    <!--                </div>-->
+    <!--            </main>-->
+    <!--        </section>-->
+</messagebody>
+</body>
+</html>
+
+<script>
+    $('.opendv').click(function (e) {
+        var chatWidth = $('.ttm-chat').width();
+        if ($('.slideSideways').is(':visible')) {
+            $('.slideSideways').animate({left: chatWidth}, function () {
+                $(this).hide();
+            });
+        } else {
+            $('.slideSideways').show().animate({left: chatWidth / 2});
+        }
+    });
+</script>
+
+<script>
+    $('.genOptions').click(function (e) {
+        $('.slideDown').slideToggle();
+    });
+</script>
+
+<script>
+    function disableBtn(flag) {
+        if (!flag) {
+            document.getElementById("custom_input_btns").style.display = "table-row";
+        } else {
+            document.getElementById("custom_input_btns").style.display = "none";
+        }
+    }
+
+    function checkSubmit(e) {
+        if (e && e.keyCode === 13) {
+            document.getElementById("ttm-send-btn-id").click();
+             document.getElementById("textInput").value = "";
+        }
+    }
+
+    function applyInclude() {
+        let filter_string = document.getElementById("filterdataInput").value;
+        document.getElementById("textInput").value = filter_string;
+
+        document.getElementById("input_source").value = "2";
+        document.getElementById("ttm-send-btn-id").click();
+    }
+
+    function doSample(rawAction) {
+        let username = '{{ currentUserId }}'
+        let dataPackage = {action: rawAction, thisUserName: username}
+        let jsonDataPackage = JSON.stringify(dataPackage)
+
+        let button_div = document.getElementById("")
+
+        const result = $.ajax({
+            type: 'POST',
+            url: "{{ url_for('.sample_prompt') }}",
+            data: jsonDataPackage,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                ttmInput.value = data;
+            }
+        });
+    }
+
+    function sampleKeyword() {
+        doSample("keyword");
+    }
+
+    function sampleSentence() {
+        doSample("sentence");
+    }
+
+    function sampleAdversarial() {
+        doSample("adversarial");
+    }
+
+    function sampleAugment() {
+        doSample("augment");
+    }
+
+    function sampleCustomInputRationalization(){
+        doSample("c_rationale");
+    }
+
+    function sampleCustomInputCounterfactual(){
+        doSample("c_cfe");
+    }
+
+    function sampleCustomInputDataAugmentation(){
+        doSample("c_data");
+    }
+
+    function sampleCustomInputFeatureImportanceOnSentenceLevel() {
+        doSample("custom_input_feature_importance_on_sentence_level");
+    }
+
+    function sampleCustomInputFeatureImportance() {
+        doSample("custom_input_feature_importance");
+    }
+
+    function sampleCustomInputPrediction() {
+        doSample("custom_input_prediction");
+    }
+
+    function sampleRandomPredict() {
+        doSample("random_predict");
+    }
+
+    function sampleModel() {
+        doSample("model");
+    }
+
+    function sampleDataSummary() {
+        doSample("data_summary");
+    }
+
+    function sampleCountData() {
+        doSample("countdata");
+    }
+
+    function samplePerformance() {
+        doSample("score");
+    }
+
+    function sampleMistakeCount() {
+        doSample("mistake_count");
+    }
+
+    function sampleMistakeSample() {
+        doSample("mistake_sample");
+    }
+
+    function sampleFlip() {
+        doSample("cfe");
+    }
+
+    function sampleRationalization() {
+        doSample("rationalization");
+    }
+
+    function sampleImportant() {
+        doSample("important");
+    }
+
+    function sampleImportantClass() {
+        doSample("important_class");
+    }
+
+    function sampleLabels() {
+        doSample("labels");
+    }
+
+    function sampleSimilar() {
+        doSample("similar");
+    }
+
+    function sampleWhy() {
+        doSample("explain");
+    }
+
+    function samplePredict() {
+        doSample("predict");
+    }
+
+    function samplePredictDataset() {
+        doSample("predict_dataset");
+    }
+
+    function sampleLikelihood() {
+        doSample("likelihood");
+    }
+
+    function sampleShow() {
+        doSample("show");
+    }
+
+    function sampleAboutFunction() {
+        doSample("function");
+    }
+
+    function sampleAboutSelf() {
+        doSample("self");
+    }
+</script>
+
+<script>
+    document.querySelectorAll('.tooltip-wrapper').forEach((wrapper) => {
+        const tooltip = wrapper.querySelector('.tooltip-text');
+        wrapper.addEventListener('mouseenter', () => {
+            const wrapperRect = wrapper.getBoundingClientRect();
+            const tooltipRect = tooltip.getBoundingClientRect();
+
+            if (wrapperRect.left + tooltipRect.width > window.innerWidth) {
+                tooltip.style.left = 'auto';
+                tooltip.style.right = '0';
+            } else {
+                tooltip.style.left = '50%';
+                tooltip.style.right = 'auto';
+            }
+
+            if (wrapperRect.top < tooltipRect.height) {
+                tooltip.style.bottom = 'auto';
+                tooltip.style.top = '125%';
+            } else {
+                tooltip.style.bottom = '125%';
+                tooltip.style.top = 'auto';
+            }
+        });
+    });
+</script>
+
+<script src='https://use.fontawesome.com/releases/v5.0.13/js/all.js'></script>
+<script>
+    function reset_temp_dataset() {
+        let username = '{{ currentUserId }}'
+        let dataPackage = {thisUserName: username}
+        let jsonDataPackage = JSON.stringify(dataPackage)
+
+        const result = $.ajax({
+            type: 'POST',
+            url: "{{ url_for('.reset_temp_dataset') }}",
+            data: jsonDataPackage,
+            processData: false,
+            contentType: false,
+            cache: false,
+        });
+    }
+
+</script>
+<script>
+    var counter = 0;
+
+    const ttmForm = get(".ttm-inputarea");
+    const ttmInput = get(".ttm-input");
+    const ttmChat = get(".ttm-chat");
+    const ttmPins = get(".pins-scroll");
+    let userInputs = [];
+    let userInputIndex = 0;
+
+    // text box command
+    ttmForm.addEventListener("submit", event => {
+        var idx = document.getElementById("input_source").selectedIndex;
+        const msgText = ttmInput.value;
+        let custom_input;
+
+        event.preventDefault();
+
+        if (!msgText) return;
+        addToChat("right", msgText, "");
+        insertLoadingDots();
+        ttmChat.scrollTop += 200;
+        ttmInput.value = "";
+
+        const selectBox = document.getElementById("input_source");
+
+        if (document.getElementsByTagName("option")[idx].value === '0') {
+            botResponse(msgText, custom_input = '0');
+
+            if (msgText == "quit") {
+                changeBtnColor(false);
+                disableBtn(true);
+            }
+        } else if (document.getElementsByTagName("option")[idx].value === '1') {
+            selectBox.selectedIndex = "0";
+            botResponse(msgText, custom_input = '1');
+            changeBtnColor(true);
+            disableBtn(false);
+        } else {
+            selectBox.selectedIndex = "0";
+            botResponse(msgText, custom_input = '2');
+        }
+    });
+
+    function changeBtnColor(flag) {
+        let ids = ["c_rat", "c_cfe", "c_data", "c_pred"]
+
+        if (flag) {
+            ids.forEach(id => {
+                document.getElementById(id).style.border = "3px solid rgba(63, 103, 232, 0.96)";
+            });
+        } else {
+            ids.forEach(id => {
+                document.getElementById(id).style.border = "";
+            });
+        }
+    }
+
+    function corr_answeredNo(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+
+        const feedback = `MessageID: ${logText} || Feedback: Correctness Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function help_answeredNo(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+
+        const feedback = `MessageID: ${logText} || Feedback: Helpfulness Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function sat_answeredNo(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+
+        const feedback = `MessageID: ${logText} || Feedback: Satisfaction Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function corr_answeredYes(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+        const feedback = `MessageID: ${logText} || Feedback: Correctness Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function help_answeredYes(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+        const feedback = `MessageID: ${logText} || Feedback: Helpfulness Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function sat_answeredYes(logText) {
+        let answer = document.getElementById("msg-text-"+counter).innerText;
+        const feedback = `MessageID: ${logText} || Feedback: Satisfaction Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
+        logFeedback(feedback);
+    }
+
+    function insertLoadingDots() {
+        let msgHTML = `
+            <div class="loading-dots", id="current-dots">
+                <div class="msg left-msg">
+                    <div class="msg-bubble">
+                        <div class="stage">
+                             <div class="dot-pulse"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          `
+        ttmChat.insertAdjacentHTML("beforeend", msgHTML);
+
+        document.getElementById("ttm-send-btn-id").disabled = true;
+    }
+
+    function deleteLoadingDots() {
+        document.getElementById("current-dots").outerHTML = "";
+        document.getElementById("ttm-send-btn-id").disabled = false;
+    }
+
+    function pinMessage(text) {
+        let msgHTML = `
+            <div class="msg left-msg">
+              <div class="msg-bubble">
+                <div class="msg-text">${text}</div>
+              </div>
+            </div>
+        `;
+        ttmPins.insertAdjacentHTML("beforeend", msgHTML);
+    }
+
+    function addToChat(side, text, logText) {
+        // Defines adding messages to the conversation
+        let msgHTML = "";
+
+        // replace quotes for pinned messages, there are some issues with have quotes in here
+        let modifiedText = text.replace("\"", "");
+        modifiedText = modifiedText.replace("'", "");
+
+        // modifiedText = modifiedText.replace("(", "");
+        // modifiedText = modifiedText.replace(")", "");
+        if (side == "left") {
+            counter++;
+            msgHTML = `
+            <div class="msg ${side}-msg">
+              <div class="msg-bubble">
+                <div class="msg-text" id="msg-text-${counter}">${text}</div>
+              <div class="happy-sad-unsure-response">
+                <div class="all-feedback-${counter}">
+                    <div class="feedback-opener-${counter}">
+                        Feedback
+                    </div>
+                    <div class="feedback-form-${counter} container" >
+                        <div class="row">
+                        <button style="font-size: 12px;">Correctness </button>
+                        <button title="positive" class="unhappy-button" id="corr_yesbutton" onclick="corr_answeredYes('${logText}');">👍</button>
+                        <button title="negative" class="unhappy-button" id="corr_nobutton" onclick="corr_answeredNo('${logText}');">👎</button>
+                        </div>
+
+                        <div class="row">
+                        <button style="font-size: 12px;">Helpfulness </button>
+                        <button title="positive" class="unhappy-button" id="help_yesbutton" onclick="help_answeredYes('${logText}');">👍</button>
+                        <button title="negative" class="unhappy-button" id="help_nobutton" onclick="help_answeredNo('${logText}');">👎</button>
+                        </div>
+
+                        <div class="row">
+                        <button style="font-size: 12px;">Satisfaction </button>
+                        <button title="positive" class="unhappy-button" id="sat_yesbutton" onclick="sat_answeredYes('${logText}');">👍</button>
+                        <button title="negative" class="unhappy-button" id="sat_nobutton" onclick="sat_answeredNo('${logText}');">👎</button>
+                        </div>
+                    </div>
+                </div>
+              </div>
+            </div>
+            </div>
+            `;
+
+            // <button title="insightful" className="unhappy-button" id="insightbutton"
+            //         onClick="answeredInsight('${logText}');">💡</button>
+            // <button title="confused" className="unhappy-button" id="confusedbutton"
+            //         onClick="answeredConfused('${logText}');">😕</button>
+            /**
+             * <div class="pin-button">
+             *                     <svg onclick="pinMessage('${modifiedText}')" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pin-angle-fill" viewBox="0 0 16 16">
+             *                       <path d="M9.828.722a.5.5 0 0 1 .354.146l4.95 4.95a.5.5 0 0 1 0 .707c-.48.48-1.072.588-1.503.588-.177 0-.335-.018-.46-.039l-3.134 3.134a5.927 5.927 0 0 1 .16 1.013c.046.702-.032 1.687-.72 2.375a.5.5 0 0 1-.707 0l-2.829-2.828-3.182 3.182c-.195.195-1.219.902-1.414.707-.195-.195.512-1.22.707-1.414l3.182-3.182-2.828-2.829a.5.5 0 0 1 0-.707c.688-.688 1.673-.767 2.375-.72a5.922 5.922 0 0 1 1.013.16l3.134-3.133a2.772 2.772 0 0 1-.04-.461c0-.43.108-1.022.589-1.503a.5.5 0 0 1 .353-.146z"/>
+             *                     </svg>
+             *                   </div>
+             * */
+
+            ttmChat.insertAdjacentHTML("beforeend", msgHTML);
+            document.addEventListener("click", doReact);
+
+            function doReact(event) {
+                for(var i = 1; i <= counter; i++) {
+                    let feedback = document.querySelector("div.feedback-opener-" + i);
+                    let isClickInside = feedback.contains(event.target);
+                    if (isClickInside) {
+                        let right = feedback.getBoundingClientRect().right
+                        let bottom = feedback.getBoundingClientRect().bottom
+                        let feedbackFrom = document.querySelector("div.feedback-form-" + i);
+                        feedbackFrom.style.display = "block";
+                        ttmChat.scrollTop += 200;
+                    } else {
+                        let feedbackFrom = document.querySelector("div.feedback-form-" + i);
+                        feedbackFrom.style.display = "none";
+                    }
+                }
+            }
+        } else {
+            userInputIndex = userInputs.push(text);
+            msgHTML = `
+              <div class="msg ${side}-msg">
+                <div class="msg-bubble">
+                  <div class="msg-text">${text}</div>
+                </div>
+              </div>
+              `;
+            ttmChat.insertAdjacentHTML("beforeend", msgHTML);
+        }
+        ttmChat.scrollTop += 500;
+    }
+
+    function botResponse(rawText, custom_input) {
+
+        let dataPackage = {userInput: rawText, userName: "{{ currentUserId }}", custom_input: custom_input}
+        dataPackage = JSON.stringify(dataPackage)
+
+        const result = $.ajax({
+            type: 'POST',
+            url: "{{ url_for('.get_bot_response') }}",
+            data: dataPackage,
+            processData: false,
+            contentType: false,
+            cache: false,
+            success: function (data) {
+                const splitData = data.split('<>')
+                const msgText = splitData[0];
+                const logText = splitData[1];
+                deleteLoadingDots();
+                addToChat("left", msgText, logText);
+            }
+        });
+    }
+
+    function get(selector, root = document) {
+        return root.querySelector(selector);
+    }
+</script>
+
+<script>
+    function logFeedback(feedback) {
+        result = $.ajax({
+            type: 'POST',
+            url: "{{ url_for('.log_feedback') }}",
+            data: feedback,
+            processData: false,
+            contentType: false,
+            cache: false,
+        });
+    }
+
+
+    // Handle key cycling
+    document.onkeydown = checkKey;
+
+    function checkKey(e) {
+        e = e || window;
+
+
+        if (e.keyCode == '38') {
+            // up arrow
+            if (userInputs.length == 0) {
+                return
+            }
+            userInputIndex = userInputIndex - 1;
+            if (userInputIndex < 0) {
+                userInputIndex = 0;
+            }
+            ttmInput.value = userInputs[userInputIndex];
+        } else if (e.keyCode == '40') {
+            // down arrow
+            if (userInputs.length == 0) {
+                return
+            }
+            userInputIndex = userInputIndex + 1;
+            if (userInputIndex > userInputs.length - 1) {
+                userInputIndex = userInputs.length - 1;
+            }
+            ttmInput.value = userInputs[userInputIndex];
+        }
+    }
+</script>
+<script>
+    function getAllIndexes(arr, val) {
+        let indexes = [], i;
+        for (i = 0; i < arr.length; i++)
+            if (arr[i].includes(val))
+                indexes.push(i);
+        return indexes;
+    }
+
+    // Filter dataset
+    const filterDataForm = get(".filterdata-inputarea");
+    const filterDataInput = get(".filterdata-input");
+    filterDataForm.addEventListener("keyup", event => {
+        event.preventDefault();
+        const filterMsgText = filterDataInput.value;
+        result = $.ajax({
+            type: 'POST',
+            url: "{{ url_for('.filter_dataset') }}",
+            data: JSON.stringify({
+                'filterMsgText': filterMsgText,
+            }),
+            processData: false,
+            contentType: 'application/json',
+            cache: false,
+            success: function (info) {
+                var data = JSON.parse(info["jsonData"]);
+                var data_size = Object.keys(data).length;
+
+                var msgHTML = data_size + " out of " + info["totalDataLen"] + " data points:<br>";
+                var numDisplayed = 0;
+                const span_start = "<span style='background-color: yellow'>";
+                const span_end = "</span>";
+
+                for (let [_id, entry] of Object.entries(data)) {
+                    msgHTML += "<details style='margin-top: 1px;'"
+                    if (numDisplayed == 0) {
+                        msgHTML += " open='true';"
+                    }
+                    msgHTML += "><summary>";
+                    msgHTML += "<b>ID:" + _id + "</b></summary>";
+
+                    for (let [field_name, field_content] of Object.entries(entry)) {
+                        msgHTML += "<b>" + field_name + ": </b>"
+                        msgHTML += "<div style='font-style: italic; font-size: 0.75em;'>";
+                        // + field_content
+                        if (field_content.includes(filterMsgText) && filterMsgText.length > 0) {
+                            let field_content_arr = field_content.split(" ");
+                            let idx = getAllIndexes(field_content_arr, filterMsgText);
+
+                            let last_pointer = 0;
+                            for (let i = 0; i < idx.length; i++) {
+                                if (idx[i] == 0) {
+                                    msgHTML += span_start;
+                                    msgHTML += field_content_arr[idx[i]];
+                                    msgHTML += span_end;
+                                    msgHTML += " ";
+                                    last_pointer = 1;
+                                } else if (idx.length > 1 && idx[i] == field_content_arr.length - 1) {
+                                    msgHTML += span_start;
+                                    msgHTML += field_content_arr[idx[i]];
+                                    msgHTML += span_end;
+                                    msgHTML += " ";
+                                    last_pointer = 1;
+                                } else if (idx.length == 1 && idx[i] == field_content_arr.length - 1) {
+                                    for (let i = 0; i < idx[0]; i++) {
+                                        msgHTML += field_content_arr[i];
+                                        msgHTML += " ";
+                                    }
+
+                                    msgHTML += span_start;
+                                    msgHTML += field_content_arr[idx[i]];
+                                    msgHTML += span_end;
+                                    msgHTML += " ";
+                                    last_pointer = idx[i];
+                                } else {
+
+                                    for (let j = last_pointer; j < idx[i]; j++) {
+                                        msgHTML += field_content_arr[j];
+                                        msgHTML += " ";
+                                    }
+
+                                    msgHTML += span_start;
+                                    msgHTML += field_content_arr[idx[i]];
+                                    msgHTML += span_end;
+                                    msgHTML += " ";
+                                    last_pointer = idx[i] + 1;
+                                }
+                            }
+
+                            if (idx[idx.length - 1] < field_content_arr.length) {
+                                for (let i = idx[idx.length - 1] + 1; i < field_content_arr.length; i++) {
+                                    msgHTML += field_content_arr[i];
+                                    msgHTML += " ";
+                                }
+                            }
+                        } else {
+                            msgHTML += field_content;
+                        }
+                        msgHTML += "</div>";
+                    }
+                    msgHTML += "<button style=\"margin: 1px; padding: 1px\" type=\"button\" class=\"btn btn-outline-secondary\" onclick=\"addId("
+                    msgHTML += _id
+                    msgHTML += ")\">Add this instance into input box</button>"
+                    msgHTML += "</details>"
+
+
+                    numDisplayed += 1;
+                    if (numDisplayed >= 10) {
+                        msgHTML += "<br>(Showing first 10)";
+                        break
+                    }
+                }
+                document.getElementById("show_data").innerHTML = msgHTML;
+            }
+        })
+    });
+
+    function addId(_id) {
+        let string = "For id ";
+        string += _id;
+        string += ", "
+        document.getElementById("textInput").value = string;
+    }
+</script>

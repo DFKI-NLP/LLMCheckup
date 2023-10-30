@@ -1,0 +1,32 @@
+User: What about 2299
+Parsed: filter id 2299 and previousoperation [E]
+
+User: How about 52156
+Parsed: filter id 52156 and previousoperation [E]
+
+User: Now do it for 1451
+Parsed: filter id 1451 and previousoperation [E]
+
+User: 22
+Parsed: filter id 22 and previousoperation [E]
+
+User: 38232
+Parsed: filter id 38232 and previousoperation [E]
+
+User: how about {span}
+Parsed: includes and previousoperation [E]
+
+User: What about {span}?
+Parsed: includes and previousoperation [E]
+
+User: Could you do the same for instances including {span}?
+Parsed: includes and previousoperation [E]
+
+User: What about for those examples with {span}?
+Parsed: includes and previousoperation [E]
+
+User: Please run the same on all data that has {span} in it
+Parsed: includes and previousoperation [E]
+
+User: Could you show me the same for examples including {span}?
+Parsed: includes and previousoperation [E]

@@ -1,0 +1,77 @@
+User: Could you please indicate when {num_features} is important?
+Parsed: important {num_features} [E]
+
+User: I'm trying to figure out when the model thinks {num_features} is important. Think you could help?
+Parsed: important {num_features} [E]
+
+User: Over what instances is {num_features} ranked pretty high?
+Parsed: important {num_features} [E]
+
+User: How important is {num_features} for the predictions?
+Parsed: important {num_features} [E]
+
+User: What's the importance of {num_features} for the predictions?
+Parsed: important {num_features} [E]
+
+User: is {num_features} an important feature
+Parsed: important {num_features} [E]
+
+User: Is {num_features} more important than {num_features}?
+Parsed: important {num_features} and important {num_features} [E]
+
+User: Is {num_features} less important than {num_features}?
+Parsed: important {num_features} and important {num_features} [E]
+
+User: So, I need to figure out when {num_features} is an important feature in the data. I also need to do this just for {num_features} less than {num_values} and not for {cat_features}.
+Parsed: lengthfilter less than {num_values} and filter {cat_features} false and important {num_features} [E]
+
+User: tell me the top 10 most important features for data with a {num_features} over {num_values}
+Parsed: lengthfilter greater than {num_values} and important topk 10 [E]
+
+User: what are the top 7 most essential features when predicted data points where {num_features} is less than {num_values}
+Parsed: lengthfilter less than {num_values}  [E]
+
+User: most important features for {num_features} greater than {num_values}
+Parsed: lengthfilter greater than {num_values} and important all [E]
+
+User: 5 most important features for {num_features} equal to {num_values}
+Parsed: lengthfilter equal to {num_values} and important topk 5 [E]
+
+User: for those with {num_features} greater than {num_values}, what are the top three most important features for the model's predictions?
+Parsed: lengthfilter greater than {num_values} and important topk 3 [E]
+
+User: for people with {num_features} less than {num_values}, what are the top three most important features for the model's predictions?
+Parsed: lengthfilter less than {num_values} and important topk 3 [E]
+
+User: if people with {filter_text} were to have {num_features} increased by {num_values}, what would the top 5 most important features be?
+Parsed: {filter_parse} and change {num_features} increase {num_values} and important topk 5 [E]
+
+User: What matters more for people who make over $10000 when deciding whether to buy our product - {num_features} or {num_values}?
+Parsed: filter income greater than 10000 and important {num_features} and important {num_values} [E]
+
+User: Is {num_features} or {num_features} more determining in figuring out who will buy our product for those who make more than $10000?
+Parsed: filter income greater than 10000 and important {num_features} and important {num_features} [E]
+
+User: If you have an {num_features} over $10000, does {num_features} or {num_features} better predict whether you will buy our product?
+Parsed: lengthfilter greater than 10000 and important {num_features} and important {num_features} [E]
+
+User: In determining who is more {class_names} for people who make over 10000 {num_features}, does their {num_features} or {num_features} matter more?
+Parsed: lengthfilter greater than 10000 and important {num_features} and important {num_features} [E]
+
+User: If dog {num_features} is increased by ten pounds the disease will affect {num_features}?
+Parsed: change {num_features} increase 10 and important {num_features} [E]
+
+User: the dog weighted more {num_values} {num_features}, {num_features} be a more important aspect in determining if they will got disease ?
+Parsed: change {num_features} increase {num_values} and important {num_features} [E]
+
+User: in case the {num_features} is will increased as {num_features} {num_features} will be important factor in fixing whether it will get a disease or not ?
+Parsed: change {num_features} increase {num_features} and important {num_features} [E]
+
+User: In determining who is more {class_names} for people who have {num_features} over {num_values}, does their {num_features} or {num_features} matter more?
+Parsed: lengthfilter greater than {num_values} and important {num_features} and important {num_features} [E]
+
+User: Is {num_features} or {num_features} more relevant in determining whether or not consumers with an income of more than $10,000 will {class_names}?
+Parsed: filter income greater than 10000 and important {num_features} and important {num_features} [E]
+
+User: Is {num_features} or {num_features} more important in determining whether people with more than {num_values} in X will {class_names}?
+Parsed: filter X greater than 10000 and important {num_features} and important {num_features} [E]

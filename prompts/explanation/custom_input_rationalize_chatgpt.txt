@@ -1,0 +1,71 @@
+User: Can you rationalize the reasoning behind this input?
+Parsed: rationalize [E]
+
+User: What is the underlying rationale for this input?
+Parsed: rationalize [E]
+
+User: Please elucidate the justification for this input.
+Parsed: rationalize [E]
+
+User: I'd like to understand the reasoning behind this input. Could you rationalize it?
+Parsed: rationalize [E]
+
+User: Can you provide a rationalization for this particular input?
+Parsed: rationalize [E]
+
+User: What is the logic behind this input? Can you rationalize it?
+Parsed: rationalize [E]
+
+User: I'm curious about the reasoning behind this input. Can you rationalize it for me?
+Parsed: rationalize [E]
+
+User: Could you explain the rationale for this input in simpler terms?
+Parsed: rationalize [E]
+
+User: Can you shed some light on the rationalization of this input?
+Parsed: rationalize [E]
+
+User: Please elaborate on the reasoning behind this input. Provide a rationalization if possible.
+Parsed: rationalize [E]
+
+User: What is the underlying explanation for this input? Can you rationalize it?
+Parsed: rationalize [E]
+
+User: I'd like to understand the logic behind this input. Can you provide a rationalization?
+Parsed: rationalize [E]
+
+User: Can you rationalize this input and explain it in a comprehensible way?
+Parsed: rationalize [E]
+
+User: What is the rationale for this input? Could you rationalize it for me?
+Parsed: rationalize [E]
+
+User: Please provide a rationalization for the decision made with this input.
+Parsed: rationalize [E]
+
+User: Can you explain the reasoning behind this input using a rationalization?
+Parsed: rationalize [E]
+
+User: I'm interested in the underlying rationale of this input. Could you rationalize it?
+Parsed: rationalize [E]
+
+User: Could you rationalize the logic behind this input and explain it to me?
+Parsed: rationalize [E]
+
+User: What is the reasoning behind this input? Can you provide a rationalization?
+Parsed: rationalize [E]
+
+User: I'd like to understand the rationalization for this input. Can you explain it?
+Parsed: rationalize [E]
+
+User: Can you rationalize the thought process behind this input and clarify it?
+Parsed: rationalize [E]
+
+User: What is the rationale for this input? Can you rationalize it for me?
+Parsed: rationalize [E]
+
+User: Please provide a rationalization for the decision made with this input.
+Parsed: rationalize [E]
+
+User: Can you explain the reasoning behind this input using a rationalization?
+Parsed: rationalize [E]

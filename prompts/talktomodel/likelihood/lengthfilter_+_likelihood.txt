@@ -1,0 +1,17 @@
+User: How likely are instances with less than {num_values} words predicted as {class_names}?
+Parsed: lengthfilter less than {num_values} and likelihood [E]
+
+User: How likely is it that {num_features} less than {num_values} and {num_features} equal to {num_values} but not {cat_features} is predicted as {class_names} by the model?
+Parsed: lengthfilter less than {num_values} and lengthfilter equal to {num_values} and filter {cat_features} false and likelihood [E]
+
+User: For those with {num_features} over {num_values}, what are the likelihoods of {class_names}?
+Parsed: lengthfilter greater than {num_values} and likelihood [E]
+
+User: for people with a {num_features} over {num_values} or {num_features} over {num_values}, how likely are they to be {class_names}?
+Parsed: lengthfilter greater than {num_values} or lengthfilter greater than {num_values} and likelihood [E]
+
+User: how likely are people with {num_features} over {num_values} and at least {num_values} {num_features} to be {class_names}
+Parsed: lengthfilter greater than {num_values} and lengthfilter greater equal than {num_values} and likelihood [E]
+
+User: how likely are people with {num_features} below {num_values} and at least {num_values} {num_features} to be {class_names}
+Parsed: lengthfilter less than {num_values} and lengthfilter greater equal than {num_values} and likelihood [E]

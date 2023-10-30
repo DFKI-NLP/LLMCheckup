@@ -1,0 +1,17 @@
+User: What would I need to do to change this prediction?
+Parsed: previousfilter and explain cfe [E]
+
+User: How could I change this prediction?
+Parsed: previousfilter and explain cfe [E]
+
+User: What could I do to get a different prediction?
+Parsed: previousfilter and explain cfe [E]
+
+User: How could I get a better outcome?
+Parsed: previousfilter and explain cfe [E]
+
+User: What needs to happen for this to change?
+Parsed: previousfilter and explain cfe [E]
+
+User: Could you illustrate what one needs to change to get a better outcome?
+Parsed: previousfilter and explain cfe [E]

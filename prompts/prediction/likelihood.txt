@@ -1,0 +1,35 @@
+User: What is the probability that id 2215 is predicted as {class_names} by the model?
+Parsed: filter id 2215 and likelihood [E]
+
+User: What is the likelihood that id 15 is predicted as {class_names} by the model?
+Parsed: filter id 15 and likelihood [E]
+
+User: What is the probability of id 10 being predicted {class_names}?
+Parsed: filter id 10 and likelihood [E]
+
+User: probability of id 532 predicted {class_names}?
+Parsed: filter id 532 and likelihood [E]
+
+User: how likely is it id 155 is {class_names}?
+Parsed: filter id 155 and likelihood [E]
+
+User: what is the chance that the data point with id 2149 is {class_names}
+Parsed: filter id 2149 and likelihood [E]
+
+User: show the probability that id 515 is {class_names}
+Parsed: filter id 515 and likelihood [E]
+
+User: probability data point 22 is predicted by the model {class_names}
+Parsed: filter id 22 and likelihood [E]
+
+User: I want you to tell me the probability of the instance with id 100 being predicted in the "{class_names}" class by the model
+Parsed: filter id 100 and likelihood [E]
+
+User: return the probability that instance 233 is predicted in the {class_names} class
+Parsed: filter id 233 and likelihood [E]
+
+User: what's the chance instance id 324 is scored as {class_names}
+Parsed: filter id 324 and likelihood [E]
+
+User: probability that id 44 is predicted as "{class_names}" from the model
+Parsed: filter id 44 and likelihood [E]

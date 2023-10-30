@@ -1,0 +1,35 @@
+User: What are the predictions?
+Parsed: previousfilter and predict [E]
+
+User: what is the prediction for this data point?
+Parsed: previousfilter and predict [E]
+
+User: what's the prediction for this instance
+Parsed: previousfilter and predict [E]
+
+User: what does the model predict?
+Parsed: previousfilter and predict [E]
+
+User: what are the predictions for this data point
+Parsed: previousfilter and predict [E]
+
+User: Could you show the predictions on this data?
+Parsed: previousfilter and predict [E]
+
+User: Show the predictions on this data
+Parsed: previousfilter and predict [E]
+
+User: What does the model predict on this subset?
+Parsed: previousfilter and predict [E]
+
+User: For the previous instances, if we also filter by {span}, how does the model predict them?
+Parsed: previousfilter and includes and predict [E]
+
+User: Excluding {span} from that data, what are the model's predictions?
+Parsed: previousfilter and includes and predict [E]
+
+User: Excluding {span}, what are the model's predictions?
+Parsed: previousfilter and includes and predict [E]
+
+User: For the previous instances that are not {span}, what are the model's predictions?
+Parsed: previousfilter and includes and predict [E]

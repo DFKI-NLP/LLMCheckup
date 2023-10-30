@@ -1,0 +1,74 @@
+User: explain the model's predictions on examples with a length over {num_values} characters
+Parsed: lengthfilter chars greater than {num_values} and important all [E]
+
+User: how do you make decisions on those examples longer than {num_values} characters?
+Parsed: lengthfilter chars greater than {num_values} and important all [E]
+
+User: What are the feature importances for instances longer than {num_values} sentences?
+Parsed: lengthfilter sents greater than {num_values} and important all [E]
+
+User: for inputs with more than {num_values} sentences, how did the model come to the conclusion on their predictions?
+Parsed: lengthfilter sents greater than {num_values} and important all [E]
+
+User: Explain those with number of words not less than {num_values}
+Parsed: lengthfilter words greater equal than {num_values} and important all [E]
+
+User: for data where number of words is less than {num_values}, what are the most important features?
+Parsed: lengthfilter words less than {num_values} and important all [E]
+
+User: could you tell me why the model predicts those instances with above {num_values} words and also what these instances are?
+Parsed: lengthfilter words greater than {num_values} and important all and show [E]
+
+User: why are those texts between {num_values} and {num_values} characters predicted as {class_names}
+Parsed: lengthfilter chars greater than {num_values} and lengthfilter chars less than {num_values} and important all [E]
+
+User: First, show me the predictions on data with more than {num_values} words. Second, tell me why the model predicted them.
+Parsed: lengthfilter words greater than {num_values} and predict and important all [E]
+
+User: could you show me data with at least {num_values} words and tell me why the model predicts it?
+Parsed: lengthfilter words greater equal than {num_values} and show and important all [E]
+
+User: Initially, show me the data with a length of less than {num_values} words. Second, tell me why the model predicted them.
+Parsed: lengthfilter words less than {num_values} and show and important all [E]
+
+User: For the predictions of {span} and examples with more than {num_values} sentences, which words are most important?
+Parsed: includes and lengthfilter sents greater than {num_values} and important all [E]
+
+User: Considering both the {span} filter and instances containing at least {num_values} sentences, what are the highest attributed features?
+Parsed: includes and lengthfilter sents greater equal than {num_values} and important all [E]
+
+User: Why does the model predict instances with {span} and that have more than {num_values} words?
+Parsed: includes and lengthfilter words greater than {num_values} and important all [E]
+
+User: for those with less than {num_values} tokens and the span {span} in them, please provide a global explanation for their outcomes?
+Parsed: includes and lengthfilter words less than {num_values} and important all [E]
+
+User: For {span} which have more than {num_values} words, give me the attribution scores
+Parsed: includes and lengthfilter words greater than {num_values} and important all [E]
+
+User: Why does my model predict those with an amount of characters less than {num_values} as {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter chars less than {num_values} and important all [E]
+
+User: Why does the model predict instances that are longer than {num_values} characters as {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter chars greater than {num_values} and important all [E]
+
+User: Why does my model predict those with less than {num_values} sentences as {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter sents less than {num_values} and important all [E]
+
+User: what informs your understanding that, for those with more than {num_values} sentences, they will be {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter sents greater than {num_values} and important all [E]
+
+User: Why does my model predict those with number of tokens not less than {num_values} as {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter words greater equal than {num_values} and important all [E]
+
+User: What are the reasons for predicting {class_names} that have {num_values} words length?
+Parsed: predictionfilter {class_names} and lengthfilter words equal to {num_values} and important all [E]
+
+User: Why does my model predict those with at least {num_values} words as {class_names}?
+Parsed: predictionfilter {class_names} and lengthfilter words greater equal than {num_values} and important all [E]
+
+User: why are those with {num_values} tokens in length predicted as {class_names}
+Parsed: predictionfilter {class_names} and lengthfilter words greater equal than {num_values} and important all [E]
+
+User: With the addition of {num_features} equal to {num_values}, why does the model do these predictions?
+Parsed: previousfilter or lengthfilter words equal to {num_values} and important all [E]

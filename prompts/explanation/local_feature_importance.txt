@@ -1,0 +1,62 @@
+User: most important features for data point 100055
+Parsed: filter id 100055 and nlpattribute all [E]
+
+User: I was wondering what are the most important features for instance 213?
+Parsed: filter id 213 and nlpattribute all [E]
+
+User: Why do you predict instance 2451?
+Parsed: filter id 2451 and nlpattribute all [E]
+
+User: For 3315, why do you predict it?
+Parsed: filter id 3315 and nlpattribute all [E]
+
+User: why do you predict instance id 31
+Parsed: filter id 31 and nlpattribute all [E]
+
+User: why do you predict instance sample id 987
+Parsed: filter id 987 and nlpattribute all [E]
+
+User: explain id 15
+Parsed: filter id 15 and nlpattribute all [E]
+
+User: why is id 560 predicted {class_names}
+Parsed: filter id 560 and nlpattribute all [E]
+
+User: why does the model predict id 120
+Parsed: filter id 120 and nlpattribute all [E]
+
+User: why does the model predict id 32
+Parsed: filter id 32 and nlpattribute all [E]
+
+User: What are the reasons for predicting id 1552 and why do you predict this instance?
+Parsed: filter id 1552 and predict and nlpattribute all [E]
+
+User: Why does the model predict data 34? What does it predict for this instance?
+Parsed: filter id 24 and predict and nlpattribute all [E]
+
+User: What is the prediction for id 1553 and why do you predict it?
+Parsed: filter id 1553 and predict and nlpattribute all [E]
+
+User: What does my model predict for data 33? Next, once you've completed this, could you tell me why the model predicts it?
+Parsed: filter id 33 and predict and nlpattribute all [E]
+
+User: Explain my model's prediction for data 21 and then follow up with the rationale for the prediction!
+Parsed: filter id 21 and predict and nlpattribute all [E]
+
+User: what's the most important feature for data point 33?
+Parsed: filter id 33 and nlpattribute topk 1 [E]
+
+User: what three features most influence the model's predictions for ids 1515 and 55
+Parsed: filter id 1515 or filter id 55 and nlpattribute topk 3 [E]
+
+User: Could you show top 3 most important features for the data point 98
+Parsed: filter id 98 and nlpattribute topk 3 [E]
+
+User: what are the top 3 features for the model's prediction on data point 32?
+Parsed: filter id 32 and nlpattribute topk 3 [E]
+
+User: most important feature for id 10
+Parsed: filter id 10 and nlpattribute topk 10 [E]
+
+User: 10 most important features for id's 5, 151, 315
+Parsed: filter id 5 or filter id 151 or filter id 315 and nlpattribute topk 10 [E]

@@ -1,0 +1,11 @@
+User: the label is {class_names}
+Parsed: labelfilter {class_names} and show [E]
+
+User: the true label is {class_names}
+Parsed: labelfilter {class_names} and show [E]
+
+User: the gold label is {class_names}
+Parsed: labelfilter {class_names} and show [E]
+
+User: the ground truth is {class_names}
+Parsed: labelfilter {class_names} and show [E]

@@ -1,0 +1,35 @@
+User: For these instances, what would the predictions be if you increase {num_features} by 12?
+Parsed: previousfilter and change {num_features} increase 12 and predict [E]
+
+User: For those instances, what would the model's rationale be if you increase {num_features} by 55?
+Parsed: previousfilter and change {num_features} increase 55 and explain features [E]
+
+User: How would this change if you decreased {num_features} by 10?
+Parsed: previousfilter and change {num_features} decrease 10 and previousoperation [E]
+
+User: What would happen if you set {cat_features} to {cat_values} and {num_features} to {num_values}?
+Parsed: previousfilter and change {cat_features} {cat_values} and change {num_features} set {num_values} and previousoperation [E]
+
+User: But what if {cat_features} was {cat_values}?
+Parsed: previousfilter and change {cat_features} {cat_values} and previousoperation [E]
+
+User: If you increased {num_features} by 515, what would happen?
+Parsed: previousfilter and change {num_features} increase 515 and previousoperation [E]
+
+User: What would happen if these instances were not {cat_features}?
+Parsed: previousfilter and change {cat_features} false [E]
+
+User: How likely would it be for these instances to be predicted {class_names} if {cat_features} were set to {cat_values}?
+Parsed: previousfilter and change {cat_features} {cat_values} and likelihood [E]
+
+User: what if they had {num_values} less {num_features}
+Parsed: previousfilter and change {num_features} decrease {num_values} and previousoperation [E]
+
+User: what if these people had {num_values} more {num_features}
+Parsed: previousfilter and change {num_features} increase {num_values} and previousoperation [E]
+
+User: what about if they had {num_values} less {num_features}
+Parsed: previousfilter and change {num_features} decrease {num_values} and previousoperation [E]
+
+User: decrease {num_features} by {num_values} and show me the results
+Parsed: previousfilter and change {num_features} decrease {num_values} and previousoperation [E]

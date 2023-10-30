@@ -1,0 +1,8 @@
+User: could you show model performance on instances longer than {num_values} characters
+Parsed: lengthfilter chars greater than {num_values} and score accuracy [E]
+
+User: score on texts with less than {num_values} sentences
+Parsed: lengthfilter sents less than {num_values} and score accuracy [E]
+
+User: accuracy where number of words is larger than {num_values}
+Parsed: lengthfilter greater than {num_values} and score accuracy [E]

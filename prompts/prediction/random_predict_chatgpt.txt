@@ -1,0 +1,32 @@
+User: display a random prediction, please
+Parsed: randompredict [E]
+
+User: can you give me a prediction for a random data point?
+Parsed: randompredict [E]
+
+User: select a random example and present its prediction
+Parsed: randompredict [E]
+
+User: provide a prediction for a random instance
+Parsed: randompredict [E]
+
+User: give me an output for a randomly picked input
+Parsed: randompredict [E]
+
+User: pick a random data point and show the predicted result
+Parsed: randompredict [E]
+
+User: generate a prediction for a randomly chosen example
+Parsed: randompredict [E]
+
+User: I'd like to see a prediction for a random data point
+Parsed: randompredict [E]
+
+User: can you produce a prediction for a random instance?
+Parsed: randompredict [E]
+
+User: randomly predict an input from the dataset
+Parsed: randompredict [E]
+
+User: let's see the prediction for a random sample
+Parsed: randompredict [E]

@@ -1,0 +1,11 @@
+User: What are the most frequent words here?
+Parsed: previousfilter and keywords all [E]
+
+User: Show me which words occur most frequently in this subset
+Parsed: previousfilter and keywords all [E]
+
+User: On this subset, which 10 words appear most often?
+Parsed: previousfilter and keywords 10 [E]
+
+User: What are the 15 most frequent keywords in this filtered dataset?
+Parsed: previousfilter and keywords 15 [E]

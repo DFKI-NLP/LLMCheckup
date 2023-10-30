@@ -1,0 +1,59 @@
+User: Can you show me 2 instances that are similar to ID 30?
+Parsed: filter id 30 and similar 2 [E]
+
+User: Retrieve a data point that is analogous to ID 90.
+Parsed: filter id 90 and similar 1 [E]
+
+User: Please give me 4 examples that are similar to ID 15.
+Parsed: filter id 15 and similar 4 [E]
+
+User: Show me a similar data point to ID 5.
+Parsed: filter id 5 and similar 1 [E]
+
+User: Can you provide me an instance that is analogous to ID 100?
+Parsed: filter id 100 and similar 1 [E]
+
+User: Retrieve 3 examples that are similar to ID 20.
+Parsed: filter id 20 and similar 3 [E]
+
+User: Could you show me an instance that is similar to ID 45?
+Parsed: filter id 45 and similar 1 [E]
+
+User: Is it possible to retrieve 2 data points that are analogous to ID 60?
+Parsed: filter id 60 and similar 2 [E]
+
+User: Give me an example that is similar to ID 70.
+Parsed: filter id 70 and similar 1 [E]
+
+User: Show me 5 data points that are analogous to ID 85.
+Parsed: filter id 85 and similar 5 [E]
+
+User: Can you please retrieve an instance that is similar to ID 10?
+Parsed: filter id 10 and similar 1 [E]
+
+User: Give me 2 examples that are analogous to ID 55.
+Parsed: filter id 55 and similar 2 [E]
+
+User: Could you show me a data point that is similar to ID 80?
+Parsed: filter id 80 and similar 1 [E]
+
+User: Is it possible to retrieve an instance that is analogous to ID 35?
+Parsed: filter id 35 and similar 1 [E]
+
+User: Please provide me with 3 examples that are similar to ID 65.
+Parsed: filter id 65 and similar 3 [E]
+
+User: Show me a data point that is analogous to ID 95.
+Parsed: filter id 95 and similar 1 [E]
+
+User: Retrieve an instance that is similar to ID 40.
+Parsed: filter id 40 and similar 1 [E]
+
+User: Could you give me 4 examples that are analogous to ID 50?
+Parsed: filter id 50 and similar 4 [E]
+
+User: Is it possible to show me 2 data points that are similar to ID 85?
+Parsed: filter id 85 and similar 2 [E]
+
+User: Can you please retrieve an example that is analogous to ID 25?
+Parsed: filter id 25 and similar 1 [E]

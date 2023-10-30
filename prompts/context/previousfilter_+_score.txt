@@ -1,0 +1,38 @@
+User: accuracy on the previous slice of data
+Parsed: previousfilter and score accuracy [E]
+
+User: how often is the model correct on this subset of data
+Parsed: previousfilter and score accuracy [E]
+
+User: what's the accuracy here?
+Parsed: previousfilter and score accuracy [E]
+
+User: how accurate is my model on this data?
+Parsed: previousfilter and score accuracy [E]
+
+User: what's the npv on this data?
+Parsed: previousfilter and score npv [E]
+
+User: what's the negative predictive value on this data?
+Parsed: previousfilter and score npv [E]
+
+User: how precise is my model on this data?
+Parsed: previousfilter and score precision [E]
+
+User: how often is my model correct on this data?
+Parsed: previousfilter and score precision [E]
+
+User: is my model frequently correct on this data?
+Parsed: previousfilter and score precision [E]
+
+User: what's the positive predictive value on this data?
+Parsed: previousfilter and score ppv [E]
+
+User: what's the ppv on this data?
+Parsed: previousfilter and score ppv [E]
+
+User: what's the sensitivity on this data?
+Parsed: previousfilter and score sensitivity [E]
+
+User: what's the specificity on this data?
+Parsed: previousfilter and score specificity [E]

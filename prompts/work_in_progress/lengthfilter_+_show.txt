@@ -1,0 +1,11 @@
+User: show me some data where number of characters is less than {num_values}
+Parsed: lengthfilter chars less than {num_values} and show [E]
+
+User: display data with anything other than {num_values} sentences
+Parsed: lengthfilter sents not equal to {num_values} and show [E]
+
+User: show me data where text length is shorter than {num_values} words
+Parsed: lengthfilter words less than {num_values} and show [E]
+
+User: show me some instances where number of words is more than {num_values}
+Parsed: lengthfilter words greater than {num_values} and show [E]

@@ -1,0 +1,32 @@
+User: What are the explanations?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: Interesting... Why does the model predict this data?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: Also, why does the model predict them?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: Why do you predict this instance?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: Why do you predict these instances?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: Why could you possibly predict this instance in this manner?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: why?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: but which features led you to predict this?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: but what were the important words for this prediction?
+Parsed: previousfilter and nlpattribute all [E]
+
+User: yet, how did you arrive at this prediction
+Parsed: previousfilter and nlpattribute all [E]
+
+User: What are the predictions and explanations?
+Parsed: previousfilter and predict and nlpattribute all [E]

@@ -1,0 +1,11 @@
+User: explain id 150 in natural language
+Parsed: filter id 150 and rationalize [E]
+
+User: explain id 6390 with rationale
+Parsed: filter id 6390 and rationalize [E]
+
+User: generate a natural language explanation for id 2222
+Parsed: filter id 2222 and rationalize [E]
+
+User: rationalize the prediction for id 9555
+Parsed: filter id 9555 and rationalize [E]

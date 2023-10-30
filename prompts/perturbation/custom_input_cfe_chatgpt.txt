@@ -1,0 +1,56 @@
+User: Can you provide me with counterfactual explanations for this instance?
+Parsed: cfe [E]
+
+User: What changes would lead to a different prediction for this input?
+Parsed: cfe [E]
+
+User: I'm interested in exploring counterfactual scenarios for this. Can you generate some?
+Parsed: cfe [E]
+
+User: How can we alter this input to reverse the prediction?
+Parsed: cfe [E]
+
+User: Could you generate counterfactual examples for this instance?
+Parsed: cfe [E]
+
+User: What modifications would result in a different outcome for this input?
+Parsed: cfe [E]
+
+User: I'd like to see counterfactual explanations for this particular instance. Can you provide them?
+Parsed: cfe [E]
+
+User: How can we change this input to produce an opposite prediction?
+Parsed: cfe [E]
+
+User: Can you generate counterfactual instances for this input?
+Parsed: cfe [E]
+
+User: What alterations would cause a contrasting prediction for this instance?
+Parsed: cfe [E]
+
+User: Please generate counterfactual scenarios for this input.
+Parsed: cfe [E]
+
+User: How would the prediction change if we modified this input?
+Parsed: cfe [E]
+
+User: Can you provide counterfactual examples for this instance?
+Parsed: cfe [E]
+
+User: What changes to this input could result in a different prediction?
+Parsed: cfe [E]
+
+User: I'm interested in exploring counterfactuals for this particular instance. Could you generate some?
+Parsed: cfe [E]
+
+User: How can we tweak this input to obtain an alternative prediction?
+Parsed: cfe [E]
+
+User: Could you generate counterfactual explanations for this input?
+Parsed: cfe [E]
+
+User: What modifications would lead to a different outcome for this instance?
+Parsed: cfe [E]
+
+User: I'd like to see counterfactual instances generated for this input. Can you provide them?
+Parsed: cfe [E]

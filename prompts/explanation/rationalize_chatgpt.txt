@@ -1,0 +1,59 @@
+User: provide an explanation for id 101 in everyday language
+Parsed: filter id 101 and rationalize [E]
+
+User: clarify id 4321 with a reason
+Parsed: filter id 4321 and rationalize [E]
+
+User: give a detailed explanation of id 378
+Parsed: filter id 378 and rationalize [E]
+
+User: elucidate id 9876 with supporting rationale
+Parsed: filter id 9876 and rationalize [E]
+
+User: interpret id 2468 in plain language
+Parsed: filter id 2468 and rationalize [E]
+
+User: furnish a justification for id 1357
+Parsed: filter id 1357 and rationalize [E]
+
+User: deliver a natural language description for id 8642
+Parsed: filter id 8642 and rationalize [E]
+
+User: expound on id 1023 with an explanation
+Parsed: filter id 1023 and rationalize [E]
+
+User: shed light on id 3141 in simple terms
+Parsed: filter id 3141 and rationalize [E]
+
+User: give a rationale for id 7890
+Parsed: filter id 7890 and rationalize [E]
+
+User: provide a plain language interpretation for id 5678
+Parsed: filter id 5678 and rationalize [E]
+
+User: clarify the reasoning behind id 1234
+Parsed: filter id 1234 and rationalize [E]
+
+User: describe id 9081 with an understandable explanation
+Parsed: filter id 9081 and rationalize [E]
+
+User: give an account for id 6754 with justification
+Parsed: filter id 6754 and rationalize [E]
+
+User: present a comprehensible explanation for id 3496
+Parsed: filter id 3496 and rationalize [E]
+
+User: explain id 8080 and provide a rationale
+Parsed: filter id 8080 and rationalize [E]
+
+User: offer a plain-English interpretation for id 1201
+Parsed: filter id 1201 and rationalize [E]
+
+User: simplify the explanation for id 9901
+Parsed: filter id 9901 and rationalize [E]
+
+User: provide reasoning for id 6583 in layman's terms
+Parsed: filter id 6583 and rationalize [E]
+
+User: break down id 2741 with a clear explanation
+Parsed: filter id 2741 and rationalize [E]

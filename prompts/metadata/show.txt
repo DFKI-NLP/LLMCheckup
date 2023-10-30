@@ -1,0 +1,11 @@
+User: Can you display the instance with id 2451?
+Parsed: filter id 2451 and show [E]
+
+User: For 3315, please show me the values of the features.
+Parsed: filter id 3315 and show [E]
+
+User: Could you show me data point number 215?
+Parsed: filter id 215 and show [E]
+
+User: Please display id 105111
+Parsed: filter id 105111 and show [E]

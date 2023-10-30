@@ -1,0 +1,23 @@
+User: Please retrieve an example that is similar to ID 50
+Parsed: filter id 50 and similar 1 [E]
+
+User: Could you give me an analogous data point to ID 75.
+Parsed: filter id 75 and similar 1 [E]
+
+User: Is it possible to retrieve an example that is similar to id 12?
+Parsed: filter id 12 and similar 1 [E]
+
+User: I'm looking for a case that is akin to id 14. Could you help me with that?
+Parsed: filter id 14 and similar 1 [E]
+
+User: Show 3 similar instances to ID 25.
+Parsed: filter id 25 and similar 3 [E]
+
+User: Can you bring up 3 instances that shares similarities with ID 35?
+Parsed: filter id 35 and similar 3 [E]
+
+User: Could you give me 5 analogous data points to ID 75?
+Parsed: filter id 75 and similar 5 [E]
+
+User: Could you locate 6 comparable data point to ID 75 for me?
+Parsed: filter id 75 and similar 6 [E]

@@ -1,0 +1,26 @@
+User: What are the rationale's for the model's prediction of data sample 72324 and how could one change the prediction?
+Parsed: filter id 72324 and nlpattribute all and cfe [E]
+
+User: for data point number 32, how did the model arrive at the prediction decision and what could I do to change this predictions?
+Parsed: filter id 32 and nlpattribute all and cfe [E]
+
+User: How did you decide what to predict for id 78 and what could someone do to change this prediction?
+Parsed: filter id 78 and nlpattribute all and cfe [E]
+
+User: Explain the reasoning and how to flip the predictions for data point id 98
+Parsed: filter id 98 and nlpattribute all and cfe [E]
+
+User: Explain my model's rationale for predict data number 31 and how to flip this prediction
+Parsed: filter id 31 and nlpattribute all and cfe [E]
+
+User: What are the reasons why 54 is predicted and what you have to do to flip the prediction?
+Parsed: filter id 54 and nlpattribute all and cfe [E]
+
+User: (1) Why did the model predict and (2) how would you change the prediction of id 35?
+Parsed: filter id 35 and nlpattribute all and cfe [E]
+
+User: Why was data 52 predicted and how could you change this?
+Parsed: filter id 52 and nlpattribute all and cfe [E]
+
+User: For the data point with id 92, how could we change the prediction, what is the model's rationale, and what does it predict?
+Parsed: filter id 92 and cfe and nlpattribute all and predict [E]

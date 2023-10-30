@@ -1,0 +1,20 @@
+User: what's the number of times text is longer than {num_values} characters?
+Parsed: lengthfilter chars greater than {num_values} and countdata [E]
+
+User: for texts longer than {num_values} characters, what's the total num data points?
+Parsed: lengthfilter chars greater than {num_values} and countdata [E]
+
+User: what's the number of data points where number of sentences is less than {num_values}
+Parsed: lengthfilter sents less than {num_values} and countdata [E]
+
+User: In the data, how many documents had number of sentences below {num_values}?
+Parsed: lengthfilter sents less equal than {num_values} and countdata [E]
+
+User: how many data points have a length equal to {num_values} words
+Parsed: lengthfilter words equal to {num_values} and countdata [E]
+
+User: tell me the grand total for the number of data points where length is less than {num_values} tokens?
+Parsed: lengthfilter words less than {num_values} and countdata [E]
+
+User: Within the data set, how many instances have {num_values} words or less?
+Parsed: lengthfilter words less equal than {num_values} and countdata [E]

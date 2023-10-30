@@ -1,0 +1,59 @@
+User: what are the key features for data point 120001
+Parsed: filter id 120001 and nlpattribute all [E]
+
+User: Can you tell me the main features for instance 567?
+Parsed: filter id 567 and nlpattribute all [E]
+
+User: primary features of data point 110002
+Parsed: filter id 110002 and nlpattribute all [E]
+
+User: what are the major features for instance 888?
+Parsed: filter id 888 and nlpattribute all [E]
+
+User: key features for data point 100006
+Parsed: filter id 100006 and nlpattribute all [E]
+
+User: what are the main attributes for instance 777?
+Parsed: filter id 777 and nlpattribute all [E]
+
+User: most influential feature for data point 111?
+Parsed: filter id 111 and nlpattribute topk 1 [E]
+
+User: which feature is most significant for data point 44?
+Parsed: filter id 44 and nlpattribute topk 1 [E]
+
+User: most impactful feature for data point 222?
+Parsed: filter id 222 and nlpattribute topk 1 [E]
+
+User: most significant feature for instance 9
+Parsed: filter id 9 and nlpattribute topk 1 [E]
+
+User: most critical feature for id 8
+Parsed: filter id 8 and nlpattribute topk 1 [E]
+
+User: top 2 features influencing the model's prediction on data point 29?
+Parsed: filter id 29 and nlpattribute topk 2 [E]
+
+User: what are the 2 most relevant features for the model's decision on data point 27?
+Parsed: filter id 27 and nlpattribute topk 2 [E]
+
+User: Please provide the 4 most critical features for data point 78
+Parsed: filter id 78 and nlpattribute topk 4 [E]
+
+User: Show me the 5 most important features for data point 81
+Parsed: filter id 81 and nlpattribute topk 5 [E]
+
+User: 4 most important features for ids 987 and 65
+Parsed: filter id 987 or filter id 65 and nlpattribute topk 4 [E]
+
+User: what are the top 5 influential features for ids 12 and 1010
+Parsed: filter id 12 or filter id 1010 and nlpattribute topk 5 [E]
+
+User: top 6 features affecting the predictions for ids 1234 and 56
+Parsed: filter id 1234 or filter id 56 and nlpattribute topk 6 [E]
+
+User: 8 most crucial features for ids 3, 67, and 450
+Parsed: filter id 3 or filter id 67 or filter id 450 and nlpattribute topk 8 [E]
+
+User: 7 most important features for ids 2, 111, and 789
+Parsed: filter id 2 or filter id 111 or filter id 789 and nlpattribute topk 7 [E]

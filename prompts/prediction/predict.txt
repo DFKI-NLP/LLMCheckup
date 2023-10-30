@@ -1,0 +1,29 @@
+User: What do you predict for 215?
+Parsed: filter id 215 and predict [E]
+
+User: What is the prediction for data point number 9130?
+Parsed: filter id 9130 and predict [E]
+
+User: Can you please tell me the prediction for id 91?
+Parsed: filter id 91 and predict [E]
+
+User: For id 776, please provide the prediction.
+Parsed: filter id 776 and predict [E]
+
+User: show prediction of id 120
+Parsed: filter id 120 and predict [E]
+
+User: predict 320
+Parsed: filter id 320 and predict [E]
+
+User: return prediction id 13423
+Parsed: filter id 13423 and predict [E]
+
+User: show the prediction of id 3421
+Parsed: filter id 3421 and predict [E]
+
+User: please display the prediction of the instance with id 34
+Parsed: filter id 34 and predict [E]
+
+User: predict 22
+Parsed: filter id 22 and predict [E]
