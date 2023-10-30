@@ -3,8 +3,7 @@
 #######################
 
 # Model + dataset configuration specific file
-GlobalArgs.config = "./configs/olid.gin"
-# GlobalArgs.config = "./configs/olid_large.gin"
+GlobalArgs.config = "./configs/covid_fact_mistral.gin"
 
 # Set the base url to host the demo, if needed
 GlobalArgs.baseurl = "/"

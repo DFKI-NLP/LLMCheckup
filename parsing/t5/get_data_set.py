@@ -18,7 +18,7 @@ def get_config_loc(dataset: str) -> str:
     elif dataset == "daily_dialog":
         config_loc = "./configs/da.gin"
     elif dataset == "olid":
-        config_loc = "./configs/olid.gin"
+        config_loc = "./configs/covid_fact_mistral.gin"
     elif dataset.endswith(".gin"):
         config_loc = dataset
     else:
