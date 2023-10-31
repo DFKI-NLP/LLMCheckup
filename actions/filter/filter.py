@@ -158,7 +158,7 @@ def label_filter(temp_dataset, conversation, feature_name):
     return updated_dset, interpretable_parse_text
 
 
-def filter_operation(conversation, parse_text, i, simulation, is_or=False, **kwargs):
+def filter_operation(conversation, parse_text, i, is_or=False, **kwargs):
     """The filtering operation.
 
     This function performs filtering on a data set.

@@ -74,7 +74,7 @@ def get_few_shot_prompt(instance):
     return prompt
 
 
-def counterfactuals_operation(conversation, parse_text, i, simulation, **kwargs):
+def counterfactuals_operation(conversation, parse_text, i, **kwargs):
     if conversation.custom_input is not None and conversation.used is False:
         instance = conversation.custom_input
     else:

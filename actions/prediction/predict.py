@@ -189,14 +189,14 @@ def prediction_generation(data, conversation, _id, num_shot=3):
     return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
 
     return_s += "<br>"
-    return return_s
+    return return_s, prediction
 
 
 def predict_operation(conversation, parse_text, i, **kwargs):
     """The prediction operation."""
     if conversation.custom_input is not None and conversation.used is False:
         # if custom input is available
-        return_s = prediction_generation(None, conversation, None)
+        return_s, _ = prediction_generation(None, conversation, None)
         return return_s, 1
 
     data = conversation.temp_dataset.contents['X']
@@ -208,7 +208,7 @@ def predict_operation(conversation, parse_text, i, **kwargs):
 
     if len(data) == 1:
         # `filter id and predict [E]`
-        return_s = prediction_generation(data, conversation, _id)
+        return_s, _ = prediction_generation(data, conversation, _id)
     else:
         raise ValueError("Too many ids are given!")
     return return_s, 1

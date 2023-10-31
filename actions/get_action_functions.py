@@ -63,11 +63,3 @@ def get_all_action_functions_map():
         'augment': augment_operation
     }
     return actions
-
-SIMULATION_OPERATIONS = [
-    "adversarial",
-    "cfe",
-    "filter",
-    "nlpattribute",
-    "rationalize",
-]
