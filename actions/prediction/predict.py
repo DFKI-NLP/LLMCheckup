@@ -1,17 +1,13 @@
 """Prediction operation."""
-import json
 import os
 import csv
 import random
 
-import numpy as np
 import pandas as pd
-import torch.cuda
 
-from actions.util_functions import gen_parse_op_text, get_parse_filter_text
+from actions.prediction.predict_grammar import COVID_GRAMMAR
+from actions.util_functions import gen_parse_op_text
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
-
-from timeout import timeout
 
 
 def handle_input(parse_text):
@@ -71,179 +67,148 @@ def store_results(inputs, predictions, cache_path):
             file.close()
 
 
-def prediction_with_custom_input(conversation):
+def get_demonstrations(_id, num_shot, dataset_name):
     """
-    Predict the custom input from user that is not contained in the dataset
-    Args:
-        conversation: Conversation object
-
-    Returns:
-        format string with inputs and predictions
+    sample demonstrations for few-shot prompting
+    :param _id: id of the instance or None (for custom input)
+    :param num_shot: number of demonstrations
+    :param dataset_name: dataset name
+    :return: lists of claims, evidences, labels
     """
+    if dataset_name == "covid_fact":
+        df = pd.read_csv("./data/COVIDFACT_dataset.csv")
+        attr = "claims"
+    else:
+        # TODO
+        pass
 
-    inputs = [conversation.custom_input]
+    rand_ls = []
 
-    if len(inputs) == 0:
-        return None
+    if _id is not None:
+        for i in range(num_shot):
+            temp = random.randint(0, len(list(df[attr])))
+            if temp == _id:
+                rand_ls.append(temp - 1)
+            else:
+                rand_ls.append(temp)
+    else:
+        for i in range(num_shot):
+            rand_ls.append(random.randint(0, len(list(df[attr]))))
 
-    GRAMMAR = r"""
-    ?start: action
-    action: operation done 
+    if dataset_name == "covid_fact":
+        claims = [list(df["claims"])[i] for i in rand_ls]
+        evidences = [list(df["evidences"])[i] for i in rand_ls]
+        labels = [list(df["labels"])[i] for i in rand_ls]
+    else:
+        # TODO
+        pass
 
-    done: " [e]"
+    return claims, evidences, labels
 
-    operation: off | inoff 
 
-    inoff: " non-offensive"
-
-    off: " offensive"
+def get_prediction_by_prompt(prompt_template, conversation):
     """
-    df = pd.read_csv("./data/offensive_val.csv")
-    instances = list(df["text"])
-
-    df = pd.read_csv("./data/offensive_train.csv")
-    texts = list(df["text"])
-    labels = list(df["label"])
-
-    id2str = {0: "non-offensive", 1: "offensive"}
-
-    device = "cuda" if torch.cuda.is_available() else "cpu"
-
+    Get prediction by given prompt
+    :param prompt_template: user input prompt
+    :param conversation: conversation object
+    :return: single prediction
+    """
     tokenizer = conversation.decoder.gpt_tokenizer
     model = conversation.decoder.gpt_model
 
-    tokenizer.pad_token = tokenizer.eos_token
-    model.config.pad_token_id = model.config.eos_token_id
+    input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids
 
-    predictions = []
-    dataset_name = conversation.describe.get_dataset_name()
-
-    model_name = conversation.decoder.parser_name
-    # if model_name == 'EleutherAI/gpt-neo-2.7B':
-    #     num_few_shot = 5
-    # elif model_name == "EleutherAI/gpt-j-6b":
-    #     num_few_shot = 15
-    # else:
-    #     raise NotImplementedError(f"Model {model_name} is unknown!")
-
-    for string in inputs:
-        prompt = ""
-        # for num in range(num_few_shot):
-        #     rand_num = random.randint(0, len(instances) - 1)
-        #
-        #     counter_0 = 0
-        #     counter_1 = 0
-        #     if counter_0 >= num_few_shot // 2:
-        #         while labels[rand_num] != 1:
-        #             rand_num = random.randint(0, len(instances) - 1)
-        #     elif counter_1 >= num_few_shot // 2:
-        #         while labels[rand_num] != 0:
-        #             rand_num = random.randint(0, len(instances) - 1)
-        #
-        #     prompt += f"Instance: {texts[rand_num]}\n"
-        #     prompt += f"Parsed: {id2str[labels[rand_num]]} [e]\n"
-        prompt += f"Instance: {string}\n"
-        prompt += "Parsed:"
-        torch.cuda.empty_cache()
-        input_ids = tokenizer(prompt, return_tensors="pt").input_ids
-        input_ids = input_ids.to(device)
-
-        parser = GuidedParser(GRAMMAR, tokenizer, model="gpt", eos_token=tokenizer.encode(" [e]")[-1])
-        guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
-
-        generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
-                                         pad_token_id=model.config.pad_token_id, eos_token_id=parser.eos_token)
-
-        decoded_generation = tokenizer.decode(generation[0])
-        try:
-            prediction = decoded_generation.split(prompt)[1].split("[e]")[0].strip()
-        except:
-            print(decoded_generation)
-            temp = decoded_generation[-17:].split("[e]")[0].strip()
-            if "non-offensive" in temp:
-                prediction = "non-offensive"
-            else:
-                prediction = "offensive"
-
-        predictions.append(prediction)
-
-    return predictions
-
-
-def prediction_with_id(model, data, conversation, text):
-    """Get the prediction of an instance with ID"""
-    return_s = ''
-
-    model_predictions = model.predict(data, text, conversation)
-
-    filter_string = gen_parse_op_text(conversation)
-
-    return_s += f"The instance with <b>{filter_string}</b> is predicted "
-    if conversation.class_names is None:
-        prediction_class = str(model_predictions[0])
-        return_s += f"<b>{prediction_class}</b>"
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        parser = GuidedParser(COVID_GRAMMAR, tokenizer, model="gpt", eos_token=tokenizer.encode(" [e]")[-1])
     else:
-        class_text = conversation.class_names[model_predictions[0]]
-        return_s += f"<span style=\"background-color: #6CB4EE\">{class_text}</span>."
+        # TODO
+        pass
+    guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
 
-    return_s += "<br>"
-    return return_s
+    generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
+                                     pad_token_id=model.config.pad_token_id, eos_token_id=parser.eos_token)
+
+    prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
+
+    return prediction
 
 
-def prediction_on_dataset(model, data, conversation, text):
-    """Get the predictions on multiple instances (entire dataset or subset of length > 1)"""
+def prediction_generation(data, conversation, _id, num_shot=3):
+    """
+    prediction generator
+    :param data: filtered data
+    :param conversation: conversation object
+    :param _id: id of instance or None (for custom input)
+    :param num_shot: number of demonstrations
+    :return: string for prediction operation
+    """
     return_s = ''
-    model_predictions = model.predict(data, text, conversation)
 
-    intro_text = get_parse_filter_text(conversation)
-    return_s += f"{intro_text} the model predicts:"
-    unique_preds = np.unique(model_predictions)
-    return_s += "<ul>"
-    for j, uniq_p in enumerate(unique_preds):
-        return_s += "<li>"
-        freq = np.sum(uniq_p == model_predictions) / len(model_predictions)
-        round_freq = str(round(freq * 100, conversation.rounding_precision))
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        claim = None
+        evidence = None
 
-        if conversation.class_names is None:
-            return_s += f"<b>class {uniq_p}</b>, {round_freq}%"
+        if _id is not None:
+            for i, feature_name in enumerate(data.columns):
+                if feature_name == "claims":
+                    claim = data[feature_name].values[0]
+                elif feature_name == "evidences":
+                    evidence = data[feature_name].values[0]
         else:
-            try:
-                class_text = conversation.class_names[uniq_p]
-            except KeyError:
-                class_text = uniq_p
-            return_s += f"<span style=\"background-color: #6CB4EE\">{class_text}</span>, {round_freq}%"
-        return_s += "</li>"
-    return_s += "</ul>"
+            # TODO: some processing here
+            claim, evidence = conversation.custom_input, conversation.custom_input
+
+        prompt_template = "Each 3 items in the following list contains the claims, evidence and prediction. Your task " \
+                          "is to predict the claims based on evidence as one of the labels: REFUTED, SUPPORTED.\n"
+
+        claims, evidences, labels = get_demonstrations(_id, num_shot, conversation.describe.get_dataset_name())
+
+        for i in range(num_shot):
+            prompt_template += f"claim: {claims[i]}\n"
+            prompt_template += f"evidence: {evidences[i]}\n"
+            prompt_template += f"label: {conversation.class_names[labels[i]]}\n"
+            prompt_template += "\n"
+
+        prompt_template += f"claim: {claim}\n"
+        prompt_template += f"evidence: {evidence}\n"
+        prompt_template += f"label: "
+    else:
+        # TODO
+        pass
+
+    print(prompt_template)
+
+    prediction = get_prediction_by_prompt(prompt_template, conversation)
+
+    if _id is not None:
+        filter_string = gen_parse_op_text(conversation)
+
+        return_s += f"The instance with <b>{filter_string}</b> is predicted as "
+    else:
+        return_s += f"Your input is: <b>{conversation.custom_input}</b>. The prediction is "
+    return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
 
     return_s += "<br>"
     return return_s
 
 
-@timeout(60)
 def predict_operation(conversation, parse_text, i, **kwargs):
     """The prediction operation."""
     if conversation.custom_input is not None and conversation.used is False:
-        predictions = prediction_with_custom_input(conversation)
+        # if custom input is available
+        return_s = prediction_generation(None, conversation, None)
+        return return_s, 1
 
-        if predictions is not None:
-            return_s = f"Your input is: <b>{conversation.custom_input}</b> <br>"
-            return_s += f"The prediction is <b>{predictions[0]}</b>"
-            return return_s, 1
-
-    model = conversation.get_var('model').contents
     data = conversation.temp_dataset.contents['X']
 
     if len(conversation.temp_dataset.contents['X']) == 0:
         return 'There are no instances that meet this description!', 0
 
-    text = handle_input(parse_text)
+    _id = handle_input(parse_text)
 
     if len(data) == 1:
         # `filter id and predict [E]`
-        return_s = prediction_with_id(model, data, conversation, text)
+        return_s = prediction_generation(data, conversation, _id)
     else:
-        # `predict [E]`
-        return_s = prediction_on_dataset(model, data, conversation, text)
-        #_, return_s = get_prediction_on_temp_dataset(conversation)
-
+        raise ValueError("Too many ids are given!")
     return return_s, 1

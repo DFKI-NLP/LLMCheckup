@@ -61,7 +61,7 @@ def show_operation(conversation, parse_text, i, n_features_to_show=float("+inf")
 
         for i, feature_name in enumerate(data.columns):
             feature_value = data[feature_name].values[0]
-            text = f"<br>{feature_name}<br>: {feature_value}<br>"
+            text = f"<b>{feature_name}</b>: {feature_value}<br>"
             if i < n_features_to_show:
                 return_string += text
             else:

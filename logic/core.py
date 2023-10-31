@@ -878,49 +878,26 @@ class ExplainBot:
             parsed_text = df_intent
             returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
-            # Parse user input into text abiding by formal grammar
-            if self.decoding_model_name == "adapters":
-                parse_tree = ""
-                if user_session_conversation.needs_clarification:
-                    user_session_conversation.needs_clarification = False
-                    if self.is_confirmed(text):
-                        parsed_text = user_session_conversation.get_last_parse()
-                        if len(parsed_text) > 0:
-                            parsed_text = parsed_text[-1]
-                    else:
-                        parse_tree, parsed_text, do_clarification, clarification_text = self.compute_parse_text_adapters(
-                            text)
-                else:
-                    parse_tree, parsed_text, do_clarification, clarification_text = self.compute_parse_text_adapters(text)
-                    if do_clarification:
-                        user_session_conversation.needs_clarification = True
-                        return (clarification_text)
-            elif "t5" not in self.decoding_model_name:
-                parse_tree, parsed_text = self.compute_parse_text(text)
+            parse_tree, parsed_text = self.compute_parse_text(text)
 
-                if self.decoding_model_name == "mistralai/Mistral-7B-v0.1" or self.decoding_model_name == "meta-llama/Llama-2-7b-chat-hf":
-                    ls = parsed_text.split(" ")
-                    for (idx, i) in enumerate(ls):
-                        if "<s>" in i:
-                            ls[idx] = i.split("<s>")[0]
-                    ls = [i for i in ls if i != '']
-                    parsed_text = " ".join(ls)
-                elif self.decoding_model_name == "llama":
-                    pass
-                else:
-                    pass
-
-                app.logger.info(f"parsed text: {parsed_text}")
+            if self.decoding_model_name == "mistralai/Mistral-7B-v0.1" or self.decoding_model_name == "meta-llama/Llama-2-7b-chat-hf":
+                ls = parsed_text.split(" ")
+                for (idx, i) in enumerate(ls):
+                    if "<s>" in i:
+                        ls[idx] = i.split("<s>")[0]
+                ls = [i for i in ls if i != '']
+                parsed_text = " ".join(ls)
+            elif self.decoding_model_name == "stable":
+                pass
             else:
-                parse_tree, parsed_text = self.compute_parse_text_t5(text)
+                raise NotImplementedError(f"{self.decoding_model_name} is not supported/implemented yet!")
 
-            if self.decoding_model_name == "adapters" and do_clarification:
-                returned_item = parsed_text
-            else:
-                # Run the action in the conversation corresponding to the formal grammar
-                user_session_conversation.needs_clarification = False
-                returned_item = run_action(
-                    user_session_conversation, parse_tree, parsed_text, self.simulation)
+            app.logger.info(f"parsed text: {parsed_text}")
+
+            # Run the action in the conversation corresponding to the formal grammar
+            user_session_conversation.needs_clarification = False
+            returned_item = run_action(
+                user_session_conversation, parse_tree, parsed_text, self.simulation)
          
         self.parsed_text = parsed_text
 

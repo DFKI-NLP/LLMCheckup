@@ -1,10 +1,6 @@
 import random
 
-import pandas as pd
-
-from actions.prediction.predict import prediction_with_custom_input
-from timeout import timeout
-import json
+from actions.prediction.predict import prediction_generation
 import pandas as pd
 
 
@@ -103,7 +99,7 @@ def rationalize_operation(conversation, parse_text, i, simulation, data_path="./
 
         if conversation.custom_input is not None:
             instance = conversation.custom_input
-            label = prediction_with_custom_input(conversation)[0]
+            label = prediction_generation(None, conversation, None)
             if label == "non-offensive":
                 label = 0
             else:
