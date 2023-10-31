@@ -28,7 +28,7 @@ ExplainBot.simulation = False
 
 # Prompt params
 Prompts.prompt_cache_size = 1_000_000
-Prompts.prompt_cache_location = "./cache/olid-prompts.pkl"
+Prompts.prompt_cache_location = "./cache/covid-prompts.pkl"
 Prompts.max_values_per_feature = 2
 Prompts.sentence_transformer_model_name = "all-mpnet-base-v2"
 Prompts.prompt_folder = "./prompts"
