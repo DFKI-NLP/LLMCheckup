@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>InterroLang</title>
+    <title>LLMCheckup</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
@@ -11,15 +11,128 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        /* Tooltip 容器 */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black; /* 悬停元素上显示点线 */
+        }
+
+        /* Tooltip 文本 */
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 120px;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* 定位 */
+            position: absolute;
+            z-index: 1;
+        }
+
+        /* 鼠标移动上去后显示提示框 */
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+        }
+    </style>
+    <style>
+        .mui-switch {
+            width: 52px;
+            height: 31px;
+            position: relative;
+            border: 1px solid #dfdfdf;
+            background-color: #fdfdfd;
+            box-shadow: #dfdfdf 0 0 0 0 inset;
+            border-radius: 20px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            background-clip: content-box;
+            display: inline-block;
+            -webkit-appearance: none;
+            user-select: none;
+            outline: none;
+        }
+
+        .mui-switch:before {
+            content: '';
+            width: 29px;
+            height: 29px;
+            position: absolute;
+            top: 0px;
+            left: 0;
+            border-radius: 20px;
+            border-top-left-radius: 20px;
+            border-top-right-radius: 20px;
+            border-bottom-left-radius: 20px;
+            border-bottom-right-radius: 20px;
+            background-color: #fff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+
+        .mui-switch:checked {
+            border-color: #64bd63;
+            box-shadow: #64bd63 0 0 0 16px inset;
+            background-color: #64bd63;
+        }
+
+        .mui-switch:checked:before {
+            left: 21px;
+        }
+
+        .mui-switch.mui-switch-animbg {
+            transition: background-color ease 0.4s;
+        }
+
+        .mui-switch.mui-switch-animbg:before {
+            transition: left 0.3s;
+        }
+
+        .mui-switch.mui-switch-animbg:checked {
+            box-shadow: #dfdfdf 0 0 0 0 inset;
+            background-color: #64bd63;
+            transition: border-color 0.4s, background-color ease 0.4s;
+        }
+
+        .mui-switch.mui-switch-animbg:checked:before {
+            transition: left 0.3s;
+        }
+
+        .mui-switch.mui-switch-anim {
+            transition: border cubic-bezier(0, 0, 0, 1) 0.4s, box-shadow cubic-bezier(0, 0, 0, 1) 0.4s;
+        }
+
+        .mui-switch.mui-switch-anim:before {
+            transition: left 0.3s;
+        }
+
+        .mui-switch.mui-switch-anim:checked {
+            box-shadow: #64bd63 0 0 0 16px inset;
+            background-color: #64bd63;
+            transition: border ease 0.4s, box-shadow ease 0.4s, background-color ease 1.2s;
+        }
+
+        .mui-switch.mui-switch-anim:checked:before {
+            transition: left 0.3s;
+        }
+    </style
 </head>
 
 <body>
+
 <messagebody>
     <!-- The text interaction part of the method -->
     <section class="ttm">
         <header class="ttm-header">
             <div class="ttm-header-title">
-                <img src="{{url_for('static', filename='images/logo.png')}}" style="width: 150px; height: 150px; align: center; margin: 5px">
+                <img src="{{url_for('static', filename='images/logo.png')}}"
+                     style="width: 150px; height: 150px; align: center; margin: 5px">
             </div>
             <div class="container">
                 <div class="row">
@@ -138,8 +251,8 @@
                 <option style="text-align:center;" value="2">Include</option>
             </select>
             <input onkeyup="checkSubmit(event)" rows="1" cols="50" type="text" class="ttm-input"
-                      id="textInput"
-                      placeholder="Enter your command! Use the ↑ arrow and ↓ arrow to cycle previous commands."></input>
+                   id="textInput"
+                   placeholder="Enter your command! Use the ↑ arrow and ↓ arrow to cycle previous commands."></input>
             <button type="submit" class="ttm-send-btn" id="ttm-send-btn-id">Send</button>
         </form>
         <span class="genOptions">👇Help me generate a question about...👇</span>
@@ -284,14 +397,20 @@
                                 Lets the model predict the <b>entire dataset</b> or any subset with <b>multiple instances</b>.
                             </span>
                         </div>
-{#                        <div class="tooltip-wrapper">#}
-{#                            <button id="pred_likelihood" class="idea-button" onclick="sampleLikelihood()">#}
-{#                                Likelihood#}
-{#                            </button>#}
-{#                            <span class="tooltip-text">#}
+                        {#
+                        <div class="tooltip-wrapper">#}
+                            {#
+                            <button id="pred_likelihood" class="idea-button" onclick="sampleLikelihood()">#}
+                                {# Likelihood#}
+                                {#
+                            </button>
+                            #}
+                            {# <span class="tooltip-text">#}
 {#                                For a <b>single example</b> (ID), gets the <b>probability</b> that the model predicts a certain <b>label</b>.#}
 {#                            </span>#}
-{#                        </div>#}
+                            {#
+                        </div>
+                        #}
                         <div class="tooltip-wrapper">
                             <button id="pred_score" class="idea-button" onclick="samplePerformance()">
                                 Performance
@@ -352,14 +471,20 @@
                                 Indicates which <b>tokens</b> for a <b>single example</b> (ID) are <b>most important</b>. Also prints a heatmap visualization.
                             </span>
                         </div>
-{#                        <div class="tooltip-wrapper">#}
-{#                            <button id="x_sentence" class="idea-button" onclick="sampleSentence()">#}
-{#                                Sentence-level feature importance#}
-{#                            </button>#}
-{#                            <span class="tooltip-text">#}
+                        {#
+                        <div class="tooltip-wrapper">#}
+                            {#
+                            <button id="x_sentence" class="idea-button" onclick="sampleSentence()">#}
+                                {# Sentence-level feature importance#}
+                                {#
+                            </button>
+                            #}
+                            {# <span class="tooltip-text">#}
 {#                                Indicates which <b>sentences</b> for a <b>single example</b> (ID) are <b>most important</b>.#}
 {#                            </span>#}
-{#                        </div>#}
+                            {#
+                        </div>
+                        #}
                         <div class="tooltip-wrapper">
                             <button id="x_global" class="idea-button" onclick="sampleImportant()">
                                 Global feature importance
@@ -398,14 +523,20 @@
                                 Generates a <b>modified</b> version of a given <b>single example</b> (ID) that <b>flips</b> the model's <b>prediction</b> from one label to another.
                             </span>
                         </div>
-{#                        <div class="tooltip-wrapper">#}
-{#                            <button id="ptb_adversarial" class="idea-button" onclick="sampleAdversarial()">#}
-{#                                Adversarial example#}
-{#                            </button>#}
-{#                            <span class="tooltip-text">#}
+                        {#
+                        <div class="tooltip-wrapper">#}
+                            {#
+                            <button id="ptb_adversarial" class="idea-button" onclick="sampleAdversarial()">#}
+                                {# Adversarial example#}
+                                {#
+                            </button>
+                            #}
+                            {# <span class="tooltip-text">#}
 {#                                Generates a <b>modified</b> version of a given <b>single example</b> (ID) that <b>flips</b> the model's <b>prediction</b> from correct to <b>wrong</b>.#}
 {#                            </span>#}
-{#                        </div>#}
+                            {#
+                        </div>
+                        #}
                         <div class="tooltip-wrapper">
                             <button id="ptb_augment" class="idea-button" onclick="sampleAugment()">
                                 Augment
@@ -422,26 +553,52 @@
 
     </section>
 
-    <section>
-        <!-- OLD DATASET VIEWER PLACEMENT -->
-        <!-- Displaying data -->
-        <!-- Referring jinja2 syntax -->
+
+    <section class="pins" id="my-pins">
+        <header class="pins-header">
+            <div class="pins-header-title">
+                Setting
+            </div>
+        </header>
+        <main class="pins-scroll">
+            <div class="single-select-checkbox">
+                <div>
+                    <img src="images/book.png" width="40px" height="40px">
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;" >Level of knowledge in XAI</h3>
+                </div>
+                <input type="radio" id="option1" name="options" value="Option 1">
+                <label for="option1" style="color: #579ffb">Beginner/Laypeople</label>
+                <br>
+                <input type="radio" id="option2" name="options" value="Option 2">
+                <label for="option2" style="color: #579ffb">With expertise</label>
+                <br>
+                <input type="radio" id="option3" name="options" value="Option 3" checked>
+                <label for="option3" style="color: #579ffb">Expert without need for assistance</label>
+                <i style="font-size:24px; color: white" class="fa" id="icon" title="Without tutorial">&#xf05a;</i>
+            </div>
+
+            <div style="margin-top: 50px">
+                <div>
+                    <img src="images/bulb.png" width="40px" height="40px" style="vertical-align:middle;">
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Theme changing</h3>
+                </div>
+                <label style="color: #64bd63; button: 5px" id="label4theme"><input class="mui-switch mui-switch-animbg"
+                                                                                   type="checkbox"
+                                                                                   id="theme_changing"
+                                                                                   onchange="change_theme(event)"></label>
+            </div>
+
+            <div style="margin-top: 50px">
+                <div>
+                    <img src="images/typewriter.png" width="40px" height="40px" style="vertical-align:middle;">
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom Input</h3>
+                </div>
+
+            </div>
+        </main>
     </section>
 
-    <!--        <section class="pins" id="my-pins">-->
-    <!--          <header class="pins-header">-->
-    <!--            <div class="pins-header-title">-->
-    <!--             Pins-->
-    <!--            </div>-->
-    <!--          </header>-->
-    <!--            <main class="pins-scroll"> &lt;!&ndash; pinned messages appear here &ndash;&gt;-->
-    <!--                <div class="pin left-msg">-->
-    <!--                  <div class="pin-bubble">-->
-    <!--                    <div class="pin-text">Pin messages and they will appear here!</div>-->
-    <!--                  </div>-->
-    <!--                </div>-->
-    <!--            </main>-->
-    <!--        </section>-->
+
 </messagebody>
 </body>
 </html>
@@ -466,6 +623,19 @@
 </script>
 
 <script>
+    function change_theme() {
+
+        if (document.getElementById("theme_changing").checked) {
+            document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "white";
+            document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "white";
+            document.getElementById("icon").style.color = "";
+        } else {
+            document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "";
+            document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "";
+            document.getElementById("icon").style.color = "white";
+        }
+    }
+
     function disableBtn(flag) {
         if (!flag) {
             document.getElementById("custom_input_btns").style.display = "table-row";
@@ -477,7 +647,7 @@
     function checkSubmit(e) {
         if (e && e.keyCode === 13) {
             document.getElementById("ttm-send-btn-id").click();
-             document.getElementById("textInput").value = "";
+            document.getElementById("textInput").value = "";
         }
     }
 
@@ -525,15 +695,15 @@
         doSample("augment");
     }
 
-    function sampleCustomInputRationalization(){
+    function sampleCustomInputRationalization() {
         doSample("c_rationale");
     }
 
-    function sampleCustomInputCounterfactual(){
+    function sampleCustomInputCounterfactual() {
         doSample("c_cfe");
     }
 
-    function sampleCustomInputDataAugmentation(){
+    function sampleCustomInputDataAugmentation() {
         doSample("c_data");
     }
 
@@ -733,40 +903,40 @@
     }
 
     function corr_answeredNo(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
 
         const feedback = `MessageID: ${logText} || Feedback: Correctness Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
 
     function help_answeredNo(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
 
         const feedback = `MessageID: ${logText} || Feedback: Helpfulness Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
 
     function sat_answeredNo(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
 
         const feedback = `MessageID: ${logText} || Feedback: Satisfaction Negative || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
 
     function corr_answeredYes(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
         const feedback = `MessageID: ${logText} || Feedback: Correctness Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
 
     function help_answeredYes(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
         const feedback = `MessageID: ${logText} || Feedback: Helpfulness Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
 
     function sat_answeredYes(logText) {
-        let answer = document.getElementById("msg-text-"+counter).innerText;
+        let answer = document.getElementById("msg-text-" + counter).innerText;
         const feedback = `MessageID: ${logText} || Feedback: Satisfaction Positive || Username: {{ currentUserId }} || Answer: ${answer}`;
         logFeedback(feedback);
     }
@@ -866,7 +1036,7 @@
             document.addEventListener("click", doReact);
 
             function doReact(event) {
-                for(var i = 1; i <= counter; i++) {
+                for (var i = 1; i <= counter; i++) {
                     let feedback = document.querySelector("div.feedback-opener-" + i);
                     let isClickInside = feedback.contains(event.target);
                     if (isClickInside) {
