@@ -1,11 +1,8 @@
 """
 This file is needed for creating a conversation object for testing.
 """
-from explained_models.ModelABC.DANetwork import DANetwork
 from logic.conversation import Conversation
-from logic.core import load_hf_model
 from logic.dataset_description import DatasetDescription
-from logic.decoder import Decoder
 from logic.utils import read_and_format_data
 
 TEXT = "<!DOCTYPE html><html><head></head><body>"

@@ -13,14 +13,12 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <style>
-        /* Tooltip 容器 */
         .tooltip {
             position: relative;
             display: inline-block;
-            border-bottom: 1px dotted black; /* 悬停元素上显示点线 */
+            border-bottom: 1px dotted black;
         }
 
-        /* Tooltip 文本 */
         .tooltip .tooltiptext {
             visibility: hidden;
             width: 120px;
@@ -30,12 +28,10 @@
             padding: 5px 0;
             border-radius: 6px;
 
-            /* 定位 */
             position: absolute;
             z-index: 1;
         }
 
-        /* 鼠标移动上去后显示提示框 */
         .tooltip:hover .tooltiptext {
             visibility: visible;
         }
