@@ -12,30 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-    <style>
-        .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted black;
-        }
 
-        .tooltip .tooltiptext {
-            visibility: hidden;
-            width: 120px;
-            background-color: black;
-            color: #fff;
-            text-align: center;
-            padding: 5px 0;
-            border-radius: 6px;
-
-            position: absolute;
-            z-index: 1;
-        }
-
-        .tooltip:hover .tooltiptext {
-            visibility: visible;
-        }
-    </style>
     <style>
         .mui-switch {
             width: 52px;
@@ -133,40 +110,7 @@
             <div class="container">
                 <div class="row">
                     <div id="accordion" class="col-8">
-                        <div class="card">
-                            <div class="card-header" id="headingOne">
-                                <h5 class="mb-0">
-                                    <button class="btn btn-link" data-toggle="collapse" data-target="#collapseOne"
-                                            aria-expanded="true" aria-controls="collapseOne" style="color: red">
-                                        ⚠️ Instructions:
-                                    </button>
-                                </h5>
-                            </div>
 
-                            <div id="collapseOne" class="collapse" aria-labelledby="headingOne"
-                                 data-parent="#accordion">
-                                <div class="card-body">
-                                    <div class="panel panel-danger">
-                                        <div class="panel-heading"><b>"Input"</b>: enter <b>"quit"</b> can delete the
-                                            entered
-                                            custom
-                                            input if
-                                            available.
-                                        </div>
-                                        <div class="panel-heading"><b>"Custom input"</b>: add your own input instance.
-                                            For
-                                            BoolQ,
-                                            please
-                                            use
-                                            <b>"|"</b> to separate question and passage!
-                                        </div>
-                                        <div class="panel-heading"><b>"Include"</b>: enter a search term to filter the
-                                            dataset.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                     <div class="col-4">
                         <button style="float: right; font-size: 20px;" class="opendv">Dataset Viewer</button>
@@ -560,7 +504,8 @@
             <div class="single-select-checkbox">
                 <div>
                     <img src="../static/images/book.png" width="40px" height="40px">
-                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;" >Level of knowledge in XAI</h3>
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;">Level of knowledge in
+                        XAI</h3>
                 </div>
                 <input type="radio" id="option1" name="options" value="Option 1">
                 <label for="option1" style="color: #579ffb">Beginner/Laypeople</label>
@@ -576,7 +521,8 @@
             <div style="margin-top: 50px">
                 <div>
                     <img src="../static/images/bulb.png" width="40px" height="40px" style="vertical-align:middle;">
-                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Theme changing</h3>
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Theme
+                        changing</h3>
                 </div>
                 <label style="color: #64bd63; button: 5px" id="label4theme"><input class="mui-switch mui-switch-animbg"
                                                                                    type="checkbox"
@@ -586,10 +532,23 @@
 
             <div style="margin-top: 50px">
                 <div>
-                    <img src="../static/images/typewriter.png" width="40px" height="40px" style="vertical-align:middle;">
-                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom Input</h3>
+                    <img src="../static/images/typewriter.png" width="40px" height="40px"
+                         style="vertical-align:middle;">
+                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom
+                        Input</h3>
                 </div>
 
+                <div>
+                    <form>
+                        <label id="input_1" style="display: inline-block; text-align: right; color: white; width: 100px">Claim:</label>
+                        <input type="text" id="fname" name="firstname" placeholder="Your claim.." >
+                        <br>
+                        <label id="input_2" style="display: inline-block; text-align: right; color: white; width: 100px">Evidence:</label>
+                        <input type="text" id="lname" name="lastname" placeholder="Your evidence..">
+
+                    </form>
+                </div>
+<!--                <button type="file" style="font-size:24px">Button <i class="fa fa-upload"></i></button>-->
             </div>
         </main>
     </section>
@@ -625,10 +584,14 @@
             document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "white";
             document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "white";
             document.getElementById("icon").style.color = "";
+            document.getElementById("input_1").style.color = "";
+            document.getElementById("input_2").style.color = "";
         } else {
             document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "";
             document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "";
             document.getElementById("icon").style.color = "white";
+            document.getElementById("input_1").style.color = "white";
+            document.getElementById("input_2").style.color = "white";
         }
     }
 
