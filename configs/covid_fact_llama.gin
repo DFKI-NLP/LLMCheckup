@@ -37,7 +37,7 @@ Prompts.num_prompt_template = 7
 Conversation.class_names = {1: "REFUTED", 0: "SUPPORTED"}
 
 # Dataset description
-DatasetDescription.dataset_objective = "predict to answer REFUTED/non-SUPPORTED regarding claims based on evidences"
+DatasetDescription.dataset_objective = "predict to answer REFUTED/SUPPORTED regarding claims based on evidences"
 DatasetDescription.dataset_description = "Fact Extraction and Verification of Real-World Claims on COVID-19 Pandemic"
 DatasetDescription.model_description = "Llama-2-7b-chat-hf"
 

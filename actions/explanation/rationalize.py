@@ -39,9 +39,8 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
         prompt_template += f"evidence: {evidence}"
 
         # zero-shot prompting
-        if "Llama" in conversation.decoder.parser_name:
-            prompt_template += f"Based on evidence, the prediction of the claim is {prediction.lower()}. Show me the " \
-                               f"reasoning."
+        prompt_template += f"Based on evidence, the prediction of the claim is {prediction.lower()}. Explain why it " \
+                           f"is predicted as {prediction.lower()}. Let's think step by step."
     else:
         # TODO
         pass
