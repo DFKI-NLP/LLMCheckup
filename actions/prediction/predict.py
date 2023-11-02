@@ -155,8 +155,7 @@ def prediction_generation(data, conversation, _id, num_shot=3):
                 elif feature_name == "evidences":
                     evidence = data[feature_name].values[0]
         else:
-            # TODO: some processing here
-            claim, evidence = conversation.custom_input, conversation.custom_input
+            claim, evidence = conversation.custom_input['first_input'], conversation.custom_input['second_input']
 
         prompt_template = "Each 3 items in the following list contains the claims, evidence and prediction. Your task " \
                           "is to predict the claims based on evidence as one of the labels: REFUTED, SUPPORTED.\n"

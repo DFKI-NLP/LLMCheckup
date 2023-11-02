@@ -175,21 +175,21 @@
                                 onclick="reset_temp_dataset()">Reset the temp
                             dataset
                         </button>
-                        <button type="button" class="btn btn-primary" id="includeBtn" style="width: 200px"
-                                onclick="applyInclude()">Apply filtering on dataset
-                        </button>
+                        <!--                        <button type="button" class="btn btn-primary" id="includeBtn" style="width: 200px"-->
+                        <!--                                onclick="applyInclude()">Apply filtering on dataset-->
+                        <!--                        </button>-->
                     </div>
                 </div>
             </div>
         </main>
 
         <form class="ttm-inputarea">
-            <select id="input_source" class="form-select"
-                    style="width: 150px; text-align:center; font-family: Calibri; margin-right: 10px">
-                <option style="text-align:center; " value="0">Input</option>
-                <option style="text-align:center;" value="1">Custom input</option>
-                <option style="text-align:center;" value="2">Include</option>
-            </select>
+            <!--            <select id="input_source" class="form-select"-->
+            <!--                    style="width: 150px; text-align:center; font-family: Calibri; margin-right: 10px">-->
+            <!--                <option style="text-align:center; " value="0">Input</option>-->
+            <!--                <option style="text-align:center;" value="1">Custom input</option>-->
+            <!--                <option style="text-align:center;" value="2">Include</option>-->
+            <!--            </select>-->
             <input onkeyup="checkSubmit(event)" rows="1" cols="50" type="text" class="ttm-input"
                    id="textInput"
                    placeholder="Enter your command! Use the ↑ arrow and ↓ arrow to cycle previous commands."></input>
@@ -520,36 +520,49 @@
 
             <div style="margin-top: 50px">
                 <div>
-                    <img src="../static/images/bulb.png" width="40px" height="40px" style="vertical-align:middle;">
-                    <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Theme
-                        changing</h3>
-                </div>
-                <label style="color: #64bd63; button: 5px" id="label4theme"><input class="mui-switch mui-switch-animbg"
-                                                                                   type="checkbox"
-                                                                                   id="theme_changing"
-                                                                                   onchange="change_theme(event)"></label>
-            </div>
-
-            <div style="margin-top: 50px">
-                <div>
                     <img src="../static/images/typewriter.png" width="40px" height="40px"
                          style="vertical-align:middle;">
                     <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom
                         Input</h3>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="For ECQA, please enter options splitted by ','">&#xf05a;</i>
                 </div>
 
                 <div>
                     <form>
-                        <label id="input_1" style="display: inline-block; text-align: right; color: white; width: 100px">Claim:</label>
-                        <input type="text" id="fname" name="firstname" placeholder="Your claim.." >
+                        <label id="input_1"
+                               style="display: inline-block; text-align: right; color: white; width: 100px">Claim:</label>
+                        <input type="text" id="first_text" placeholder="Your claim..">
                         <br>
-                        <label id="input_2" style="display: inline-block; text-align: right; color: white; width: 100px">Evidence:</label>
-                        <input type="text" id="lname" name="lastname" placeholder="Your evidence..">
+                        <label id="input_2"
+                               style="display: inline-block; text-align: right; color: white; width: 100px">Evidence:</label>
+                        <input type="text" id="second_text" placeholder="Your evidence..">
+                        <br>
+                        <button type="submit" class="ttm-send-btn" id="custom-input-send-btn-id" style="width: 100px"
+                                onclick="submit_custom_input()">Send
+                        </button>
 
+                        <button type="submit" class="ttm-send-btn" id="custom-input-delete-btn-id"
+                                onclick="delete_custom_input()" style="background-color: red; width: 100px">Delete
+                        </button>
                     </form>
                 </div>
-<!--                <button type="file" style="font-size:24px">Button <i class="fa fa-upload"></i></button>-->
+
+                <div style="margin-top: 50px">
+                    <div>
+                        <img src="../static/images/bulb.png" width="40px" height="40px" style="vertical-align:middle;">
+                        <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">
+                            Theme
+                            changing</h3>
+                    </div>
+                    <label style="color: #64bd63; button: 5px" id="label4theme"><input
+                            class="mui-switch mui-switch-animbg"
+                            type="checkbox"
+                            id="theme_changing"
+                            onchange="change_theme(event)"></label>
+                </div>
             </div>
+
         </main>
     </section>
 
@@ -578,6 +591,42 @@
 </script>
 
 <script>
+
+    function delete_custom_input() {
+        event.preventDefault();
+        addToChat("right", "Asking for deleting the custom input...", "");
+        insertLoadingDots();
+        ttmChat.scrollTop += 200;
+        ttmInput.value = "";
+
+        let level = get_level();
+
+        botResponse("quit", '2', level);
+        changeBtnColor(false);
+        disableBtn(true);
+    }
+
+    function submit_custom_input() {
+        const text1 = document.getElementById("first_text").value;
+        const text2 = document.getElementById("second_text").value;
+
+        if (text1 != "" && text2 != "") {
+            event.preventDefault();
+            addToChat("right", text1 + "\n" + text2, "");
+            insertLoadingDots();
+            ttmChat.scrollTop += 200;
+            ttmInput.value = "";
+
+            let level = get_level()
+
+            botResponse({"first_input": text1, "second_input": text2}, '1', level);
+            changeBtnColor(true);
+            disableBtn(false);
+        } else {
+            alert("At least one of the input fields are empty!")
+        }
+    }
+
     function change_theme() {
 
         if (document.getElementById("theme_changing").checked) {
@@ -610,13 +659,6 @@
         }
     }
 
-    function applyInclude() {
-        let filter_string = document.getElementById("filterdataInput").value;
-        document.getElementById("textInput").value = filter_string;
-
-        document.getElementById("input_source").value = "2";
-        document.getElementById("ttm-send-btn-id").click();
-    }
 
     function doSample(rawAction) {
         let username = '{{ currentUserId }}'
@@ -664,14 +706,6 @@
 
     function sampleCustomInputDataAugmentation() {
         doSample("c_data");
-    }
-
-    function sampleCustomInputFeatureImportanceOnSentenceLevel() {
-        doSample("custom_input_feature_importance_on_sentence_level");
-    }
-
-    function sampleCustomInputFeatureImportance() {
-        doSample("custom_input_feature_importance");
     }
 
     function sampleCustomInputPrediction() {
@@ -804,6 +838,16 @@
 
 </script>
 <script>
+    function get_level(){
+        if (document.getElementById("option1").checked){
+            return "beginner";
+        } else if (document.getElementById("option2").checked){
+            return "expertise";
+        } else {
+            return "expert";
+        }
+    }
+
     var counter = 0;
 
     const ttmForm = get(".ttm-inputarea");
@@ -815,9 +859,7 @@
 
     // text box command
     ttmForm.addEventListener("submit", event => {
-        var idx = document.getElementById("input_source").selectedIndex;
         const msgText = ttmInput.value;
-        let custom_input;
 
         event.preventDefault();
 
@@ -827,24 +869,10 @@
         ttmChat.scrollTop += 200;
         ttmInput.value = "";
 
-        const selectBox = document.getElementById("input_source");
+        let level = get_level();
 
-        if (document.getElementsByTagName("option")[idx].value === '0') {
-            botResponse(msgText, custom_input = '0');
+        botResponse(msgText, '0', level);
 
-            if (msgText == "quit") {
-                changeBtnColor(false);
-                disableBtn(true);
-            }
-        } else if (document.getElementsByTagName("option")[idx].value === '1') {
-            selectBox.selectedIndex = "0";
-            botResponse(msgText, custom_input = '1');
-            changeBtnColor(true);
-            disableBtn(false);
-        } else {
-            selectBox.selectedIndex = "0";
-            botResponse(msgText, custom_input = '2');
-        }
     });
 
     function changeBtnColor(flag) {
@@ -1024,10 +1052,11 @@
         ttmChat.scrollTop += 500;
     }
 
-    function botResponse(rawText, custom_input) {
+    function botResponse(rawText, custom_input, level) {
 
-        let dataPackage = {userInput: rawText, userName: "{{ currentUserId }}", custom_input: custom_input}
-        dataPackage = JSON.stringify(dataPackage)
+        let dataPackage = {userInput: rawText, userName: "{{ currentUserId }}", custom_input: custom_input, qalevel: level}
+        dataPackage = JSON.stringify(dataPackage);
+        console.log(dataPackage);
 
         const result = $.ajax({
             type: 'POST',
@@ -1040,9 +1069,12 @@
                 const splitData = data.split('<>')
                 const msgText = splitData[0];
                 const logText = splitData[1];
+                console.log(data)
+                console.log(msgText)
                 deleteLoadingDots();
                 addToChat("left", msgText, logText);
             }
+
         });
     }
 

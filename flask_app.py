@@ -181,6 +181,11 @@ def get_bot_response():
 
         try:
             data = json.loads(request.data)
+
+            # Change level for QA
+            level = data["qalevel"]
+            BOT.conversation.qa_level = level
+
             if data['custom_input'] == '0':
                 user_text = data["userInput"]
                 BOT.user_text = user_text
@@ -196,43 +201,24 @@ def get_bot_response():
             elif data['custom_input'] == '1':
                 user_text = data["userInput"]
 
-                if BOT.conversation.describe.get_dataset_name() == 'boolq':
-                    if "|" in user_text:
-                        idx = user_text.find("|")
-
-                        if idx == 0:
-                            return "No question is given!"
-                        elif idx == len(user_text) - 1:
-                            return "No passage is given!"
-                        elif user_text[idx - 1] == ' ' and user_text[idx + 1] == '':
-                            new_str = user_text.replace('|', '')
-                            custom_input = ''
-                            for i in range(len(new_str)):
-                                if i != idx - 1:
-                                    custom_input = custom_input + new_str[i]
-                        else:
-                            custom_input = user_text.replace('|', '')
-                            user_text = custom_input
-                    else:
-                        return "The separate character '|' is not included!"
-
                 BOT.conversation.custom_input = user_text
                 BOT.conversation.used = False
                 app.logger.info(f"[CUSTOM INPUT] {user_text}")
                 response = "You have given a custom input. " \
-                           "Please enter a follow-up question or prompt! <br><br>" \
-                           "<b>[ATTENTION]</b> The entered custom input will be kept until you PRESS <b>'quit'</b>" \
-                           + "<>" + "Entered custom input: " + user_text
+                           "Please enter a follow-up question or prompt! <br><br>" + "Entered custom input: <br>"
+                if BOT.conversation.describe.get_dataset_name() == "covid_fact":
+                    response += f"Claim: {user_text['first_input']} <br>Evidence: {user_text['second_input']} <>"
+                else:
+                    # TODO
+                    pass
+
                 BOT.conversation.store_last_parse(f"custominput '{user_text}'")
             else:
-                user_text = data["userInput"]
-                BOT.conversation.include_word = user_text
-                app.logger.info(f"[INCLUDE_WORD]: {user_text}")
-                response = f"You have given the include-filter string <b>{user_text}</b>. " \
-                           "Please enter a follow-up question or prompt related to include operation! <br>"
+                app.logger.info(f"[CUSTOM INPUT] Custom input is removed!")
+                BOT.conversation.custom_input = None
+                BOT.conversation.used = True
+                response = "Entered custom input is now removed! <>"
 
-                # Update the conversation with the parse
-                BOT.conversation.store_last_parse(f"includes '{user_text}'")
         except TimeOutError:
             response = "Sorry! The response time is more than 60s!"
         except Exception as ext:

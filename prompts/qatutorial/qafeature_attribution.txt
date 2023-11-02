@@ -1,0 +1,23 @@
+User: What's feature attribution in NLP domain?
+Parsed: qatutorial qafa [E]
+
+User: Feature attribution in NLP?
+Parsed: qatutorial qafa [E]
+
+User: What's feature importance?
+Parsed: qatutorial qafa [E]
+
+User: How does feature attribution work in the NLP domain?
+Parsed: qatutorial qafa [E]
+
+User: Can you explain feature attribution in the context of NLP?
+Parsed: qatutorial qafa [E]
+
+User: What role does feature attribution play in NLP?
+Parsed: qatutorial qafa [E]
+
+User: Could you provide an overview of feature attribution in the NLP domain?
+Parsed: qatutorial qafa [E]
+
+User: What are the applications of feature attribution in NLP?
+Parsed: qatutorial qafa [E]

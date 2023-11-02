@@ -1,0 +1,17 @@
+User: What's semantic similarity?
+Parsed: qatutorial qasim [E]
+
+User: Definition of semantic similarity?
+Parsed: qatutorial qasim [E]
+
+User: Explain me semantic similarity.
+Parsed: qatutorial qasim [E]
+
+User: Can you provide an overview of semantic similarity in the context of NLP?
+Parsed: qatutorial qasim [E]
+
+User: How is semantic similarity measured in NLP tasks?
+Parsed: qatutorial qasim [E]
+
+Can you provide a concise definition of semantic similarity in the context of NLP?
+Parsed: qatutorial qasim [E]

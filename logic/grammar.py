@@ -8,7 +8,7 @@ or: " or"
 followup: " followup"
 done: " [e]"
 
-operation: augment | cfe | data | define | featureattribution | filter | function | globaltopk | includes | keywords | label | labelfilter | lastturnfilter | lastturnop | mistakes | modeldescription | ndatapoints | predfilter | predictions | randomprediction | rationalize | score | show | similarity | whatami
+operation: augment | cfe | data | define | featureattribution | filter | function | globaltopk | includes | keywords | label | labelfilter | lastturnfilter | lastturnop | mistakes | modeldescription | ndatapoints | predfilter | predictions | qatutorial | randomprediction | rationalize | score | show | similarity | whatami
 
 augment: " augment"
 
@@ -21,12 +21,11 @@ dataop: " data"
 define: defineword allfeaturenames
 defineword: " define"
 
-featureattribution: featureattributionword (allfeaturenames | allfeaturesword | topk | attrsentence)
+featureattribution: featureattributionword (allfeaturenames | allfeaturesword | topk )
 featureattributionword: " nlpattribute"
 allfeaturesword: " all"
 topk: topkword ( {topkvalues} )
 topkword: " topk"
-attrsentence: " sentence" 
 
 filter: filterword featuretype
 filterword: " filter"
@@ -62,6 +61,10 @@ ndatapoints: " countdata"
 predfilter: " predictionfilter" class
 
 predictions: " predict"
+
+qatutorial : tutorial qaops
+tutorial: " qatutorial"
+qaops: " qacfe" | " qafa" | "qada" | "qarationale" | "qasim"
 
 randomprediction: " randompredict"
 

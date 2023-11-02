@@ -1,0 +1,17 @@
+User: What's rationalization in NLP?
+Parsed: qatutorial qarationale [E]
+
+User: How does rationalization works?
+Parsed: qatutorial qarationale [E]
+
+User: What are generated rationales used for?
+Parsed: qatutorial qarationale [E]
+
+User: Can you provide an explanation of rationalization in the NLP domain?
+Parsed: qatutorial qarationale [E]
+
+User: Explain the rationalization
+Parsed: qatutorial qarationale [E]
+
+User: What are the main objectives of rationalization in NLP research?
+Parsed: qatutorial qarationale [E]

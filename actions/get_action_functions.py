@@ -29,6 +29,7 @@ from actions.prediction.predict import predict_operation
 from actions.prediction.prediction_likelihood import predict_likelihood
 from actions.prediction.random_prediction import random_prediction
 from actions.prediction.score import score_operation
+from actions.qatutorial.tutorial import tutorial_operation
 
 
 def get_all_action_functions_map():
@@ -60,6 +61,7 @@ def get_all_action_functions_map():
         'nlpattribute': feature_importance_operation,
         'important': global_top_k,
         'cfe': counterfactuals_operation,
-        'augment': augment_operation
+        'augment': augment_operation,
+        'qatutorial': tutorial_operation
     }
     return actions

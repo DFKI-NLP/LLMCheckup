@@ -1,0 +1,17 @@
+User: What's counterfactual generation in NLP?
+Parsed: qatutorial qacfe [E]
+
+User: How does counterfactual works?
+Parsed: qatutorial qacfe [E]
+
+User: What is counterfactual?
+Parsed: qatutorial qacfe [E]
+
+User: Can you explain the concept of counterfactual generation in NLP?
+Parsed: qatutorial qacfe [E]
+
+User: What are the key aspects of counterfactual generation in the NLP domain?
+Parsed: qatutorial qacfe [E]
+
+User: How does counterfactual reasoning work in NLP applications?
+Parsed: qatutorial qacfe [E]

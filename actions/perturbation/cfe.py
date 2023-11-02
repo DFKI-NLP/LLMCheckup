@@ -7,8 +7,7 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
     if conversation.custom_input is not None and conversation.used is False:
         if conversation.describe.get_dataset_name() == "covid_fact":
-            # TODO
-            claim, evidence = conversation.custom_input, conversation.custom_input
+            claim, evidence = conversation.custom_input["first_input"], conversation.custom_input["second_input"]
         else:
             # TODO
             pass

@@ -23,8 +23,7 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
     # Get claims and evidences
     if conversation.describe.get_dataset_name() == "covid_fact":
         if conversation.custom_input is None and conversation.used is False:
-            # TODO processing
-            claims, evidence = conversation.custom_input, conversation.custom_input
+            claim, evidence = conversation.custom_input['first_input'], conversation.custom_input['second_input']
             _, prediction = prediction_generation(None, conversation, None)
         else:
             for i, feature_name in enumerate(data.columns):

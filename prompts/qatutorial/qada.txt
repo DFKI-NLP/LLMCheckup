@@ -1,0 +1,14 @@
+User: What's data augmentation?
+Parsed: qatutorial qada [E]
+
+User: How does data augmentation works?
+Parsed: qatutorial qada [E]
+
+User: Explain me data augmentation
+Parsed: qatutorial qada [E]
+
+User: Can you provide an overview of data augmentation in the context of NLP?
+Parsed: qatutorial qada [E]
+
+User: What are the main objectives of using data augmentation techniques in NLP?
+Parsed: qatutorial qada [E]
