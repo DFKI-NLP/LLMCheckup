@@ -172,12 +172,34 @@
         </main>
 
         <form class="ttm-inputarea">
-            <!--            <select id="input_source" class="form-select"-->
-            <!--                    style="width: 150px; text-align:center; font-family: Calibri; margin-right: 10px">-->
-            <!--                <option style="text-align:center; " value="0">Input</option>-->
-            <!--                <option style="text-align:center;" value="1">Custom input</option>-->
-            <!--                <option style="text-align:center;" value="2">Include</option>-->
-            <!--            </select>-->
+            <div style="text-align:center;">
+                <input type="file" id="fileupload-btn" name="file-upload" accept=".jpg,.jpeg,.png" hidden>
+                <label for="fileupload-btn" style="background-color: lightslategrey;
+              color: white;
+              /*display:inline-block;*/
+              /*float: left;*/
+              padding: 10px;
+              /*margin-right: 10px;*/
+              font-family: sans-serif;
+              border-radius: 0.3rem;
+              cursor: pointer;
+              font-size: small;
+              margin-top: 1rem;">Choose File</label>
+
+                <!--                <input type="audio" id="actual-btn" name="file-upload" accept=".jpg,.jpeg,.png" hidden>-->
+                <!--                <label for="actual-btn" style="background-color: lightslategrey;-->
+                <!--              color: white;-->
+                <!--              /*display:inline-block;*/-->
+                <!--              float: left;-->
+                <!--              /*padding: 10px;*/-->
+                <!--              margin-right: 10px;-->
+                <!--              font-family: sans-serif;-->
+                <!--              border-radius: 0.3rem;-->
+                <!--              cursor: pointer;-->
+                <!--              font-size: small;-->
+                <!--              margin-top: 1rem;">Choose File</label>-->
+            </div>
+
             <input onkeyup="checkSubmit(event)" rows="1" cols="50" type="text" class="ttm-input"
                    id="textInput"
                    placeholder="Enter your command! Use the ↑ arrow and ↓ arrow to cycle previous commands."></input>
@@ -239,7 +261,7 @@
                     <div class="buttons" style="display: table-cell;">
                         <div class="tooltip-wrapper">
                             <button id="abt_self" class="idea-button" onclick="sampleAboutSelf()">
-                                SGD
+                                LLMCheckup
                             </button>
                         </div>
                         <div class="tooltip-wrapper">
@@ -580,6 +602,47 @@
 
 <script>
 
+    document.getElementById("fileupload-btn").addEventListener('change', function () {
+
+        // Get the file input element
+        var fileInput = document.getElementById('fileupload-btn');
+
+        // Create a new FormData object
+        var formData = new FormData();
+
+        // Add the file to the FormData object
+        formData.append('image', fileInput.files[0]);
+
+        event.preventDefault();
+        addToChat("right", "Asking for uploading images...", "");
+        insertLoadingDots();
+        ttmChat.scrollTop += 200;
+        ttmInput.value = "";
+
+        // Send the FormData object to the backend using AJAX
+        $.ajax({
+            url: "{{ url_for('.get_bot_response') }}",
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                console.log('Image uploaded successfully!');
+
+                const splitData = data.split('<>')
+                const msgText = splitData[0];
+                const logText = splitData[1];
+                console.log(data)
+                console.log(msgText)
+                deleteLoadingDots();
+                addToChat("left", msgText, logText);
+            },
+            error: function (error) {
+                console.log('Error uploading image:', error);
+            }
+        });
+    });
+
     function delete_custom_input() {
         event.preventDefault();
         addToChat("right", "Asking for deleting the custom input...", "");
@@ -598,7 +661,7 @@
         const text1 = document.getElementById("first_text").value;
         const text2 = document.getElementById("second_text").value;
 
-        if (text1 != "" && text2 != "") {
+        if (text1 !== "" && text2 !== "") {
             event.preventDefault();
             addToChat("right", text1 + "\n" + text2, "");
             insertLoadingDots();
@@ -826,10 +889,10 @@
 
 </script>
 <script>
-    function get_level(){
-        if (document.getElementById("option1").checked){
+    function get_level() {
+        if (document.getElementById("option1").checked) {
             return "beginner";
-        } else if (document.getElementById("option2").checked){
+        } else if (document.getElementById("option2").checked) {
             return "expertise";
         } else {
             return "expert";
@@ -1042,7 +1105,12 @@
 
     function botResponse(rawText, custom_input, level) {
 
-        let dataPackage = {userInput: rawText, userName: "{{ currentUserId }}", custom_input: custom_input, qalevel: level}
+        let dataPackage = {
+            userInput: rawText,
+            userName: "{{ currentUserId }}",
+            custom_input: custom_input,
+            qalevel: level
+        }
         dataPackage = JSON.stringify(dataPackage);
         console.log(dataPackage);
 

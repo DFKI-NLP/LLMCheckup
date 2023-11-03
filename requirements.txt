@@ -98,3 +98,4 @@ wordninja==2.0.0
 git+https://github.com/boudinfl/pke.git
 petals
 git@github.com:inseq-team/inseq.git
+easyocr

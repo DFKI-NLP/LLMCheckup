@@ -10,6 +10,7 @@ import os
 import traceback
 import random
 
+import torch.cuda
 from flask import Flask
 from flask import render_template, request, Blueprint
 from logging.config import dictConfig
@@ -17,6 +18,8 @@ from logging.config import dictConfig
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
 from timeout import TimeOutError
+
+import easyocr
 
 my_uuid = uuid.uuid4()
 
@@ -180,47 +183,84 @@ def get_bot_response():
     if request.method == "POST":
 
         try:
-            data = json.loads(request.data)
+            flag = None
 
-            # Change level for QA
-            level = data["qalevel"]
-            BOT.conversation.qa_level = level
+            try:
+                # Receive the uploaded image
+                img = request.files["image"]
+                flag = "img"
+            except:
+                try:
+                    data = json.loads(request.data)
+                    flag = "text"
+                except:
+                    pass
+            if flag == "img":
+                # Save image locally
+                img.save(f"./{img.filename}")
+                response = f"<b>{img.filename}</b> is uploaded successfully! <>"
+                app.logger.info(f"Image uploaded!")
 
-            if data['custom_input'] == '0':
-                user_text = data["userInput"]
-                BOT.user_text = user_text
-                conversation = BOT.conversation
-                if user_text == "quit":
-                    app.logger.info("remove the custom input!")
-                    response = f"<b>{conversation.custom_input}</b> is not available anymore!"
-                    conversation.custom_input = None
-                    conversation.used = True
+                if torch.cuda.is_available():
+                    gpu = True
                 else:
+                    gpu = False
+                reader = easyocr.Reader(['en'], gpu=gpu)  # this needs to run only once to load the model into memory
+
+                result = reader.readtext(f"{img.filename}", detail=0)
+
+                if len(result) < 2:
+                    raise ValueError("Only one sentence is recognized. Please try other images!")
+                else:
+                    temp = {'first_input': result[0], 'second_input': result[1]}
+
+                    BOT.conversation.custom_input = temp
+                    BOT.conversation.used = False
+                    app.logger.info(f"[CUSTOM INPUT] {temp}")
+                    response = "You have given a custom input via uploaded image. " \
+                               "Please enter a follow-up question or prompt! <br><br>" + "Entered custom input: <br>"
+                    if BOT.conversation.describe.get_dataset_name() == "covid_fact":
+                        response += f"Claim: {temp['first_input']} <br>Evidence: {temp['second_input']} <>"
+                    else:
+                        # TODO
+                        pass
+
+            elif flag == "text":
+                # Change level for QA
+                level = data["qalevel"]
+                BOT.conversation.qa_level = level
+
+                # Normal user input
+                if data['custom_input'] == '0':
+                    user_text = data["userInput"]
+                    BOT.user_text = user_text
+                    conversation = BOT.conversation
+
                     app.logger.info("generating the bot response")
                     response = BOT.update_state(user_text, conversation)
-            elif data['custom_input'] == '1':
-                user_text = data["userInput"]
+                elif data['custom_input'] == '1':
+                    # custom input
+                    user_text = data["userInput"]
 
-                BOT.conversation.custom_input = user_text
-                BOT.conversation.used = False
-                app.logger.info(f"[CUSTOM INPUT] {user_text}")
-                response = "You have given a custom input. " \
-                           "Please enter a follow-up question or prompt! <br><br>" + "Entered custom input: <br>"
-                if BOT.conversation.describe.get_dataset_name() == "covid_fact":
-                    response += f"Claim: {user_text['first_input']} <br>Evidence: {user_text['second_input']} <>"
+                    BOT.conversation.custom_input = user_text
+                    BOT.conversation.used = False
+                    app.logger.info(f"[CUSTOM INPUT] {user_text}")
+                    response = "You have given a custom input. " \
+                               "Please enter a follow-up question or prompt! <br><br>" + "Entered custom input: <br>"
+                    if BOT.conversation.describe.get_dataset_name() == "covid_fact":
+                        response += f"Claim: {user_text['first_input']} <br>Evidence: {user_text['second_input']} <>"
+                    else:
+                        # TODO
+                        pass
+
+                    BOT.conversation.store_last_parse(f"custominput '{user_text}'")
                 else:
-                    # TODO
-                    pass
+                    # custom input removal
+                    app.logger.info(f"[CUSTOM INPUT] Custom input is removed!")
+                    BOT.conversation.custom_input = None
+                    BOT.conversation.used = True
+                    response = "Entered custom input is now removed! <>"
 
-                BOT.conversation.store_last_parse(f"custominput '{user_text}'")
-            else:
-                app.logger.info(f"[CUSTOM INPUT] Custom input is removed!")
-                BOT.conversation.custom_input = None
-                BOT.conversation.used = True
-                response = "Entered custom input is now removed! <>"
-
-        except TimeOutError:
-            response = "Sorry! The response time is more than 60s!"
         except Exception as ext:
             app.logger.info(f"Traceback getting bot response: {traceback.format_exc()}")
             app.logger.info(f"Exception getting bot response: {ext}")
