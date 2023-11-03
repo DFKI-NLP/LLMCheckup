@@ -100,6 +100,7 @@ class Conversation:
 
         self.default_metric = default_metric
 
+        # Custom input
         self.custom_input = None
         self.used = True
 
@@ -108,9 +109,9 @@ class Conversation:
         self.text_fields = text_fields
         self.needs_clarification = False
 
-        self.prompts = None
-
+        # QA tutorial
         self.qa_level = "expert"
+        self.user_input = None
 
     def get_feature_definition(self, feature_name):
         """Gets semantic feature definition."""

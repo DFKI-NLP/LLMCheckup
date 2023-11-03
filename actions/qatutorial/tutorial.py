@@ -3,8 +3,20 @@ def tutorial_operation(conversation, parse_text, i, **kwargs):
 
     return_s = ""
     if level == "beginner":
-        # TODO
-        pass
+        user_input = conversation.user_input
+        prompt_template = f"As a beginner in NLP, could you answer me the following question in details: {user_input}"
+        print(prompt_template)
+
+        model = conversation.decoder.gpt_model
+        tokenizer = conversation.decoder.gpt_tokenizer
+
+        input_ids = tokenizer(prompt_template, return_tensors='pt')
+        output = model.generate(**input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40,
+                                max_new_tokens=128)
+        result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
+
+        return_s += result
+
     else:
         # For people with expertise and expert, just return tooltips
         ops = parse_text[i + 1]
