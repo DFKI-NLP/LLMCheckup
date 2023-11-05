@@ -1,5 +1,6 @@
 """The app main."""
 import uuid
+import wave
 from datetime import datetime
 from os.path import isfile, join
 
@@ -17,7 +18,7 @@ from logging.config import dictConfig
 
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
-from timeout import TimeOutError
+import speech_recognition as sr
 
 import easyocr
 
@@ -184,21 +185,32 @@ def get_bot_response():
 
         try:
             flag = None
+            audio = None
 
             try:
                 # Receive the uploaded image
                 img = request.files["image"]
                 flag = "img"
             except:
-                try:
-                    data = json.loads(request.data)
-                    flag = "text"
-                except:
-                    pass
+                pass
+            try:
+                data = json.loads(request.data)
+                flag = "text"
+            except:
+                pass
+
+            try:
+                audio = request.files["audio"]
+                # print(audio)
+                # print(audio.stream.read())
+                # print(audio.read())
+                flag = "audio"
+            except:
+                pass
+
             if flag == "img":
                 # Save image locally
                 img.save(f"./{img.filename}")
-                response = f"<b>{img.filename}</b> is uploaded successfully! <>"
                 app.logger.info(f"Image uploaded!")
 
                 if torch.cuda.is_available():
@@ -224,7 +236,28 @@ def get_bot_response():
                     else:
                         # TODO
                         pass
+            elif flag == "audio":
 
+                # if audio_flag:
+                print(audio.stream.read())
+                data = audio.stream.read()
+                audio.save("./recored_audio_2.ogg")
+                audio_file = wave.open('recored_audio_1.ogg', 'wb')
+                audio_file.setparams((2, 2, 44100, 16, 'NONE', 'not compressed'))
+                # audio_file.writeframes(audio)
+                audio_file.writeframes(data)
+                # audio_file.writeframes(request.get_data())
+                audio_file.close()
+
+                r = sr.Recognizer()
+                with sr.WavFile("./recored_audio_1.wav") as source:
+                    audio = r.record(source)  # read the entire audio file
+
+                try:
+                    print(r.recognize_vosk(audio))
+                except sr.UnknownValueError:
+                    print("Could not understand audio")
+                response = "Audio recorded!"
             elif flag == "text":
                 # Change level for QA
                 level = data["qalevel"]
@@ -325,4 +358,4 @@ if __name__ != '__main__':
 if __name__ == "__main__":
     # clean up storage file on restart
     app.logger.info(f"Launching app from config: {args.config}")
-    app.run(debug=False, port=4455, host='0.0.0.0')
+    app.run(debug=False, port=4455, host="localhost")
