@@ -39,7 +39,7 @@ networkx==2.7.1
 nlpaug==1.1.10
 nltk==3.7
 numba==0.56.0
-numpy==1.21.6
+numpy==1.22.4
 openai==0.27.4
 OpenAttack==2.1.1
 openpyxl==3.0.9
@@ -48,7 +48,7 @@ pandas==1.4.3
 pandas-stubs==1.2.0.53
 pathtools==0.1.2
 patsy==0.5.2
-Pillow==9.0.1
+Pillow==9.3.0
 git+https://github.com/boudinfl/pke.git
 pluggy==1.0.0
 promise==2.3
@@ -98,4 +98,5 @@ wordninja==2.0.0
 git+https://github.com/boudinfl/pke.git
 petals
 git@github.com:inseq-team/inseq.git
-easyocr
+easyocr==1.7.1
+SpeechRecognition
