@@ -10,16 +10,21 @@ import os
 import traceback
 import random
 
-import torch.cuda
 from flask import Flask
 from flask import render_template, request, Blueprint
 from logging.config import dictConfig
 
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
-from timeout import TimeOutError
 
 import easyocr
+import numpy as np
+from scipy.io.wavfile import read
+import librosa
+import soundfile as sf
+
+import torch
+from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 
 my_uuid = uuid.uuid4()
 
@@ -181,24 +186,35 @@ def sample_prompt():
 def get_bot_response():
     """Load the box response."""
     if request.method == "POST":
-
+        response = ""
         try:
             flag = None
+            audio = None
 
             try:
                 # Receive the uploaded image
                 img = request.files["image"]
                 flag = "img"
             except:
-                try:
-                    data = json.loads(request.data)
-                    flag = "text"
-                except:
-                    pass
+                pass
+            try:
+                data = json.loads(request.data)
+                flag = "text"
+            except:
+                pass
+
+            try:
+
+                audio = request.files["audio"]
+                audio.save("recored_audio_1.wav")
+
+                flag = "audio"
+            except:
+                pass
+
             if flag == "img":
                 # Save image locally
                 img.save(f"./{img.filename}")
-                response = f"<b>{img.filename}</b> is uploaded successfully! <>"
                 app.logger.info(f"Image uploaded!")
 
                 if torch.cuda.is_available():
@@ -224,7 +240,23 @@ def get_bot_response():
                     else:
                         # TODO
                         pass
+            elif flag == "audio":
 
+                model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
+                processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
+
+                x, _ = librosa.load('./recored_audio_1.wav', sr=16000)
+                sf.write('tmp_1.wav', x, 16000)
+
+                a = read("tmp_1.wav")
+                temp = np.array(a[1], dtype=np.float)
+                inputs = processor(temp, sampling_rate=16000, return_tensors="pt")
+                generated_ids = model.generate(inputs["input_features"], attention_mask=inputs["attention_mask"])
+
+                transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
+                print(transcription[0])
+
+                response = "Audio recorded!"
             elif flag == "text":
                 # Change level for QA
                 level = data["qalevel"]
@@ -325,4 +357,4 @@ if __name__ != '__main__':
 if __name__ == "__main__":
     # clean up storage file on restart
     app.logger.info(f"Launching app from config: {args.config}")
-    app.run(debug=False, port=4455, host='0.0.0.0')
+    app.run(debug=False, port=4455, host="localhost")

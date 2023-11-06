@@ -186,19 +186,9 @@
               font-size: small;
               margin-top: 1rem;">Choose File</label>
 
-                <!--                <input type="audio" id="actual-btn" name="file-upload" accept=".jpg,.jpeg,.png" hidden>-->
-                <!--                <label for="actual-btn" style="background-color: lightslategrey;-->
-                <!--              color: white;-->
-                <!--              /*display:inline-block;*/-->
-                <!--              float: left;-->
-                <!--              /*padding: 10px;*/-->
-                <!--              margin-right: 10px;-->
-                <!--              font-family: sans-serif;-->
-                <!--              border-radius: 0.3rem;-->
-                <!--              cursor: pointer;-->
-                <!--              font-size: small;-->
-                <!--              margin-top: 1rem;">Choose File</label>-->
+                <button id="record-btn">Record Audio</button>
             </div>
+
 
             <input onkeyup="checkSubmit(event)" rows="1" cols="50" type="text" class="ttm-input"
                    id="textInput"
@@ -582,6 +572,71 @@
 </html>
 
 <script>
+    let recorder;
+    let audioChunks = [];
+
+    function startRecording() {
+        navigator.mediaDevices.getUserMedia({audio: true})
+            .then(stream => {
+                recorder = new MediaRecorder(stream);
+                recorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                recorder.onstop = () => {
+                    // ; codecs=vorbis
+                    const blob = new Blob(audioChunks, {type: 'audio/wav'});
+                    const formData = new FormData();
+                    formData.append('audio', blob, "recording.wav");
+
+                    event.preventDefault();
+                    addToChat("right", "Asking for recording...", "");
+                    insertLoadingDots();
+                    ttmChat.scrollTop += 200;
+                    ttmInput.value = "";
+
+                    // Send the FormData object to the backend using AJAX
+                    $.ajax({
+                        url: "{{ url_for('.get_bot_response') }}",
+                        type: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (data) {
+                            console.log('Recorded successfully!');
+
+                            const splitData = data.split('<>')
+                            const msgText = splitData[0];
+                            const logText = splitData[1];
+                            console.log(data)
+                            console.log(msgText)
+                            deleteLoadingDots();
+                            addToChat("left", msgText, logText);
+                        },
+                        error: function (error) {
+                            console.log('Error uploading image:', error);
+                        }
+                    });
+                };
+                recorder.start();
+            })
+            .catch(error => console.error('Error accessing microphone:', error));
+    }
+
+    document.getElementById('record-btn').addEventListener('click', () => {
+        if (recorder) {
+            recorder.stop();
+            console.log("stop");
+            recorder = undefined;
+        } else {
+            startRecording();
+            console.log(recorder);
+            console.log("recording");
+        }
+    });
+
+</script>
+
+<script>
     $('.opendv').click(function (e) {
         var chatWidth = $('.ttm-chat').width();
         if ($('.slideSideways').is(':visible')) {
@@ -623,7 +678,7 @@
         $.ajax({
             url: "{{ url_for('.get_bot_response') }}",
             type: 'POST',
-            data: formData,
+            body: formData,
             processData: false,
             contentType: false,
             success: function (data) {

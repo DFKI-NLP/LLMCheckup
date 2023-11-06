@@ -99,4 +99,5 @@ git+https://github.com/boudinfl/pke.git
 petals
 git@github.com:inseq-team/inseq.git
 easyocr==1.7.1
-SpeechRecognition
+librosa==0.10.1
+soundfile==0.12.1
