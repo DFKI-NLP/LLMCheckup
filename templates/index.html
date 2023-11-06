@@ -584,9 +584,9 @@
                 };
                 recorder.onstop = () => {
                     // ; codecs=vorbis
-                    const blob = new Blob(audioChunks, {type: 'audio/ogg'});
+                    const blob = new Blob(audioChunks, {type: 'audio/wav'});
                     const formData = new FormData();
-                    formData.append('audio', blob);
+                    formData.append('audio', blob, "recording.wav");
 
                     event.preventDefault();
                     addToChat("right", "Asking for recording...", "");
@@ -678,7 +678,7 @@
         $.ajax({
             url: "{{ url_for('.get_bot_response') }}",
             type: 'POST',
-            data: formData,
+            body: formData,
             processData: false,
             contentType: false,
             success: function (data) {

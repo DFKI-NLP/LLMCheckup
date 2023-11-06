@@ -1,6 +1,5 @@
 """The app main."""
 import uuid
-import wave
 from datetime import datetime
 from os.path import isfile, join
 
@@ -11,16 +10,21 @@ import os
 import traceback
 import random
 
-import torch.cuda
 from flask import Flask
 from flask import render_template, request, Blueprint
 from logging.config import dictConfig
 
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
-import speech_recognition as sr
 
 import easyocr
+import numpy as np
+from scipy.io.wavfile import read
+import librosa
+import soundfile as sf
+
+import torch
+from transformers import Speech2TextProcessor, Speech2TextForConditionalGeneration
 
 my_uuid = uuid.uuid4()
 
@@ -182,7 +186,7 @@ def sample_prompt():
 def get_bot_response():
     """Load the box response."""
     if request.method == "POST":
-
+        response = ""
         try:
             flag = None
             audio = None
@@ -200,10 +204,10 @@ def get_bot_response():
                 pass
 
             try:
+
                 audio = request.files["audio"]
-                # print(audio)
-                # print(audio.stream.read())
-                # print(audio.read())
+                audio.save("recored_audio_1.wav")
+
                 flag = "audio"
             except:
                 pass
@@ -238,25 +242,20 @@ def get_bot_response():
                         pass
             elif flag == "audio":
 
-                # if audio_flag:
-                print(audio.stream.read())
-                data = audio.stream.read()
-                audio.save("./recored_audio_2.ogg")
-                audio_file = wave.open('recored_audio_1.ogg', 'wb')
-                audio_file.setparams((2, 2, 44100, 16, 'NONE', 'not compressed'))
-                # audio_file.writeframes(audio)
-                audio_file.writeframes(data)
-                # audio_file.writeframes(request.get_data())
-                audio_file.close()
+                model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
+                processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
-                r = sr.Recognizer()
-                with sr.WavFile("./recored_audio_1.wav") as source:
-                    audio = r.record(source)  # read the entire audio file
+                x, _ = librosa.load('./recored_audio_1.wav', sr=16000)
+                sf.write('tmp_1.wav', x, 16000)
 
-                try:
-                    print(r.recognize_vosk(audio))
-                except sr.UnknownValueError:
-                    print("Could not understand audio")
+                a = read("tmp_1.wav")
+                temp = np.array(a[1], dtype=np.float)
+                inputs = processor(temp, sampling_rate=16000, return_tensors="pt")
+                generated_ids = model.generate(inputs["input_features"], attention_mask=inputs["attention_mask"])
+
+                transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
+                print(transcription[0])
+
                 response = "Audio recorded!"
             elif flag == "text":
                 # Change level for QA
