@@ -1,5 +1,5 @@
+import inseq
 import json
-
 import numpy as np
 
 
@@ -97,7 +97,7 @@ def get_visualization(attr, topk, original_text):
     return return_s
 
 
-def feature_importance_operation(conversation, parse_text, i, **kwargs):
+def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str, int):
     """
     feature attribution operation
     Args:
@@ -116,27 +116,76 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs):
     id_list, topk = handle_input(parse_text)
 
     if topk is None:
-        topk = 5
+        topk = 5  # TODO: Currently unused
 
     model = conversation.decoder.gpt_model
-    tokenizer = conversation.decoder.gpt_tokenizer
 
-    model_name = conversation.decoder.parser_name
-    if model_name == 'EleutherAI/gpt-neo-2.7B':
-        fileObject = open("./cache/gpt-neo-2.7b_feature_attribution.json", "r")
-    elif model_name == "EleutherAI/gpt-j-6b":
-        fileObject = open("./cache/gpt-j-6b_feature_attribution.json", "r")
-    else:
-        raise NotImplementedError(f"Model {model_name} is unknown!")
+    inseq_model = inseq.load_model(
+        model,
+        "input_x_gradient",  # TODO: Allow different choices of attribution_method
+        device=str(conversation.decoder.gpt_model.device),  # Use same device as already loaded GPT model
+    )
 
-    jsonContent = fileObject.read()
-    json_list = json.loads(jsonContent)
+    # COVID-Fact dataset processing
+    # TODO: Allow other datasets that don't have "evidences" and "claims"
+    dataset = conversation.temp_dataset.contents["X"]
+    evidences = dataset["evidences"].item()
+    claims = dataset["claims"].item()
 
-    return_s = ""
-    for _id in id_list:
-        attribution = json_list[_id]["attribution"]
-        texts = json_list[_id]["text"]
-        decoded_text = [tokenizer.convert_tokens_to_string(text) for text in texts]
-        return_s += get_visualization(attribution, topk, decoded_text)
-        return_s += "<br><br>"
+    # TODO: Import prompt from some central prompts file which are also used in prediction
+    input_text = (f"Your task is to predict the veracity of the claim based on the evidence. \n"
+                  f"Evidence: '{evidences}' \n"
+                  f"Claim: '{claims}' \n"
+                  f"Please provide your answer as one of the labels: Refuted or Supported. \n"
+                  f"Veracity prediction: ")
+    tokenized_input_text = conversation.decoder.gpt_tokenizer(input_text)
+    tokenized_length = len(tokenized_input_text.encodings[0].ids)
+
+    # Attribute text
+    out = inseq_model.attribute(
+        input_texts=input_text,
+        n_steps=1,
+        return_convergence_delta=True,
+        step_scores=["probability"],  # TODO: Check if necessary
+        show_progress=True,  # TODO: Check if necessary
+        generation_args={"max_length": tokenized_length + 5},  # Dirty solution: Constrain to 5 new tokens
+    )
+
+    out_agg = out.aggregate(inseq.data.aggregator.SubwordAggregator)
+
+    # TODO: Check if "Supported" or "Refuted" is the first token
+    # Extract 1D heatmap (attributions for first token)
+    final_agg = out_agg[0].aggregate()
+    first_token_attributions = final_agg.target_attributions[:, 0]
+
+    # TODO: Possibly reduce to tokens in "claim" and "evidence" (exclude the prompt)
+
+    # Get HTML visualization from Inseq
+    heatmap_viz = out_agg.show(return_html=True).split("<html>")[1].split("</html>")[0]
+
+    def k_highest_indices(lst, k):
+        # Create a list of tuples (value, index)
+        indexed_lst = list(enumerate(lst))
+        # Sort the list by the values in descending order
+        sorted_lst = sorted(indexed_lst, key=lambda x: x[1], reverse=True)
+        # Extract the first k indices
+        highest_indices = [index for index, value in sorted_lst[:k]]
+        return highest_indices
+
+    topk_tokens = [final_agg.target[i].token for i in k_highest_indices(first_token_attributions, topk)]
+
+    # TODO: Find sensible verbalization
+    return_s = f"Top {topk} token(s):<br>"
+    for i in topk_tokens:
+        if i == "<s>":  # This token causes strikethrough text in HTML! 🤨
+            i = "< s >"
+        return_s += f"<b>{i}</b><br>"
+
+    return_s += "<details><summary>"
+    return_s += "The visualization: "
+    return_s += "</summary>"
+    return_s += heatmap_viz
+    return_s += "</details><br>"
+
     return return_s, 1
+
