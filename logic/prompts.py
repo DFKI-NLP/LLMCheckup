@@ -4,6 +4,8 @@ This class controls the prompt generation, embedding, and finding
 nearest neighbors.
 """
 import copy
+import random
+
 import gin
 import numpy as np
 import os
@@ -749,6 +751,24 @@ class Prompts:
 
         app.logger.info(f'Selected prompts {selected_prompts}')
 
+        parsed_text = []
+        counter_dict = {"nlpattribute": 0, "augment": 0, "rationalize": 0, "cfe": 0, "similar": 0}
+
+        for item in selected_prompts:
+            single_text = item.split("\n")[1].split("parsed: ")[1]
+            for i in counter_dict.keys():
+                if i in single_text:
+                    counter_dict[i] += 1
+            parsed_text.append(single_text)
+
+        keys = [k for k, v in counter_dict.items() if v == max(counter_dict.values())]
+
+        if len(keys) >= 1:
+            key = keys[random.randint(0, len(keys) - 1)]
+            exp_flag = True
+        else:
+            exp_flag = False
+
         # Format query
         if len(selected_prompts) > 0:
             joined_prompts = '\n\n'.join(selected_prompts)
@@ -756,7 +776,28 @@ class Prompts:
         else:
             joined_prompts = ""
 
-        joined_prompts += f'User: {query}\nParsed:'
+        if exp_flag:
+            key2file = {"nlpattribute": "qafeature_attribution", "augment": "qada", "rationalize": "qarationale", "cfe": "qacfe", "similar": "qasim"}
+            f = open(f"./prompts/qatutorial/{key2file[key]}.txt", "r")
+            ls = []
+            while True:
+                content = f.readline()
+                if not content:
+                    break
+                ls.append(content)
+            f.close()
+            extra_promtp4qa = ls[:9]
+            joined_prompts += "".join(extra_promtp4qa)
+
+            joined_prompts += f"User: {query}\n"
+            joined_prompts += "In this query, what did the user ask about?\n"
+            joined_prompts += f"(a) Ask for {key}\n"
+            joined_prompts += f"(b) Ask for qa tutorial parsed as qatutorial\nTake a deep breath and work on this " \
+                              f"step by step.\n"
+            joined_prompts += "Parsed:"
+            app.logger.info(joined_prompts)
+        else:
+            joined_prompts += f'User: {query}\nParsed:'
         joined_prompts = joined_prompts.lower()
         joined_prompts = joined_prompts.replace("user:", "input:")
 

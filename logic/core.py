@@ -167,7 +167,7 @@ class ExplainBot:
                                      "optimizer": ["optimizer"], "task": ["task", "function"],
                                      "model_name": ["name", "call"], "model_summary": ["summary", "overview"]}
 
-        self.st_model = SentenceTransformer('all-MiniLM-L6-v2')
+        self.st_model = SentenceTransformer("all-mpnet-base-v2")
         confirm = ["Yes", "Of course", "I agree", "Correct", "Yeah", "Right", "That's what I meant", "Indeed",
                    "Exactly", "True"]
         disconfirm = ["No", "Nope", "Sorry, no", "I think there is some misunderstanding", "Not right", "Incorrect",
