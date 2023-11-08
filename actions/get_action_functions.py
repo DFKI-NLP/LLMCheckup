@@ -26,7 +26,6 @@ from actions.perturbation.augment import augment_operation
 from actions.perturbation.cfe import counterfactuals_operation
 from actions.prediction.mistakes import show_mistakes_operation
 from actions.prediction.predict import predict_operation
-from actions.prediction.prediction_likelihood import predict_likelihood
 from actions.prediction.random_prediction import random_prediction
 from actions.prediction.score import score_operation
 from actions.qatutorial.tutorial import tutorial_operation
@@ -46,7 +45,6 @@ def get_all_action_functions_map():
         'keywords': keyword_operation,
         'followup': followup_operation,
         'show': show_operation,
-        'likelihood': predict_likelihood,
         'model': model_operation,
         'function': function_operation,
         'score': score_operation,

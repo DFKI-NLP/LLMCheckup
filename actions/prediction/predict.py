@@ -6,7 +6,6 @@ import random
 import pandas as pd
 
 from actions.prediction.predict_grammar import COVID_GRAMMAR
-from actions.util_functions import gen_parse_op_text
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
 
 
@@ -180,11 +179,20 @@ def prediction_generation(data, conversation, _id, num_shot=3):
     prediction = get_prediction_by_prompt(prompt_template, conversation)
 
     if _id is not None:
-        filter_string = gen_parse_op_text(conversation)
+        filter_string = f"<b>id equal to {_id}</b>"
 
-        return_s += f"The instance with <b>{filter_string}</b> is predicted as "
+        return_s += f"The instance with <b>{filter_string}</b>:<br>"
     else:
-        return_s += f"Your input is: <b>{conversation.custom_input}</b>. The prediction is "
+        return_s += "The custom input prediction: <br>"
+
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        return_s += f"<b>Claim:</b> {claim}<br>"
+        return_s += f"<b>Evidence:</b> {evidence}<br>"
+        return_s += "<b>Prediction:</b> "
+    else:
+        # TODO
+        pass
+
     return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
 
     return_s += "<br>"
