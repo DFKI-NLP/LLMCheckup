@@ -260,7 +260,11 @@ def get_bot_response():
             elif flag == "text":
                 # Change level for QA
                 level = data["qalevel"]
+                prompt_type = data["prompt_type"]
+
                 BOT.conversation.qa_level = level
+                BOT.conversation.prompt_type = prompt_type
+                app.logger.info(f"Prompt type: {prompt_type}")
 
                 # Normal user input
                 if data['custom_input'] == '0':

@@ -11,7 +11,6 @@ from actions.metadata.model import model_operation
 from actions.metadata.show_data import show_operation
 from actions.prediction.mistakes import show_mistakes_operation
 from actions.prediction.predict import predict_operation
-from actions.prediction.prediction_likelihood import predict_likelihood
 from actions.prediction.score import score_operation
 
 
@@ -52,7 +51,6 @@ def last_turn_operation(conversation, parse_text, i, **kwargs):
         'followup': followup_operation,
         #'important': important_operation,
         'show': show_operation,
-        'likelihood': predict_likelihood,
         'model': model_operation,
         'function': function_operation,
         'score': score_operation,

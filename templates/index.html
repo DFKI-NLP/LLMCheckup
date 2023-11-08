@@ -548,6 +548,45 @@
                     </form>
                 </div>
 
+                <div class="single-select-checkbox" style="margin-top: 50px">
+                    <div>
+                        <img src="../static/images/pen.png" width="40px" height="40px">
+                        <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;">Prompt modification</h3>
+                        <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="Enter/select prompt that will be appended in the original prompt">&#xf05a;</i>
+                    </div>
+                    <input type="radio" id="p_option1" name="options" value="Option 1" checked>
+                    <label for="p_option1" style="color: #579ffb">No additional prompt</label>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="The original designed prompt will be used">&#xf05a;</i>
+                    <br>
+
+                    <input type="radio" id="p_option2" name="options" value="Option 2">
+                    <label for="p_option2" style="color: #579ffb">Zero-shot CoT</label>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="Additional prompt: &quot;Let's think step by step&quot;"\>&#xf05a;</i>
+                    <br>
+
+                    <input type="radio" id="p_option3" name="options" value="Option 3">
+                    <label for="p_option3" style="color: #579ffb">Plan and Solve</label>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="Additional prompt: &quot;Let's first understand the problem and devise a plan to solve the problem. Then let's carry out the plan and solve the problem step by step&quot;">&#xf05a;</i>
+
+                    <br>
+                    <input type="radio" id="p_option4" name="options" value="Option 4">
+                    <label for="p_option4" style="color: #579ffb">Optimization by Prompting (OPRO)</label>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="Additional prompt: &quot;Take a deep breath and work on this problem step-by-step&quot;">&#xf05a;</i>
+
+                    <br>
+                    <input type="radio" id="p_option5" name="options" value="Option 5">
+                    <input id="custom_prompt_input" for="p_option5" placeholder="additional prompt..."/>
+                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                       title="Additional prompt: &quot;Take a deep breath and work on this problem step-by-step&quot;">&#xf05a;</i>
+
+                </div>
+
+
                 <div style="margin-top: 50px">
                     <div>
                         <img src="../static/images/bulb.png" width="40px" height="40px" style="vertical-align:middle;">
@@ -706,8 +745,9 @@
         ttmInput.value = "";
 
         let level = get_level();
+        let prompt = get_prompt_type()
 
-        botResponse("quit", '2', level);
+        botResponse("quit", '2', level, prompt);
         changeBtnColor(false);
         disableBtn(true);
     }
@@ -724,8 +764,9 @@
             ttmInput.value = "";
 
             let level = get_level()
+            let prompt = get_prompt_type()
 
-            botResponse({"first_input": text1, "second_input": text2}, '1', level);
+            botResponse({"first_input": text1, "second_input": text2}, '1', level, prompt);
             changeBtnColor(true);
             disableBtn(false);
         } else {
@@ -944,6 +985,20 @@
 
 </script>
 <script>
+    function get_prompt_type(){
+        if (document.getElementById("p_option1").checked){
+            return "none";
+        } else if (document.getElementById("p_option2").checked) {
+            return "zero_shot";
+        } else if (document.getElementById("p_option3").checked){
+            return "plan_and_solve"
+        } else if (document.getElementById("p_option4").checked){
+            return "opro";
+        } else {
+            return document.getElementById("custom_prompt_input").value;
+        }
+    }
+
     function get_level() {
         if (document.getElementById("option1").checked) {
             return "beginner";
@@ -976,8 +1031,9 @@
         ttmInput.value = "";
 
         let level = get_level();
+        let prompt = get_prompt_type();
 
-        botResponse(msgText, '0', level);
+        botResponse(msgText, '0', level, prompt);
 
     });
 
@@ -1158,13 +1214,14 @@
         ttmChat.scrollTop += 500;
     }
 
-    function botResponse(rawText, custom_input, level) {
+    function botResponse(rawText, custom_input, level, prompt) {
 
         let dataPackage = {
             userInput: rawText,
             userName: "{{ currentUserId }}",
             custom_input: custom_input,
-            qalevel: level
+            qalevel: level,
+            prompt_type: prompt
         }
         dataPackage = JSON.stringify(dataPackage);
         console.log(dataPackage);
