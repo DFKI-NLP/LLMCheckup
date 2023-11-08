@@ -96,8 +96,9 @@ Werkzeug==2.0.3
 word2number==1.1
 wordninja==2.0.0
 git+https://github.com/boudinfl/pke.git
-petals
-git@github.com:inseq-team/inseq.git
+petals==2.2.0
 easyocr==1.7.1
 librosa==0.10.1
 soundfile==0.12.1
+git+https://github.com/inseq-team/inseq.git
+
