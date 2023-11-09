@@ -5,6 +5,7 @@ supported, such as fine-tuned t5 models, few-shot gpt-j models, and KNN.
 """
 import gin
 from transformers import AutoModelForCausalLM, AutoTokenizer
+from petals import AutoDistributedModelForCausalLM
 import torch
 
 @gin.configurable
@@ -67,7 +68,35 @@ class Decoder:
         if no_init:
             return
 
-        if "Llama" in parsing_model_name or "Mistral" in parsing_model_name:
+        if "petals-team" in parsing_model_name:
+            """p2p models from petals-team"""
+            self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
+            self.gpt_model = AutoDistributedModelForCausalLM.from_pretrained(parsing_model_name)
+            self.gpt_parser_initialized = True
+
+            from parsing.gpt.few_shot_inference import get_few_shot_predict_f
+            predict_f = get_few_shot_predict_f(model=self.gpt_model,
+                                               tokenizer=self.gpt_tokenizer,
+                                               use_guided_decoding=self.use_guided_dec)
+
+            def complete(prompt, grammar):
+                return predict_f(text=prompt, grammar=grammar)
+        elif "GPTQ" in parsing_model_name:
+            """GPTQ quantized model"""
+            self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
+            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, torch_dtype=torch.float16, device_map="auto")
+            self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
+            self.gpt_parser_initialized = True
+
+            from parsing.gpt.few_shot_inference import get_few_shot_predict_f
+            predict_f = get_few_shot_predict_f(model=self.gpt_model,
+                                               tokenizer=self.gpt_tokenizer,
+                                               use_guided_decoding=self.use_guided_dec)
+
+            def complete(prompt, grammar):
+                return predict_f(text=prompt, grammar=grammar)
+        elif "Llama" in parsing_model_name or "Mistral" in parsing_model_name:
+            """original model"""
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
                 self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)
@@ -75,21 +104,12 @@ class Decoder:
                 self.gpt_parser_initialized = True
 
             from parsing.gpt.few_shot_inference import get_few_shot_predict_f
-            # temp_model = AutoModelForCausalLM.from_pretrained("EleutherAI/gpt-neo-2.7B")
-            # temp_tokenizer = AutoTokenizer.from_pretrained("EleutherAI/gpt-neo-2.7B")
-            # temp_model.config.pad_token_id = temp_model.config.eos_token_id
-            # predict_f = get_few_shot_predict_f(model=temp_model,
-            #                                    tokenizer=temp_tokenizer,
-            #                                    use_guided_decoding=self.use_guided_dec)
             predict_f = get_few_shot_predict_f(model=self.gpt_model,
                                                tokenizer=self.gpt_tokenizer,
                                                use_guided_decoding=self.use_guided_dec)
 
             def complete(prompt, grammar):
                 return predict_f(text=prompt, grammar=grammar)
-        elif "Stable" in parsing_model_name:
-            # TODO
-            pass
         elif parsing_model_name == "nearest-neighbor":
             def complete(prompt, _):
                 split_prompts = prompt.split("\n")

@@ -101,4 +101,6 @@ easyocr==1.7.1
 librosa==0.10.1
 soundfile==0.12.1
 git+https://github.com/inseq-team/inseq.git
+optimum
+auto-gptq
 

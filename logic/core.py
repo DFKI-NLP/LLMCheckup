@@ -67,7 +67,7 @@ class ExplainBot:
                  remove_underscores: bool,
                  name: str,
                  text_fields: list[str],
-                 parsing_model_name: str = "ucinlp/diabetes-t5-small",
+                 parsing_model_name: str,
                  seed: int = 0,
                  prompt_metric: str = "cosine",
                  prompt_ordering: str = "ascending",
@@ -628,19 +628,14 @@ class ExplainBot:
         else:
             parse_tree, parsed_text = self.compute_parse_text(text)
 
-            if self.decoding_model_name == "mistralai/Mistral-7B-v0.1" or self.decoding_model_name == "meta-llama/Llama-2-7b-chat-hf":
-                ls = parsed_text.split(" ")
-                for (idx, i) in enumerate(ls):
-                    if "<s>" in i:
-                        ls[idx] = i.split("<s>")[0]
-                ls = [i for i in ls if i != '']
-                parsed_text = " ".join(ls)
-                # parsed_text = "qatutorial qada [E]"
-            elif self.decoding_model_name == "stable":
-                # TODO
-                pass
-            else:
-                raise NotImplementedError(f"{self.decoding_model_name} is not supported/implemented yet!")
+            # Postprocess the parsed text (remove <s>)
+            ls = parsed_text.split(" ")
+            for (idx, i) in enumerate(ls):
+                if "<s>" in i:
+                    ls[idx] = i.split("<s>")[0]
+            ls = [i for i in ls if i != '']
+            parsed_text = " ".join(ls)
+            # parsed_text = "qatutorial qada [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
 
