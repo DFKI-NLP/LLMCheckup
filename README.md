@@ -22,6 +22,7 @@ We support different methods for deployment:
 |     GPTQ     |    ✅     |   ✅   |
 | Bitsanbytes* |    ✅    |   ✅   |
 |   petals**   |    ✅     |   ❌  |
+
 *: For Windows: if you encounter errors while installing bitsandbytes, then try: ``python -m pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.1-py3-none-win_amd64.whl`` 
 
 **: petals is currently not supported in windows, see issue [here](https://github.com/bigscience-workshop/petals/issues/488).
