@@ -101,7 +101,7 @@ class Decoder:
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
                 if in_8_bits:
-                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='cpu',
+                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='auto',
                                                                           load_in_8bit=True)
                 else:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)

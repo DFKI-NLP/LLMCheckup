@@ -792,7 +792,7 @@ class Prompts:
             joined_prompts += f"User: {query}\n"
             joined_prompts += "In this query, what did the user ask about?\n"
             joined_prompts += f"(a) Ask for {key}\n"
-            joined_prompts += f"(b) Ask for qa tutorial parsed as qatutorial\nTake a deep breath and work on this " \
+            joined_prompts += f"(b) Ask for qa tutorial\nTake a deep breath and work on this " \
                               f"step by step.\n"
             joined_prompts += "Parsed:"
             app.logger.info(joined_prompts)

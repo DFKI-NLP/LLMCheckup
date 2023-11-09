@@ -112,7 +112,7 @@ class Conversation:
         # QA tutorial
         self.qa_level = "expert"
         self.user_input = None
-        self.prompt_type = ""
+        self.prompt_type = "none"
 
     def get_feature_definition(self, feature_name):
         """Gets semantic feature definition."""

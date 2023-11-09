@@ -8,6 +8,8 @@ import pandas as pd
 from actions.prediction.predict_grammar import COVID_GRAMMAR
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
 
+from googlesearch import search
+
 
 def handle_input(parse_text):
     num = None
@@ -217,6 +219,12 @@ def predict_operation(conversation, parse_text, i, **kwargs):
     if conversation.custom_input is not None and conversation.used is False:
         # if custom input is available
         return_s, _ = prediction_generation(None, conversation, None)
+
+        # Do information retrieval
+        link_ls = list(search(conversation.custom_input['first_input']))
+
+        return_s += f"Potential relevant link: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+
         return return_s, 1
 
     data = conversation.temp_dataset.contents['X']

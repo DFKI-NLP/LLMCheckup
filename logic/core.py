@@ -633,7 +633,7 @@ class ExplainBot:
                     ls[idx] = i.split("<s>")[0]
             ls = [i for i in ls if i != '']
             parsed_text = " ".join(ls)
-            parsed_text = "filter id 75 and augment [E]"
+            # parsed_text = "filter id 75 and augment [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
 

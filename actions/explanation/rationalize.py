@@ -1,4 +1,5 @@
 from actions.prediction.predict import prediction_generation
+from actions.prompt_type import type2prompt
 
 from actions.util_functions import gen_parse_op_text
 
@@ -39,10 +40,18 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
 
         # zero-shot prompting
         prompt_template += f"Based on evidence, the prediction of the claim is {prediction.lower()}. Explain why it " \
-                           f"is predicted as {prediction.lower()}. Let's think step by step."
+                           f"is predicted as {prediction.lower()}."
     else:
         # TODO
         pass
+
+    # Append additional prompts from user
+    if conversation.prompt_type != "none":
+        if conversation.prompt_type in type2prompt.keys():
+            prompt_template += type2prompt[conversation.prompt_type]
+        else:
+            prompt_template += conversation.prompt_type
+    print(f"[Prompt] Using customized additional prompt: *** {conversation.prompt_type} ***")
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids
     output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)

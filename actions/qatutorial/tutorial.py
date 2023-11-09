@@ -21,12 +21,16 @@ def tutorial_operation(conversation, parse_text, i, **kwargs):
         # For people with expertise and expert, just return tooltips
         ops = parse_text[i + 1]
 
+        # TODO: give more description
         if ops == "qafa":
             return_s += "Indicates which <b>tokens</b> for a <b>single example</b> are <b>most important</b>. " \
-                        "Also prints a heatmap visualization."
+                        "Also prints a heatmap visualization. For feature attribution score generation, " \
+                        "we use <b>inseq</b> package and various metrics are supported, e.g. LIME, intergated " \
+                        "gradient, attention"
         elif ops == "qada":
             return_s += "Generates a <b>modified</b> version of a given <b>single example</b> that can be used as a " \
-                        "<b>new data point</b>."
+                        "<b>new data point</b>. We use NLPAug and wordnet to substitue words with synonyms. " \
+                        "Alternatively, few-shot prompting can be used to ask LLM to generate augmented text."
         elif ops == "qasim":
             return_s += "Retrieves a number of <b>examples</b> from the dataset that are semantically <b>similar</b> " \
                         "to a given <b>single example</b>."
