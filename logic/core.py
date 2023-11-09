@@ -57,7 +57,6 @@ class ExplainBot:
     """The ExplainBot Class."""
 
     def __init__(self,
-                 # model_file_path: str,
                  dataset_file_path: str,
                  background_dataset_file_path: str,
                  dataset_index_column: int,
@@ -68,6 +67,7 @@ class ExplainBot:
                  name: str,
                  text_fields: list[str],
                  parsing_model_name: str,
+                 in_8_bits: bool,
                  seed: int = 0,
                  prompt_metric: str = "cosine",
                  prompt_ordering: str = "ascending",
@@ -126,7 +126,7 @@ class ExplainBot:
 
         # Initialize completion + parsing modules
         app.logger.info(f"Loading parsing model {parsing_model_name}...")
-        self.decoder = Decoder(parsing_model_name,
+        self.decoder = Decoder(parsing_model_name, in_8_bits,
                                use_guided_decoding=self.use_guided_decoding, dataset_name=name)
 
         # Initialize parser + prompts as None
@@ -633,7 +633,7 @@ class ExplainBot:
                     ls[idx] = i.split("<s>")[0]
             ls = [i for i in ls if i != '']
             parsed_text = " ".join(ls)
-            # parsed_text = "qatutorial qada [E]"
+            parsed_text = "filter id 75 and augment [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
 

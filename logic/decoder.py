@@ -8,12 +8,14 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from petals import AutoDistributedModelForCausalLM
 import torch
 
+
 @gin.configurable
 class Decoder:
     """Class that defines parser options."""
 
     def __init__(self,
                  parsing_model_name: str,
+                 in_8_bits: bool,
                  conversation_config_file: str = None,
                  no_init: bool = False,
                  use_guided_decoding: bool = True,
@@ -41,12 +43,14 @@ class Decoder:
         self.gpt_tokenizer = None
         self.parser_name = parsing_model_name
         self.init_model(parsing_model_name,
+                        in_8_bits,
                         no_init=no_init,
                         dataset_name=dataset_name,
                         conversation_config_file=conversation_config_file)
 
     def init_model(self,
                    parsing_model_name: str,
+                   in_8_bits,
                    no_init: bool = False,
                    dataset_name: str = None,
                    conversation_config_file: str = None):
@@ -80,7 +84,8 @@ class Decoder:
         elif "GPTQ" in parsing_model_name:
             """GPTQ quantized model"""
             self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
-            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, torch_dtype=torch.float16, device_map="auto")
+            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, torch_dtype=torch.float16,
+                                                                  device_map="auto")
             self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
             self.gpt_parser_initialized = True
 
@@ -95,7 +100,11 @@ class Decoder:
             """original model"""
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
-                self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)
+                if in_8_bits:
+                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='cpu',
+                                                                          load_in_8bit=True)
+                else:
+                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)
                 self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
                 self.gpt_parser_initialized = True
 

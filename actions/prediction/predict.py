@@ -132,17 +132,7 @@ def get_prediction_by_prompt(prompt_template, conversation):
     return prediction
 
 
-def prediction_generation(data, conversation, _id, num_shot=3):
-    """
-    prediction generator
-    :param data: filtered data
-    :param conversation: conversation object
-    :param _id: id of instance or None (for custom input)
-    :param num_shot: number of demonstrations
-    :return: string for prediction operation
-    """
-    return_s = ''
-
+def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_field=None):
     if conversation.describe.get_dataset_name() == "covid_fact":
         claim = None
         evidence = None
@@ -167,12 +157,32 @@ def prediction_generation(data, conversation, _id, num_shot=3):
             prompt_template += f"label: {conversation.class_names[labels[i]]}\n"
             prompt_template += "\n"
 
+        if given_second_field is not None:
+            evidence = given_second_field
+
         prompt_template += f"claim: {claim}\n"
         prompt_template += f"evidence: {evidence}\n"
         prompt_template += f"label: "
     else:
         # TODO
         pass
+
+    return claim, evidence, prompt_template
+
+
+def prediction_generation(data, conversation, _id, num_shot=3, given_second_field=None):
+    """
+    prediction generator
+    :param given_second_field: perturbed text
+    :param data: filtered data
+    :param conversation: conversation object
+    :param _id: id of instance or None (for custom input)
+    :param num_shot: number of demonstrations
+    :return: string for prediction operation
+    """
+    return_s = ''
+
+    claim, evidence, prompt_template = get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_field)
 
     print(prompt_template)
 
@@ -186,8 +196,11 @@ def prediction_generation(data, conversation, _id, num_shot=3):
         return_s += "The custom input prediction: <br>"
 
     if conversation.describe.get_dataset_name() == "covid_fact":
-        return_s += f"<b>Claim:</b> {claim}<br>"
-        return_s += f"<b>Evidence:</b> {evidence}<br>"
+        if given_second_field is not None:
+            return_s += f"<b>Perturbed Evidence:</b> {evidence}<br>"
+        else:
+            return_s += f"<b>Claim:</b> {claim}<br>"
+            return_s += f"<b>Evidence:</b> {evidence}<br>"
         return_s += "<b>Prediction:</b> "
     else:
         # TODO

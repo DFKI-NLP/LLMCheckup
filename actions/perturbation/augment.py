@@ -2,9 +2,14 @@
 
 import nlpaug.augmenter.word as naw
 
+from actions.prediction.predict import prediction_generation
+
 
 def augment_operation(conversation, parse_text, i, **kwargs):
     """Data augmentation."""
+    data = conversation.temp_dataset.contents['X']
+    idx = None
+
     if conversation.custom_input is not None and conversation.used is False:
         if conversation.describe.get_dataset_name() == "covid_fact":
             claim, evidence = conversation.custom_input['first_input'], conversation.custom_input['second_input']
@@ -28,17 +33,22 @@ def augment_operation(conversation, parse_text, i, **kwargs):
 
     return_s = ""
 
+    _, pre_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_second_field=None)
+
     # Word augmenter
     if conversation.describe.get_dataset_name() == "covid_fact":
         aug = naw.SynonymAug(aug_src='wordnet')
-        augmented_evidence = aug.augment(evidence)
+        augmented_text = aug.augment(evidence)
         return_s += f"Instance of ID <b>{idx}</b> <br>"
         return_s += f"<b>Claim</b>: {claim}<br>"
         return_s += f"<b>Original evidence:</b> {evidence}<br>"
-        return_s += f"<b>Augmented evidence:</b> {augmented_evidence}<br>"
+        return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">{pre_prediction}</span><br>"
+        return_s += f"<b>Augmented evidence:</b> {augmented_text}<br>"
 
     else:
         # TODO
         pass
+    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_second_field=augmented_text)
+    return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"
 
     return return_s, 1
