@@ -71,7 +71,6 @@ class ExplainBot:
                  seed: int = 0,
                  prompt_metric: str = "cosine",
                  prompt_ordering: str = "ascending",
-                 t5_config: str = None,
                  use_guided_decoding: bool = True,
                  feature_definitions: dict = None,
                  skip_prompts: bool = False,
@@ -128,7 +127,6 @@ class ExplainBot:
         # Initialize completion + parsing modules
         app.logger.info(f"Loading parsing model {parsing_model_name}...")
         self.decoder = Decoder(parsing_model_name,
-                               t5_config,
                                use_guided_decoding=self.use_guided_decoding, dataset_name=name)
 
         # Initialize parser + prompts as None

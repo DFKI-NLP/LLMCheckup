@@ -2,7 +2,7 @@
 # The COVIDFACT dataset conversation config
 ##########################################
 
-ExplainBot.parsing_model_name = "meta-llama/Llama-2-7b-chat-hf"
+ExplainBot.parsing_model_name = "TheBloke/Llama-2-7b-Chat-GPTQ"
 
 # set skip_prompts to true for quicker startup for finetuned models
 # make sure to set to false using few-shot models
@@ -38,6 +38,6 @@ Conversation.class_names = {1: "REFUTED", 0: "SUPPORTED"}
 # Dataset description
 DatasetDescription.dataset_objective = "predict to answer REFUTED/SUPPORTED regarding claims based on evidences"
 DatasetDescription.dataset_description = "Fact Extraction and Verification of Real-World Claims on COVID-19 Pandemic"
-DatasetDescription.model_description = "Llama-2-7b-chat-hf"
+DatasetDescription.model_description = "Llama-2 quantized model by GPTQ"
 
 DatasetDescription.name = "covid_fact"

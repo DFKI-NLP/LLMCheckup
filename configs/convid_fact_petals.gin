@@ -8,7 +8,6 @@ ExplainBot.parsing_model_name = "petals-team/StableBeluga2"
 # make sure to set to false using few-shot models
 ExplainBot.skip_prompts = False
 ExplainBot.text_fields = ["claims", "evidences"]
-ExplainBot.t5_config = "./parsing/t5/gin_configs/t5-large.gin"
 ExplainBot.seed = 0
 ExplainBot.background_dataset_file_path = "./data/COVIDFACT_dataset.csv"
 ExplainBot.dataset_file_path = "./data/COVIDFACT_dataset.csv"
