@@ -117,7 +117,7 @@ def get_prediction_by_prompt(prompt_template, conversation):
     tokenizer = conversation.decoder.gpt_tokenizer
     model = conversation.decoder.gpt_model
 
-    input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids
+    input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
 
     if conversation.describe.get_dataset_name() == "covid_fact":
         parser = GuidedParser(COVID_GRAMMAR, tokenizer, model="gpt", eos_token=tokenizer.encode(" [e]")[-1])
@@ -127,7 +127,8 @@ def get_prediction_by_prompt(prompt_template, conversation):
     guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
 
     generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
-                                     pad_token_id=model.config.pad_token_id, eos_token_id=parser.eos_token)
+                                     pad_token_id=model.config.pad_token_id,
+                                     eos_token_id=parser.eos_token, device=model.device.type)
 
     prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
 

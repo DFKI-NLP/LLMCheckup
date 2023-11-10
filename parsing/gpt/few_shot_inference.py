@@ -30,8 +30,7 @@ def get_few_shot_predict_f(
 
     def predict_f(text: str, grammar: str):
         """The function to get guided decoding."""
-        input_ids = tokenizer(text, return_tensors="pt").input_ids
-        input_ids = input_ids.to(device)
+        input_ids = tokenizer(text, return_tensors="pt").input_ids.to(model.device.type)
 
         if use_guided_decoding:
             parser = GuidedParser(grammar, tokenizer, model="gpt")
@@ -39,11 +38,13 @@ def get_few_shot_predict_f(
             generation = model.greedy_search(input_ids,
                                              logits_processor=guided_preprocessor,
                                              eos_token_id=parser.eos_token,
-                                             pad_token_id=model.config.pad_token_id)
+                                             pad_token_id=model.config.pad_token_id,
+                                             device=model.device.type)
         else:
             stopping_criteria = MaxLengthCriteria(max_length=200)
             generation = model.greedy_search(input_ids,
-                                             stopping_criteria=stopping_criteria)
+                                             stopping_criteria=stopping_criteria,
+                                             device=model.device.type)
 
         decoded_generation = tokenizer.decode(generation[0])
         return {"generation": decoded_generation}

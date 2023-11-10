@@ -123,7 +123,7 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     inseq_model = inseq.load_model(
         model,
         "input_x_gradient",  # TODO: Allow different choices of attribution_method
-        device=str(conversation.decoder.gpt_model.device),  # Use same device as already loaded GPT model
+        device=str(conversation.decoder.gpt_model.device.type),  # Use same device as already loaded GPT model
     )
 
     # COVID-Fact dataset processing
