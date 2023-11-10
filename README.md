@@ -1,6 +1,21 @@
 # LLMCheckup
 Dialogical Interpretability Tool for LLMs
 
+## Supported explainability methods
+- Feature Attribution
+  - Attention, Integrated gradient, etc.
+  - Implemented by [inseq](https://github.com/inseq-team/inseq) package
+- Semantic Similarity
+- Free-text rationalization
+  - Zero-shot CoT
+  - Plan-and-Solve
+  - Optimization by PROmpting (OPRO)
+  - Any customized additional prompt according to users' wish
+  - **_Notice_**: Above mentioned options can be freely chosen in the interface - "Prompt modification"
+- Data Augmentation
+  - Implemented by [NLPAug](https://github.com/makcedward/nlpaug) package or few-shot prompting
+- Counterfactual Generation
+
 ## Models:
 In our study, we identified three LLMs for our purposes.
 
@@ -12,7 +27,7 @@ In our study, we identified three LLMs for our purposes.
 We support different methods for deployment:
 - Original models
 - Quantized by [GPTQ](https://arxiv.org/abs/2210.17323)
-- Quantized by [bitsandbytes](https://github.com/TimDettmers/bitsandbytes) and load in 8 bits
+- Loading model in 8-bits by [bitsandbytes](https://github.com/TimDettmers/bitsandbytes)
 - peer2peer by [petals](https://github.com/bigscience-workshop/petals)
 
 ### Support:
@@ -23,17 +38,49 @@ We support different methods for deployment:
 | Bitsanbytes* |    ✅    |   ✅   |
 |   petals**   |    ✅     |   ❌  |
 
-*: For Windows: if you encounter errors while installing bitsandbytes, then try: ``python -m pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.1-py3-none-win_amd64.whl`` 
+*: For Windows: if you encounter errors while installing bitsandbytes, then try: 
+```bash
+python -m pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.1-py3-none-win_amd64.whl
+``` 
 
-**: petals is currently not supported in windows, see issue [here](https://github.com/bigscience-workshop/petals/issues/488).
+**: petals is currently not supported in windows, since a lot of Unix-specific things are used in petals. See issue [here](https://github.com/bigscience-workshop/petals/issues/488). petals is still usable if running ``LLMCheckup`` in Docker or WSL 2.
 
-## Use case :
+## Use case:
 ### Fact checking
 Dataset: COVID-Fact
 
 Link: https://github.com/asaakyan/covidfact
 
+#### Structure
+```
+{
+    Claim: ...,
+    Evidence: ...,
+    Label: ...,
+}
+```
+
 ### Commonsense Question Answering
 Dataset: ECQA
 
 Link: https://github.com/dair-iitd/ECQA-Dataset
+
+```
+{
+    Question: ...,
+    Multiple choices: ...,
+    Correct answer: ...,
+    Positive explanation: ...,
+    Negative explanation: ...,
+    Free-flow explanation: ...,
+}
+```
+
+## Input with multi modalities
+- Text
+- Image
+  - Image upload
+  - Optical Character Recognition
+    - Implemented by [EasyOCR](https://github.com/JaidedAI/EasyOCR) package
+- Audio
+  - A lightweight [fairseq s2t](https://huggingface.co/facebook/s2t-small-librispeech-asr) model from meta

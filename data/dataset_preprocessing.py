@@ -61,23 +61,33 @@ if dataset_name == "covid":
     df = pd.DataFrame(name_dict)
     df.to_csv('./COVIDFACT_dataset.csv', encoding='utf-8')
 else:
-    key2int = {"A": 0, "B": 1, "C": 2, "D": 3, "E": 4}
+    df = pd.read_csv("./cqa_data_train.csv")
 
-    questions = []
+    texts = df["q_text"]
+    positive_explanations = df["taskA_pos"]
+    negative_explanations = df["taskA_neg"]
+    free_flow_explanations = df["taskB"]
+
     choices = []
-    labels = []
-    with open("./train_rand_split.jsonl", 'r') as file:
-        for index, line in enumerate(file):
-            data = json.loads(line)
-            print(data)
-            questions.append(data["question"]["stem"])
-            choices.append("|".join([i["text"] for i in data["question"]["choices"]]))
-            labels.append(key2int[data["answerKey"]])
+    answers = []
+    idx = [i for i in range(1, 6)]
+
+    for i in range(len(texts)):
+        choice = []
+        for j in idx:
+            choice.append(df["q_op" + str(j)][i])
+        ans = df["q_ans"][i]
+        answers.append(choice.index(ans))
+        choices.append("|".join(choice))
 
     name_dict = {
-        "questions": questions,
+        "texts": texts,
         "choices": choices,
-        "labels": labels
+        "answers": answers,
+        "positive_explanations": positive_explanations,
+        "negative_explanations": negative_explanations,
+        "free_flow_explanations": free_flow_explanations
+
     }
     df = pd.DataFrame(name_dict)
     df.to_csv('./ECQA_dataset.csv', encoding='utf-8')

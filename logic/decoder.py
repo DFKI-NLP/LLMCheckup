@@ -16,7 +16,6 @@ class Decoder:
     def __init__(self,
                  parsing_model_name: str,
                  in_8_bits: bool,
-                 conversation_config_file: str = None,
                  no_init: bool = False,
                  use_guided_decoding: bool = True,
                  dataset_name: str = None):
@@ -31,7 +30,6 @@ class Decoder:
                                    * nearest-neighbor: if this, will use knn on the prompts to parse
                                 Note, that for t5 and gpt models to be handled correctly, 't5' or 'gpt'
                                 **must** be specified in parsing_model_name.
-            conversation_config_file: The gin config location for the conversation.
             no_init: If True, will not init any parsing model
             use_guided_decoding: Whether to use guided decoding
             dataset_name: The name of the dataset
@@ -45,23 +43,21 @@ class Decoder:
         self.init_model(parsing_model_name,
                         in_8_bits,
                         no_init=no_init,
-                        dataset_name=dataset_name,
-                        conversation_config_file=conversation_config_file)
+                        dataset_name=dataset_name)
 
     def init_model(self,
                    parsing_model_name: str,
-                   in_8_bits,
+                   in_8_bits: bool,
                    no_init: bool = False,
-                   dataset_name: str = None,
-                   conversation_config_file: str = None):
+                   dataset_name: str = None):
         """Initializes the model
 
         Args:
-            conversation_config_file: The conversation gin config file path
             dataset_name: The semantic name of the dataset
             no_init: Do not init the model
             parsing_model_name: the name of the model
             config_file: a gin config file required for t5 models
+            :param in_8_bits:
         """
 
         # Does not initialize a model
