@@ -137,7 +137,7 @@ def get_prediction_by_prompt(prompt_template, conversation):
     return prediction
 
 
-def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_field=None):
+def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_field=None, given_second_field=None):
     if conversation.describe.get_dataset_name() == "covid_fact":
         claim = None
         evidence = None
@@ -162,6 +162,9 @@ def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_fi
             prompt_template += f"label: {conversation.class_names[labels[i]]}\n"
             prompt_template += "\n"
 
+        if given_first_field is not None:
+            claim = given_first_field
+
         if given_second_field is not None:
             evidence = given_second_field
 
@@ -175,9 +178,10 @@ def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_fi
     return claim, evidence, prompt_template
 
 
-def prediction_generation(data, conversation, _id, num_shot=3, given_second_field=None):
+def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None):
     """
     prediction generator
+    :param given_first_field: perturbed text
     :param given_second_field: perturbed text
     :param data: filtered data
     :param conversation: conversation object
@@ -187,7 +191,7 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_second_fiel
     """
     return_s = ''
 
-    claim, evidence, prompt_template = get_claim_evidence_prompt(data, conversation, _id, num_shot, given_second_field)
+    claim, evidence, prompt_template = get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_field, given_second_field)
 
     print(prompt_template)
 

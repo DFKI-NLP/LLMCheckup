@@ -33,22 +33,26 @@ def augment_operation(conversation, parse_text, i, **kwargs):
 
     return_s = ""
 
-    _, pre_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_second_field=None)
+    _, pre_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=None, given_second_field=None)
 
     # Word augmenter
     if conversation.describe.get_dataset_name() == "covid_fact":
         aug = naw.SynonymAug(aug_src='wordnet')
-        augmented_text = aug.augment(evidence)
+
+        # Augment both claim and evidence to create a new instance
+        augmented_first_field = aug.augment(claim)
+        augmented_second_field = aug.augment(evidence)
+
         return_s += f"Instance of ID <b>{idx}</b> <br>"
         return_s += f"<b>Claim</b>: {claim}<br>"
         return_s += f"<b>Original evidence:</b> {evidence}<br>"
         return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">{pre_prediction}</span><br>"
-        return_s += f"<b>Augmented evidence:</b> {augmented_text}<br>"
-
+        return_s += f"<b>Augmented claim:</b> {augmented_first_field}<br>"
+        return_s += f"<b>Augmented evidence:</b> {augmented_second_field}<br>"
     else:
         # TODO
         pass
-    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_second_field=augmented_text)
+    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=augmented_first_field, given_second_field=augmented_second_field)
     return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"
 
     return return_s, 1

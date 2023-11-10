@@ -51,10 +51,9 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         else:
             reversed_prediction = "SUPPORTED"
 
-        # TODO: change prompt
         # zero-shot prompting
-        prompt_template += f"Based on evidence, the claim is {prediction.lower()}. Modify only the claim such that " \
-                           f"the claim becomes {reversed_prediction.lower()} based on evidence."
+        prompt_template += f"Modify only the evidence such that " \
+                           f"based on modified evidence, the claim is predicted as {reversed_prediction.lower()} rather {prediction}."
     else:
         # TODO
         pass
@@ -66,11 +65,15 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
     return_s = ""
 
+    _, post_prediction = prediction_generation(data, conversation, idx, given_first_field=None, given_second_field=result)
+
     if conversation.describe.get_dataset_name() == "covid_fact":
-        return_s += f"Instance with ID <b>{idx}</b>"
+        return_s += f"Instance with ID <b>{idx}</b><br>"
         return_s += f"<b>Original claim:</b> {claim}<br>"
-        return_s += f"<b>Counterfactual:</b> {result} <br>"
-        return_s += f"<b>Evidence: </b> {evidence}"
+        return_s += f"<b>Evidence: </b> {evidence}<br>"
+        return_s += f"<b>Prediction</b> <span style=\"background-color: #6CB4EE\">{prediction}</span><br>"
+        return_s += f"<b>Counterfactual of evidence:</b> {result} <br>"
+        return_s += f"<b>Prediction of counterfactual:</b> <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"
         return_s += "<br><br>"
     else:
         # TODO
