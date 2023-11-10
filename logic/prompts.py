@@ -776,7 +776,8 @@ class Prompts:
         else:
             joined_prompts = ""
 
-        if exp_flag:
+        if exp_flag and ("id" not in joined_prompts):
+            # if id exist -> no more tutorial
             key2file = {"nlpattribute": "qafeature_attribution", "augment": "qada", "rationalize": "qarationale", "cfe": "qacfe", "similar": "qasim"}
             f = open(f"./prompts/qatutorial/{key2file[key]}.txt", "r")
             ls = []

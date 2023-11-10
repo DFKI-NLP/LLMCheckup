@@ -4,6 +4,7 @@ import csv
 import random
 
 import pandas as pd
+import torch
 
 from actions.prediction.predict_grammar import COVID_GRAMMAR
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
@@ -126,9 +127,10 @@ def get_prediction_by_prompt(prompt_template, conversation):
         pass
     guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
 
-    generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
-                                     pad_token_id=model.config.pad_token_id,
-                                     eos_token_id=parser.eos_token, device=model.device.type)
+    with torch.no_grad():
+        generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
+                                         pad_token_id=model.config.pad_token_id,
+                                         eos_token_id=parser.eos_token, device=model.device.type)
 
     prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
 

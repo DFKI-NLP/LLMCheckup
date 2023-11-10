@@ -35,11 +35,12 @@ def get_few_shot_predict_f(
         if use_guided_decoding:
             parser = GuidedParser(grammar, tokenizer, model="gpt")
             guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
-            generation = model.greedy_search(input_ids,
-                                             logits_processor=guided_preprocessor,
-                                             eos_token_id=parser.eos_token,
-                                             pad_token_id=model.config.pad_token_id,
-                                             device=model.device.type)
+            with torch.no_grad():
+                generation = model.greedy_search(input_ids,
+                                                 logits_processor=guided_preprocessor,
+                                                 eos_token_id=parser.eos_token,
+                                                 pad_token_id=model.config.pad_token_id,
+                                                 device=model.device.type)
         else:
             stopping_criteria = MaxLengthCriteria(max_length=200)
             generation = model.greedy_search(input_ids,

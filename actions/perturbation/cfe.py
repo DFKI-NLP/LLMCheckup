@@ -1,3 +1,5 @@
+import torch
+
 from actions.prediction.predict import prediction_generation
 
 
@@ -49,6 +51,7 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         else:
             reversed_prediction = "SUPPORTED"
 
+        # TODO: change prompt
         # zero-shot prompting
         prompt_template += f"Based on evidence, the claim is {prediction.lower()}. Modify only the claim such that " \
                            f"the claim becomes {reversed_prediction.lower()} based on evidence."
@@ -57,7 +60,8 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         pass
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
-    output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=128)
+    with torch.no_grad():
+        output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=128)
     result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
     return_s = ""

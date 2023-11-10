@@ -4,9 +4,8 @@ This class 'decodes' natural language inputs into the grammar. There are several
 supported, such as fine-tuned t5 models, few-shot gpt-j models, and KNN.
 """
 import gin
-from transformers import AutoModelForCausalLM, AutoTokenizer
+from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig
 from petals import AutoDistributedModelForCausalLM
-import torch
 
 
 @gin.configurable
@@ -80,7 +79,8 @@ class Decoder:
         elif "GPTQ" in parsing_model_name:
             """GPTQ quantized model"""
             self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
-            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, torch_dtype=torch.float16,
+            quantization_config = GPTQConfig(bits=4, tokenizer=self.gpt_tokenizer)
+            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, quantization_config=quantization_config,
                                                                   device_map="auto")
             self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
             self.gpt_parser_initialized = True
@@ -97,7 +97,7 @@ class Decoder:
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
                 if in_8_bits:
-                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='auto',
+                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0',
                                                                           load_in_8bit=True)
                 else:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)

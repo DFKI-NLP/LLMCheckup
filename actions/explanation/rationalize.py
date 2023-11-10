@@ -1,3 +1,5 @@
+import torch
+
 from actions.prediction.predict import prediction_generation
 from actions.prompt_type import type2prompt
 
@@ -20,6 +22,9 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
     prompt_template = ""
 
     data = conversation.temp_dataset.contents['X']
+
+    if not data:
+        raise ValueError("id out of index")
 
     # Get claims and evidences
     if conversation.describe.get_dataset_name() == "covid_fact":
@@ -54,7 +59,8 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
     print(f"[Prompt] Using customized additional prompt: *** {conversation.prompt_type} ***")
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
-    output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)
+    with torch.no_grad():
+        output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)
     result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
     filter_string = gen_parse_op_text(conversation)
