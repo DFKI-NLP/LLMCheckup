@@ -78,7 +78,7 @@ else:
             choice.append(df["q_op" + str(j)][i])
         ans = df["q_ans"][i]
         answers.append(choice.index(ans))
-        choices.append("|".join(choice))
+        choices.append("-".join(choice))
 
     name_dict = {
         "texts": texts,

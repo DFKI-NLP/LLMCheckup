@@ -11,7 +11,7 @@ ExplainBot.text_fields = ["texts", "choices"]
 ExplainBot.seed = 0
 ExplainBot.background_dataset_file_path = "./data/ECQA_dataset.csv"
 ExplainBot.dataset_file_path = "./data/ECQA_dataset.csv"
-ExplainBot.in_8_bits = False
+ExplainBot.in_8_bits = True
 
 ExplainBot.name = "ECQA"
 
@@ -26,7 +26,7 @@ ExplainBot.prompt_ordering = "ascending"
 
 # Prompt params
 Prompts.prompt_cache_size = 1_000_000
-Prompts.prompt_cache_location = "./cache/covid-prompts.pkl"
+Prompts.prompt_cache_location = "./cache/ecqa-prompts.pkl"
 Prompts.max_values_per_feature = 2
 Prompts.sentence_transformer_model_name = "all-mpnet-base-v2"
 Prompts.prompt_folder = "./prompts"
@@ -34,7 +34,7 @@ Prompts.num_per_knn_prompt_template = 1
 Prompts.num_prompt_template = 7
 
 # Conversation params
-Conversation.class_names = {}
+Conversation.class_names = {0: "", 1: "", 2: "", 3: "", 4: ""}
 
 # Dataset description
 DatasetDescription.dataset_objective = "Choose the correct option from 5 choices based on question"

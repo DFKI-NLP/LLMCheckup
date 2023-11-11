@@ -6,7 +6,7 @@ import random
 import pandas as pd
 import torch
 
-from actions.prediction.predict_grammar import COVID_GRAMMAR
+from actions.prediction.predict_grammar import COVID_GRAMMAR, ECQA_GRAMMAR
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
 
 from googlesearch import search
@@ -81,8 +81,8 @@ def get_demonstrations(_id, num_shot, dataset_name):
         df = pd.read_csv("./data/COVIDFACT_dataset.csv")
         attr = "claims"
     else:
-        # TODO
-        pass
+        df = pd.read_csv("./data/ECQA_dataset.csv")
+        attr = "texts"
 
     rand_ls = []
 
@@ -101,16 +101,18 @@ def get_demonstrations(_id, num_shot, dataset_name):
         claims = [list(df["claims"])[i] for i in rand_ls]
         evidences = [list(df["evidences"])[i] for i in rand_ls]
         labels = [list(df["labels"])[i] for i in rand_ls]
+        return claims, evidences, labels
     else:
-        # TODO
-        pass
+        questions = [list(df["texts"])[i] for i in rand_ls]
+        choices = [list(df["choices"])[i] for i in rand_ls]
+        labels = [list(df["answers"])[i] for i in rand_ls]
+        return questions, choices, labels
 
-    return claims, evidences, labels
 
-
-def get_prediction_by_prompt(prompt_template, conversation):
+def get_prediction_by_prompt(prompt_template, conversation, choice=None):
     """
     Get prediction by given prompt
+    :param choice:
     :param prompt_template: user input prompt
     :param conversation: conversation object
     :return: single prediction
@@ -123,8 +125,7 @@ def get_prediction_by_prompt(prompt_template, conversation):
     if conversation.describe.get_dataset_name() == "covid_fact":
         parser = GuidedParser(COVID_GRAMMAR, tokenizer, model="gpt", eos_token=tokenizer.encode(" [e]")[-1])
     else:
-        # TODO
-        pass
+        parser = GuidedParser(ECQA_GRAMMAR, tokenizer, model="gpt", eos_token=tokenizer.encode(" [e]")[-1])
     guided_preprocessor = GuidedDecodingLogitsProcessor(parser, input_ids.shape[1])
 
     with torch.no_grad():
@@ -137,7 +138,16 @@ def get_prediction_by_prompt(prompt_template, conversation):
     return prediction
 
 
-def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_field=None, given_second_field=None):
+def convert_str_to_options(choice):
+    res = ""
+    options = choice.split("-")
+
+    for idx, op in enumerate(options):
+        res += f"({idx+1}) {op} "
+    return res
+
+
+def get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field=None, given_second_field=None):
     if conversation.describe.get_dataset_name() == "covid_fact":
         claim = None
         evidence = None
@@ -159,7 +169,7 @@ def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_fie
         for i in range(num_shot):
             prompt_template += f"claim: {claims[i]}\n"
             prompt_template += f"evidence: {evidences[i]}\n"
-            prompt_template += f"label: {conversation.class_names[labels[i]]}\n"
+            prompt_template += f"prediction: {conversation.class_names[labels[i]]}\n"
             prompt_template += "\n"
 
         if given_first_field is not None:
@@ -168,14 +178,50 @@ def get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_fie
         if given_second_field is not None:
             evidence = given_second_field
 
+        first_field = claim
+        second_field = evidence
+
         prompt_template += f"claim: {claim}\n"
         prompt_template += f"evidence: {evidence}\n"
-        prompt_template += f"label: "
+        prompt_template += f"prediction: "
     else:
-        # TODO
-        pass
+        question = None
+        choice = None
 
-    return claim, evidence, prompt_template
+        if _id is not None:
+            for i, feature_name in enumerate(data.columns):
+                if feature_name == "texts":
+                    question = data[feature_name].values[0]
+                elif feature_name == "choices":
+                    choice = data[feature_name].values[0]
+        else:
+            question, choice = conversation.custom_input['first_input'], conversation.custom_input['second_input']
+
+        prompt_template = "Each 3 items in the following list contains the question, choice and prediction. Your task " \
+                          "is to choose one of the choices as the answer for the question\n"
+
+        questions, choices, labels = get_demonstrations(_id, num_shot, conversation.describe.get_dataset_name())
+
+        for i in range(num_shot):
+            prompt_template += f"question: {questions[i]}\n"
+            prompt_template += f"choices: {convert_str_to_options(choices[i])}\n"
+            prompt_template += f"prediction: {labels[i] + 1}\n"
+            prompt_template += "\n"
+
+        if given_first_field is not None:
+            question = given_first_field
+
+        if given_second_field is not None:
+            choice = given_second_field
+
+        first_field = question
+        second_field = choice
+
+        prompt_template += f"question: {first_field}\n"
+        prompt_template += f"choices: {convert_str_to_options(second_field)}\n"
+        prompt_template += f"prediction: "
+
+    return first_field, second_field, prompt_template
 
 
 def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None):
@@ -191,11 +237,11 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
     """
     return_s = ''
 
-    claim, evidence, prompt_template = get_claim_evidence_prompt(data, conversation, _id, num_shot, given_first_field, given_second_field)
+    first_field, second_field, prompt_template = get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field, given_second_field)
 
     print(prompt_template)
 
-    prediction = get_prediction_by_prompt(prompt_template, conversation)
+    prediction = get_prediction_by_prompt(prompt_template, conversation, choice=second_field)
 
     if _id is not None:
         filter_string = f"<b>id equal to {_id}</b>"
@@ -206,17 +252,22 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
 
     if conversation.describe.get_dataset_name() == "covid_fact":
         if given_second_field is not None:
-            return_s += f"<b>Perturbed Evidence:</b> {evidence}<br>"
+            return_s += f"<b>Perturbed Evidence:</b> {second_field}<br>"
         else:
-            return_s += f"<b>Claim:</b> {claim}<br>"
-            return_s += f"<b>Evidence:</b> {evidence}<br>"
+            return_s += f"<b>Claim:</b> {first_field}<br>"
+            return_s += f"<b>Evidence:</b> {second_field}<br>"
         return_s += "<b>Prediction:</b> "
+        return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
     else:
-        # TODO
-        pass
+        if given_second_field is not None:
+            return_s += f"<b>Perturbed Evidence:</b> {second_field}<br>"
+        else:
+            return_s += f"<b>Question:</b> {first_field}<br>"
+            return_s += f"<b>Choices:</b> {convert_str_to_options(second_field)}<br>"
+        return_s += "<b>Prediction:</b> "
 
-    return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
-
+        prediction_idx = int(prediction.split('(')[1].split(')')[0])
+        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction_idx}) {second_field.split('-')[prediction_idx - 1]}</span>."
     return_s += "<br>"
     return return_s, prediction
 
