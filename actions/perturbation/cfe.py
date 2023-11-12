@@ -42,8 +42,8 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
     if conversation.describe.get_dataset_name() == "covid_fact":
 
-        prompt_template += f"claim: {claim}"
-        prompt_template += f"evidence: {evidence}"
+        prompt_template += f"claim: {claim}\n"
+        prompt_template += f"evidence: {evidence}\n"
 
         if prediction == "SUPPORTED":
             reversed_prediction = "REFUTED"
@@ -54,9 +54,11 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         prompt_template += f"Modify only the evidence such that " \
                            f"based on modified evidence, the claim is predicted as <b>{reversed_prediction.lower()}</b> rather <b>{prediction}</b>."
     else:
-        prompt_template += f"question: {question}"
-        prompt_template += f"choices: {convert_str_to_options(choices)}"
-        prompt_template += f"Modify only the question such that {choices.split('-')[prediction]} will not be selected."
+        prompt_template += "You are presented with a multiple-choice question and its options. Generate a " \
+                           "counterfactual statement for the given question."
+        prompt_template += f"Modify only the question such that {choices.split('-')[prediction]} will not be selected.\n"
+        prompt_template += f"question: {question}\n"
+        prompt_template += f"choices: {convert_str_to_options(choices)}\n"
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
