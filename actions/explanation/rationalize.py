@@ -1,6 +1,6 @@
 import torch
 
-from actions.prediction.predict import prediction_generation
+from actions.prediction.predict import prediction_generation, convert_str_to_options
 from actions.prompt_type import type2prompt
 
 from actions.util_functions import gen_parse_op_text
@@ -23,9 +23,6 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
 
     data = conversation.temp_dataset.contents['X']
 
-    if not data:
-        raise ValueError("id out of index")
-
     # Get claims and evidences
     if conversation.describe.get_dataset_name() == "covid_fact":
         if conversation.custom_input is None and conversation.used is False:
@@ -47,8 +44,25 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
         prompt_template += f"Based on evidence, the prediction of the claim is {prediction.lower()}. Explain why it " \
                            f"is predicted as {prediction.lower()}."
     else:
-        # TODO
-        pass
+        if conversation.custom_input is None and conversation.used is False:
+            question, choices = conversation.custom_input['first_input'], conversation.custom_input['second_input']
+            _, prediction = prediction_generation(None, conversation, None)
+        else:
+            for i, feature_name in enumerate(data.columns):
+                if feature_name == "texts":
+                    texts = data[feature_name].values[0]
+                elif feature_name == "choices":
+                    choices = data[feature_name].values[0]
+
+            _, prediction = prediction_generation(data, conversation, id_list[0])
+
+        prediction = choices.split("-")[prediction]
+        prompt_template += f"text: {texts}"
+        prompt_template += f"choice: {choices}"
+
+        # zero-shot prompting
+        prompt_template += f"Based on text, the prediction of the choice is {prediction}. Explain why it " \
+                           f"is predicted as {prediction}."
 
     # Append additional prompts from user
     if conversation.prompt_type != "none":
@@ -70,10 +84,10 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
         return_s += f"<b>Claim</b>: {claim}<br>"
         return_s += f"<b>Evidence</b>: {evidence}<br>"
     else:
-        # TODO
-        pass
+        return_s += f"<b>Text</b>: {texts}<br>"
+        return_s += f"<b>Choices</b>: {convert_str_to_options(choices)}<br>"
 
-    return_s += f"The prediction is {prediction}.<br>"
+    return_s += f"The <b>prediction</b> is <span style=\"background-color: #6CB4EE\">{prediction}</span>.<br>"
     return_s += f"<b>Reasoning: </b><br>"
     return_s += result
 

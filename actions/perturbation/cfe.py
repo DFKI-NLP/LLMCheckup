@@ -1,6 +1,6 @@
 import torch
 
-from actions.prediction.predict import prediction_generation
+from actions.prediction.predict import prediction_generation, convert_str_to_options
 
 
 def counterfactuals_operation(conversation, parse_text, i, **kwargs):
@@ -11,8 +11,7 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         if conversation.describe.get_dataset_name() == "covid_fact":
             claim, evidence = conversation.custom_input["first_input"], conversation.custom_input["second_input"]
         else:
-            # TODO
-            pass
+            question, choices = conversation.custom_input['first_input'], conversation.custom_input['second_input']
     else:
         assert len(conversation.temp_dataset.contents["X"]) == 1
 
@@ -27,8 +26,8 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
             claim = conversation.get_var("dataset").contents["X"].iloc[idx]["claims"]
             evidence = conversation.get_var("dataset").contents["X"].iloc[idx]["evidences"]
         else:
-            # TODO
-            pass
+            question = conversation.get_var("dataset").contents["X"].iloc[idx]["texts"]
+            choices = conversation.get_var("dataset").contents["X"].iloc[idx]["choices"]
 
     model = conversation.decoder.gpt_model
     tokenizer = conversation.decoder.gpt_tokenizer
@@ -53,22 +52,22 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
         # zero-shot prompting
         prompt_template += f"Modify only the evidence such that " \
-                           f"based on modified evidence, the claim is predicted as {reversed_prediction.lower()} rather {prediction}."
+                           f"based on modified evidence, the claim is predicted as <b>{reversed_prediction.lower()}</b> rather <b>{prediction}</b>."
     else:
-        # TODO
-        pass
+        prompt_template += f"question: {question}"
+        prompt_template += f"choices: {convert_str_to_options(choices)}"
+        prompt_template += f"Modify only the question such that {choices.split('-')[prediction]} will not be selected."
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
         output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=128)
     result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
-    return_s = ""
-
-    _, post_prediction = prediction_generation(data, conversation, idx, given_first_field=None, given_second_field=result)
+    return_s = f"Instance with ID <b>{idx}</b><br>"
 
     if conversation.describe.get_dataset_name() == "covid_fact":
-        return_s += f"Instance with ID <b>{idx}</b><br>"
+        _, post_prediction = prediction_generation(data, conversation, idx, given_first_field=None,
+                                                   given_second_field=result)
         return_s += f"<b>Original claim:</b> {claim}<br>"
         return_s += f"<b>Evidence: </b> {evidence}<br>"
         return_s += f"<b>Prediction</b> <span style=\"background-color: #6CB4EE\">{prediction}</span><br>"
@@ -76,8 +75,13 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
         return_s += f"<b>Prediction of counterfactual:</b> <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"
         return_s += "<br><br>"
     else:
-        # TODO
-        pass
-
+        _, post_prediction = prediction_generation(data, conversation, idx, given_first_field=result,
+                                                   given_second_field=None)
+        return_s += f"<b>Original question:</b> {question}<br>"
+        return_s += f"<b>Choices: </b> {convert_str_to_options(choices)}<br>"
+        return_s += f"<b>Prediction</b> <span style=\"background-color: #6CB4EE\">{choices.split('-')[prediction]}</span><br>"
+        return_s += f"<b>Counterfactual of question:</b> {result} <br>"
+        return_s += f"<b>Prediction of counterfactual:</b> <span style=\"background-color: #6CB4EE\">{choices.split('-')[post_prediction]}</span>"
+        return_s += "<br><br>"
 
     return return_s, 1

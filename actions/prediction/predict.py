@@ -257,8 +257,10 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
             return_s += f"<b>Claim:</b> {first_field}<br>"
             return_s += f"<b>Evidence:</b> {second_field}<br>"
         return_s += "<b>Prediction:</b> "
-        return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>."
+        return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>.<br>"
+        return return_s, prediction
     else:
+        # prediction in format: i
         if given_second_field is not None:
             return_s += f"<b>Perturbed Evidence:</b> {second_field}<br>"
         else:
@@ -266,10 +268,10 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
             return_s += f"<b>Choices:</b> {convert_str_to_options(second_field)}<br>"
         return_s += "<b>Prediction:</b> "
 
-        prediction_idx = int(prediction.split('(')[1].split(')')[0])
-        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction_idx}) {second_field.split('-')[prediction_idx - 1]}</span>."
-    return_s += "<br>"
-    return return_s, prediction
+        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction)-1]}</span>.<br>"
+
+        # Return index of choice
+        return return_s, int(prediction)-1
 
 
 def predict_operation(conversation, parse_text, i, **kwargs):
