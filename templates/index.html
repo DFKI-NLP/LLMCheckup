@@ -627,7 +627,7 @@
                     const formData = new FormData();
                     formData.append('audio', blob, "recording.wav");
 
-                    event.preventDefault();
+                    // event.preventDefault();
                     addToChat("right", "Asking for recording...", "");
                     insertLoadingDots();
                     ttmChat.scrollTop += 200;
@@ -655,6 +655,7 @@
                             console.log('Error while recording:', error);
                         }
                     });
+                    return false;
                 };
                 recorder.start();
             })
@@ -707,7 +708,7 @@
         // Add the file to the FormData object
         formData.append('image', fileInput.files[0]);
 
-        event.preventDefault();
+        // event.preventDefault();
         addToChat("right", "Asking for uploading images...", "");
         insertLoadingDots();
         ttmChat.scrollTop += 200;
@@ -735,10 +736,11 @@
                 console.log('Error uploading image:', error);
             }
         });
+        return false;
     });
 
     function delete_custom_input() {
-        event.preventDefault();
+        // event.preventDefault();
         addToChat("right", "Asking for deleting the custom input...", "");
         insertLoadingDots();
         ttmChat.scrollTop += 200;
@@ -750,6 +752,7 @@
         botResponse("quit", '2', level, prompt);
         changeBtnColor(false);
         disableBtn(true);
+        return false;
     }
 
     function submit_custom_input() {
@@ -757,7 +760,7 @@
         const text2 = document.getElementById("second_text").value;
 
         if (text1 !== "" && text2 !== "") {
-            event.preventDefault();
+            // event.preventDefault();
             addToChat("right", text1 + "\n" + text2, "");
             insertLoadingDots();
             ttmChat.scrollTop += 200;
@@ -769,6 +772,7 @@
             botResponse({"first_input": text1, "second_input": text2}, '1', level, prompt);
             changeBtnColor(true);
             disableBtn(false);
+            return false;
         } else {
             alert("At least one of the input fields are empty!")
         }
@@ -1022,7 +1026,7 @@
     ttmForm.addEventListener("submit", event => {
         const msgText = ttmInput.value;
 
-        event.preventDefault();
+        // event.preventDefault();
 
         if (!msgText) return;
         addToChat("right", msgText, "");
@@ -1034,7 +1038,7 @@
         let prompt = get_prompt_type();
 
         botResponse(msgText, '0', level, prompt);
-
+        return false;
     });
 
     function changeBtnColor(flag) {
@@ -1307,7 +1311,7 @@
     const filterDataForm = get(".filterdata-inputarea");
     const filterDataInput = get(".filterdata-input");
     filterDataForm.addEventListener("keyup", event => {
-        event.preventDefault();
+        // event.preventDefault();
         const filterMsgText = filterDataInput.value;
         result = $.ajax({
             type: 'POST',
@@ -1409,6 +1413,7 @@
                 document.getElementById("show_data").innerHTML = msgHTML;
             }
         })
+        return false;
     });
 
     function addId(_id) {
