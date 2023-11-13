@@ -260,7 +260,6 @@ def get_bot_response():
 
                 os.remove("recording.wav")
                 os.remove("tmp.wav")
-                user_text = ""
 
                 app.logger.info("generating the bot response")
                 response = f"<b>Recorded text</b>: {user_text}<br><br>"
