@@ -84,3 +84,6 @@ Link: https://github.com/dair-iitd/ECQA-Dataset
     - Implemented by [EasyOCR](https://github.com/JaidedAI/EasyOCR) package
 - Audio
   - A lightweight [fairseq s2t](https://huggingface.co/facebook/s2t-small-librispeech-asr) model from meta
+  - If you encounter errors when reading recorded files: `soundfile.LibsndfileError: Error opening path_to_wav: Format not recognised.`. Then please try to install `ffmpeg`.
+    - In Linux: ```sudo apt install ffmpeg``` or `pip3 install ffmpeg`
+    - In Windows: Download `ffmpeg` from [here](https://github.com/BtbN/FFmpeg-Builds/releases) and add the path to system environment

@@ -206,7 +206,7 @@ def get_bot_response():
             try:
 
                 audio = request.files["audio"]
-                audio.save("recored_audio_1.wav")
+                audio.save("recording.wav")
 
                 flag = "audio"
             except:
@@ -238,25 +238,33 @@ def get_bot_response():
                     if BOT.conversation.describe.get_dataset_name() == "covid_fact":
                         response += f"Claim: {temp['first_input']} <br>Evidence: {temp['second_input']} <>"
                     else:
-                        # TODO
-                        pass
+                        response += f"Question: {temp['first_input']} <br>Choices: {temp['second_input']} <>"
             elif flag == "audio":
 
                 model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
                 processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
-                x, _ = librosa.load('./recored_audio_1.wav', sr=16000)
-                sf.write('tmp_1.wav', x, 16000)
+                x, _ = librosa.load('./recording.wav', sr=16000)
+                sf.write('tmp.wav', x, 16000)
 
-                a = read("tmp_1.wav")
-                temp = np.array(a[1], dtype=np.float)
+                a = read("tmp.wav")
+                temp = np.array(a[1], dtype=np.float64)
                 inputs = processor(temp, sampling_rate=16000, return_tensors="pt")
                 generated_ids = model.generate(inputs["input_features"], attention_mask=inputs["attention_mask"])
 
                 transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
-                print(transcription[0])
+                user_text = transcription[0]
 
-                response = "Audio recorded!"
+                BOT.user_text = user_text
+                conversation = BOT.conversation
+
+                os.remove("recording.wav")
+                os.remove("tmp.wav")
+                user_text = ""
+
+                app.logger.info("generating the bot response")
+                response = f"<b>Recorded text</b>: {user_text}<br><br>"
+                response += BOT.update_state(user_text, conversation)
             elif flag == "text":
                 # Change level for QA
                 level = data["qalevel"]
@@ -286,8 +294,7 @@ def get_bot_response():
                     if BOT.conversation.describe.get_dataset_name() == "covid_fact":
                         response += f"Claim: {user_text['first_input']} <br>Evidence: {user_text['second_input']} <>"
                     else:
-                        # TODO
-                        pass
+                        response += f"Question: {user_text['first_input']} <br>Choices: {user_text['second_input']} <>"
 
                     BOT.conversation.store_last_parse(f"custominput '{user_text}'")
                 else:
