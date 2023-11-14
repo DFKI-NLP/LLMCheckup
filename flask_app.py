@@ -14,6 +14,7 @@ from flask import Flask
 from flask import render_template, request, Blueprint
 from logging.config import dictConfig
 
+from actions.util_functions import text2int
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
 
@@ -244,6 +245,7 @@ def get_bot_response():
                 model = Speech2TextForConditionalGeneration.from_pretrained("facebook/s2t-small-librispeech-asr")
                 processor = Speech2TextProcessor.from_pretrained("facebook/s2t-small-librispeech-asr")
 
+                # Load wav in array
                 x, _ = librosa.load('./recording.wav', sr=16000)
                 sf.write('tmp.wav', x, 16000)
 
@@ -253,11 +255,14 @@ def get_bot_response():
                 generated_ids = model.generate(inputs["input_features"], attention_mask=inputs["attention_mask"])
 
                 transcription = processor.batch_decode(generated_ids, skip_special_tokens=True)
-                user_text = transcription[0]
+
+                # Convert words to digits if available
+                user_text = text2int(transcription[0])
 
                 BOT.user_text = user_text
                 conversation = BOT.conversation
 
+                # Remove generated wav files
                 os.remove("recording.wav")
                 os.remove("tmp.wav")
 
@@ -275,6 +280,7 @@ def get_bot_response():
 
                 # Normal user input
                 if data['custom_input'] == '0':
+                    # Normal user input
                     user_text = data["userInput"]
                     BOT.user_text = user_text
                     conversation = BOT.conversation

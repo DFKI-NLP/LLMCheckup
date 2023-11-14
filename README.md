@@ -20,7 +20,9 @@ Dialogical Interpretability Tool for LLMs
 In our study, we identified three LLMs for our purposes.
 
 - LLama2 (https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+  - Quantized Llama2 (https://huggingface.co/TheBloke/Llama-2-7B-Chat-GPTQ)
 - Mistral (https://huggingface.co/mistralai/Mistral-7B-v0.1)
+  - Quantized Mistral (https://huggingface.co/TheBloke/Mistral-7B-v0.1-GPTQ)
 - Stable Beluga 2 (finetuned llama2-70B) (https://huggingface.co/petals-team/StableBeluga2)
 
 ### Deployment:
