@@ -140,27 +140,22 @@
                 <div id="show_data"
                      style="border-radius: 15px; padding: 5px; overflow-y: scroll; height: 70%;">
                     {% for entry in entries %}
-                    {% if dataset == 'boolq' %}
+                    {% if dataset == 'ECQA' %}
                     <details>
                         <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
-                        <b>question:</b> <br>
-                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["question"]}}</div>
-                        <b>passage:</b> <br>
-                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["passage"]}}</div>
-                        <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
-                    </details>
-                    {% elif dataset == 'daily_dialog' %}
-                    <details>
-                        <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
-                        <b>dialog:</b>
-                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["dialog"]}}</div>
+                        <b>Question:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["texts"]}}</div>
+                        <b>Choices:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["choices"]}}</div>
                         <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
                     </details>
                     {% else %}
                     <details>
                         <summary style="font-weight: bold;">ID: {{loop.index-1}}</summary>
-                        <b>text:</b> <br>
-                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["text"]}}</div>
+                        <b>Claim:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["claims"]}}</div>
+                        <b>Evidence:</b> <br>
+                        <div style='font-style: italic; font-size: 0.75em;'>{{entry["evidences"]}}</div>
                         <button onclick="addId({{loop.index-1}})">Add this instance into input box</button>
                     </details>
                     {% endif %}
@@ -237,7 +232,7 @@
                     <div class="tooltip-wrapper">
                         <button id="c_rat" class="idea-button"
                                 style="background: rgba(235, 244, 61, 0.96);"
-                                onclick="sampleCustomInputRationalization()">
+                                onclick="sampleRationalization()">
                             Rationalization
                         </button>
                         <span class="tooltip-text">
@@ -627,7 +622,7 @@
                     const formData = new FormData();
                     formData.append('audio', blob, "recording.wav");
 
-                    // event.preventDefault();
+                    event.preventDefault();
                     addToChat("right", "Asking for recording...", "");
                     insertLoadingDots();
                     ttmChat.scrollTop += 200;
@@ -655,7 +650,6 @@
                             console.log('Error while recording:', error);
                         }
                     });
-                    return false;
                 };
                 recorder.start();
             })
@@ -708,7 +702,7 @@
         // Add the file to the FormData object
         formData.append('image', fileInput.files[0]);
 
-        // event.preventDefault();
+        event.preventDefault();
         addToChat("right", "Asking for uploading images...", "");
         insertLoadingDots();
         ttmChat.scrollTop += 200;
@@ -736,11 +730,10 @@
                 console.log('Error uploading image:', error);
             }
         });
-        return false;
     });
 
     function delete_custom_input() {
-        // event.preventDefault();
+        event.preventDefault();
         addToChat("right", "Asking for deleting the custom input...", "");
         insertLoadingDots();
         ttmChat.scrollTop += 200;
@@ -752,7 +745,6 @@
         botResponse("quit", '2', level, prompt);
         changeBtnColor(false);
         disableBtn(true);
-        return false;
     }
 
     function submit_custom_input() {
@@ -760,7 +752,7 @@
         const text2 = document.getElementById("second_text").value;
 
         if (text1 !== "" && text2 !== "") {
-            // event.preventDefault();
+            event.preventDefault();
             addToChat("right", text1 + "\n" + text2, "");
             insertLoadingDots();
             ttmChat.scrollTop += 200;
@@ -772,7 +764,6 @@
             botResponse({"first_input": text1, "second_input": text2}, '1', level, prompt);
             changeBtnColor(true);
             disableBtn(false);
-            return false;
         } else {
             alert("At least one of the input fields are empty!")
         }
@@ -1026,7 +1017,7 @@
     ttmForm.addEventListener("submit", event => {
         const msgText = ttmInput.value;
 
-        // event.preventDefault();
+        event.preventDefault();
 
         if (!msgText) return;
         addToChat("right", msgText, "");
@@ -1038,7 +1029,6 @@
         let prompt = get_prompt_type();
 
         botResponse(msgText, '0', level, prompt);
-        return false;
     });
 
     function changeBtnColor(flag) {
@@ -1311,7 +1301,7 @@
     const filterDataForm = get(".filterdata-inputarea");
     const filterDataInput = get(".filterdata-input");
     filterDataForm.addEventListener("keyup", event => {
-        // event.preventDefault();
+        event.preventDefault();
         const filterMsgText = filterDataInput.value;
         result = $.ajax({
             type: 'POST',
@@ -1413,7 +1403,6 @@
                 document.getElementById("show_data").innerHTML = msgHTML;
             }
         })
-        return false;
     });
 
     function addId(_id) {

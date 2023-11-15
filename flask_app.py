@@ -14,6 +14,7 @@ from flask import Flask
 from flask import render_template, request, Blueprint
 from logging.config import dictConfig
 
+from actions.prediction.predict import convert_str_to_options
 from actions.util_functions import text2int
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
@@ -85,15 +86,17 @@ def home():
     df = BOT.conversation.temp_dataset.contents['X']
     f_names = list(BOT.conversation.temp_dataset.contents['X'].columns)
 
-    # only for boolq
+    dataset = BOT.conversation.describe.get_dataset_name()
+
     entries = []
     for j in range(10):
         temp = {}
         for f in f_names:
-            temp[f] = df[f][j]
+            if dataset == "ECQA" and f == "choices":
+                temp[f] = convert_str_to_options(df[f][j])
+            else:
+                temp[f] = df[f][j]
         entries.append(temp)
-
-    dataset = BOT.conversation.describe.get_dataset_name()
 
     return render_template("index.html", currentUserId="user", datasetObjective=objective, entries=entries,
                            dataset=dataset)
