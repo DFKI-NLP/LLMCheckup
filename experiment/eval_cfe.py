@@ -1,44 +1,60 @@
 import json
+import random
 
-import evaluate
-import numpy as np
 import pandas as pd
-from tqdm import trange
+import torch
+from tqdm import tqdm
+from transformers import AutoTokenizer, AutoModelForCausalLM
 
-df = pd.read_csv("../data/offensive_val.csv")
-texts = list(df["text"])
+from actions.prediction.predict import convert_str_to_options
+from experiment.eval_data_augmentation import get_prediction
 
-# fileObject = open("../../cache/counterfactual_gpt-neo-2.7b.json", "r")
-fileObject = open("../cache/counterfactual_gpt-j-6b.json", "r")
-jsonContent = fileObject.read()
-json_list = json.loads(jsonContent)
+if __name__ == "__main__":
+    # ds = "covid_fact"
+    ds = "ecqa"
+    # model_name = "meta-llama/Llama-2-7b-chat-hf"
+    model_name = "mistralai/Mistral-7B-v0.1"
 
-results = []
-precisions = []
-bleu = evaluate.load("bleu")
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cuda:0',
+                                                 load_in_4bit=True)
 
-# for i in trange(len(texts)):
-# # for i in trange(100):
-#     if json_list[i]["counterfactual"] != "error":
-#         result = bleu.compute(predictions=[json_list[i]["counterfactual"]], references=[[texts[i]]])
-#         # results.append(cos_sim)
-#         results.append(result["bleu"])
-#         precisions.append(result["precisions"][0])
-# results = np.array(results)
-# precisions = np.array(precisions)
-# np.save("../../cache/gpt-neo-2.7-counterfactual-results.npy", results)
-# np.save("../../cache/gpt-neo-2.7-counterfactual-precisions.npy", precisions)
-# np.save("../../cache/gpt-j-6b-counterfactual-results.npy", results)
+    model.config.pad_token_id = model.config.eos_token_id
+    num_shot = 3
 
+    if ds == "ecqa":
+        df = pd.read_csv("../data/ECQA_dataset.csv")
+        questions = list(df["texts"])
+        choices = list(df["choices"])
+        random_list = random.sample(range(0, len(questions)), 100)
 
-# res = np.load("../../cache/gpt-neo-2.7-data-augmentation-results.npy")
-res = np.load("../cache/gpt-j-6b-data-augmentation-results.npy")
+        json_list = []
+        for idx in tqdm(random_list[:1]):
+            pre_prediction = int(get_prediction(tokenizer, model, idx, questions[idx], choices[idx], ds))
 
-# 46.91, 47,47
-print(np.average(res))
+            prompt_template = "You are presented with a multiple-choice question and its options. Generate a " \
+                              "counterfactual statement for the given question."
+            prompt_template += f"Modify only the question such that {choices[idx].split('-')[pre_prediction]} will " \
+                               f"not be selected.\n"
+            prompt_template += f"question: {questions[idx]}\n"
+            prompt_template += f"choices: {convert_str_to_options(choices[idx])}\n"
 
-# 95.39 93.68
-print(np.max(res))
+            input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
+            with torch.no_grad():
+                output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40,
+                                        max_new_tokens=128)
+            result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
-# -0.04, -0.05
-print(np.min(res))
+            post_prediction = int(get_prediction(tokenizer, model, idx, result, choices[idx], ds))
+
+            agreement = 0 if (pre_prediction != post_prediction) else 1
+
+            json_list.append({
+                "idx": idx,
+                "agreement": agreement,
+            })
+
+        jsonString = json.dumps(json_list)
+        jsonFile = open(f"../cache/{ds}/{ds}_cfe_{model_name.split('/')[1]}.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()

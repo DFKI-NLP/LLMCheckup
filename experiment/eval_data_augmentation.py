@@ -13,7 +13,7 @@ from actions.prediction.predict_grammar import COVID_GRAMMAR, ECQA_GRAMMAR
 from parsing.guided_decoding.gd_logits_processor import GuidedParser, GuidedDecodingLogitsProcessor
 
 
-def get_prediction(tokenizer, model, idx, first, second, ds):
+def get_prediction(tokenizer, model, idx, first, second, ds, num_shot=3):
     selected_first_field, selected_second_field, labels = get_demonstrations(idx, num_shot, ds)
 
     if ds == "covid_fact":

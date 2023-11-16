@@ -55,15 +55,13 @@ def augment_operation(conversation, parse_text, i, **kwargs):
         temp = []
         for i in split_choices:
             temp.append(aug.augment(i))
-        augmented_second_field = "-".join(temp)
 
         return_s += f"<b>Original question:</b> {question}<br>"
         return_s += f"<b>Original choices:</b> {convert_str_to_options(choices)}<br>"
         return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">{split_choices[pre_prediction]}</span><br><br>"
         return_s += f"<b>Augmented question:</b> {augmented_first_field}<br>"
-        return_s += f"<b>Augmented choices:</b> {convert_str_to_options(augmented_second_field)}<br>"
 
-    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=augmented_first_field, given_second_field=augmented_second_field)
+    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=augmented_first_field, given_second_field=None)
 
     if conversation.describe.get_dataset_name() == "covid_fact":
         return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"

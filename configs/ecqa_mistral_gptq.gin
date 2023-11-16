@@ -1,0 +1,44 @@
+##########################################
+# The ECQA dataset conversation config
+##########################################
+
+ExplainBot.parsing_model_name = "TheBloke/Mistral-7B-v0.1-GPTQ"
+
+# set skip_prompts to true for quicker startup for finetuned models
+# make sure to set to false using few-shot models
+ExplainBot.skip_prompts = False
+ExplainBot.text_fields = ["texts", "choices"]
+ExplainBot.seed = 0
+ExplainBot.background_dataset_file_path = "./data/ECQA_dataset.csv"
+ExplainBot.dataset_file_path = "./data/ECQA_dataset.csv"
+ExplainBot.in_8_bits = True
+
+ExplainBot.name = "ECQA"
+
+ExplainBot.dataset_index_column = "idx"
+ExplainBot.target_variable_name = "answers"
+ExplainBot.categorical_features = None
+ExplainBot.numerical_features = None
+ExplainBot.remove_underscores = False
+
+ExplainBot.prompt_metric = "cosine"
+ExplainBot.prompt_ordering = "ascending"
+
+# Prompt params
+Prompts.prompt_cache_size = 1_000_000
+Prompts.prompt_cache_location = "./cache/ecqa-prompts.pkl"
+Prompts.max_values_per_feature = 2
+Prompts.sentence_transformer_model_name = "all-mpnet-base-v2"
+Prompts.prompt_folder = "./prompts"
+Prompts.num_per_knn_prompt_template = 1
+Prompts.num_prompt_template = 7
+
+# Conversation params
+Conversation.class_names = {0: "", 1: "", 2: "", 3: "", 4: ""}
+
+# Dataset description
+DatasetDescription.dataset_objective = "Choose the correct option from 5 choices based on question"
+DatasetDescription.dataset_description = "Common-sense QA task with golden positive/negative/free-flow explanations"
+DatasetDescription.model_description = "Mistral-7B-v0.1-GPTQ"
+
+DatasetDescription.name = "ECQA"
