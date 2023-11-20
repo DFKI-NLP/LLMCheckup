@@ -139,6 +139,11 @@ def get_prediction_by_prompt(prompt_template, conversation, choice=None):
 
 
 def convert_str_to_options(choice):
+    """
+    Convert compressed choices to string
+    :param choice: compressed choices by '-'
+    :return: choices in order
+    """
     res = ""
     options = choice.split("-")
 
@@ -257,7 +262,11 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
             return_s += f"<b>Claim:</b> {first_field}<br>"
             return_s += f"<b>Evidence:</b> {second_field}<br>"
         return_s += "<b>Prediction:</b> "
-        return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>.<br>"
+        return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>.<br><br>"
+
+        # Do information retrieval
+        link_ls = list(search(first_field))
+        return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
         return return_s, prediction
     else:
         # prediction in format: i
@@ -268,7 +277,11 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
             return_s += f"<b>Choices:</b> {convert_str_to_options(second_field)}<br>"
         return_s += "<b>Prediction:</b> "
 
-        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction)-1]}</span>.<br>"
+        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction)-1]}</span>.<br><br>"
+
+        # Do information retrieval
+        link_ls = list(search(first_field))
+        return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
 
         # Return index of choice
         return return_s, int(prediction)-1
@@ -279,11 +292,6 @@ def predict_operation(conversation, parse_text, i, **kwargs):
     if conversation.custom_input is not None and conversation.used is False:
         # if custom input is available
         return_s, _ = prediction_generation(None, conversation, None)
-
-        # Do information retrieval
-        link_ls = list(search(conversation.custom_input['first_input']))
-
-        return_s += f"Potential relevant link: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
 
         return return_s, 1
 

@@ -1,8 +1,30 @@
 """Data augmentation operation."""
 
 import nlpaug.augmenter.word as naw
+import torch
 
 from actions.prediction.predict import prediction_generation, convert_str_to_options
+
+
+def get_augmentation(conversation, original_text):
+    """
+    Get augmented text based on original text
+    :param conversation: conversation object
+    :param original_text: original text
+    :return: augmented text
+    """
+    model = conversation.decoder.gpt_model
+    tokenizer = conversation.decoder.gpt_tokenizer
+
+    prompt_template = f"Based on '{original_text}', generate a semantic similar one."
+
+    input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
+    with torch.no_grad():
+        output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40,
+                                max_new_tokens=128)
+    result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
+
+    return result
 
 
 def augment_operation(conversation, parse_text, i, **kwargs):
@@ -49,6 +71,7 @@ def augment_operation(conversation, parse_text, i, **kwargs):
         return_s += f"<b>Augmented evidence:</b> {augmented_second_field}<br>"
     else:
         augmented_first_field = aug.augment(question)
+        # augmented_first_field = get_augmentation(conversation, question)
 
         split_choices = choices.split("-")
 

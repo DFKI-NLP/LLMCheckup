@@ -29,8 +29,8 @@ if __name__ == "__main__":
         random_list = random.sample(range(0, len(questions)), 100)
 
         json_list = []
-        for idx in tqdm(random_list[:1]):
-            pre_prediction = int(get_prediction(tokenizer, model, idx, questions[idx], choices[idx], ds))
+        for idx in tqdm(random_list):
+            pre_prediction = int(get_prediction(tokenizer, model, idx, questions[idx], choices[idx], ds)) - 1
 
             prompt_template = "You are presented with a multiple-choice question and its options. Generate a " \
                               "counterfactual statement for the given question."
@@ -45,13 +45,16 @@ if __name__ == "__main__":
                                         max_new_tokens=128)
             result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
-            post_prediction = int(get_prediction(tokenizer, model, idx, result, choices[idx], ds))
+            post_prediction = int(get_prediction(tokenizer, model, idx, result, choices[idx], ds)) - 1
+
+            print(pre_prediction, post_prediction)
 
             agreement = 0 if (pre_prediction != post_prediction) else 1
 
             json_list.append({
                 "idx": idx,
                 "agreement": agreement,
+                "cfe": result
             })
 
         jsonString = json.dumps(json_list)

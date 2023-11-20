@@ -37,7 +37,7 @@ Prompts.num_prompt_template = 7
 Conversation.class_names = {0: "", 1: "", 2: "", 3: "", 4: ""}
 
 # Dataset description
-DatasetDescription.dataset_objective = "Choose the correct option from 5 choices based on question"
+DatasetDescription.dataset_objective = "choose the correct option from 5 choices based on question"
 DatasetDescription.dataset_description = "Common-sense QA task with golden positive/negative/free-flow explanations"
 DatasetDescription.model_description = "StableBeluga2"
 
