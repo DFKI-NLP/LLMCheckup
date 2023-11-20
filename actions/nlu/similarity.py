@@ -37,19 +37,25 @@ def similar_instances_operation(conversation, parse_text, i, **kwargs):
     dataset = conversation.stored_vars["dataset"]
 
     if conversation.custom_input is not None and conversation.used is False:
-        query = conversation.custom_input
+        query = conversation.custom_input["first_field"]
         idx = 0
         number = 3
     else:
         idx, number = extract_id_number(parse_text)
-        query = " ".join(dataset.contents["X"].loc[[idx]].values.tolist()[0])
+        data = conversation.temp_dataset.contents['X']
+        if conversation.describe.get_dataset_name() == "covid_fact":
+            feature_name = "claims"
+            query = data[feature_name].values[0]
+        else:
+            feature_name = "texts"
+            query = data[feature_name].values[0]
 
-    final_results = get_similar_str(query, idx, number, dataset, conversation)
+    final_results = get_similar_str(query, idx, number, dataset, conversation, feature_name)
 
     return final_results, 1
 
 
-def get_similar_str(query, idx, number, dataset, conversation):
+def get_similar_str(query, idx, number, dataset, conversation, feature_name):
     """
     Args:
     dataset: dataset from the conversation
@@ -65,7 +71,7 @@ def get_similar_str(query, idx, number, dataset, conversation):
     query_preview = " ".join(query_tokens[:16])
     out_str += "<summary>" + query_preview + "...</summary><details>" + query + "</details><br>"
     out_str += "Here are some instances similar to <b>id " + str(idx) + "</b>:<br>"
-    found_similars = get_similars(query, idx, dataset, number, conversation)
+    found_similars = get_similars(query, idx, dataset, number, conversation, feature_name)
     for cossim, similar_id, similar in found_similars:
         similar_tokens = similar.split()
         similar_preview = " ".join(similar_tokens[:16])
@@ -74,7 +80,7 @@ def get_similar_str(query, idx, number, dataset, conversation):
     return out_str
 
 
-def get_similars(query, query_idx, dataset, number, conversation):
+def get_similars(query, query_idx, dataset, number, conversation, feature_name):
     """
     Args:
     dataset: dataset from the conversation
@@ -90,12 +96,15 @@ def get_similars(query, query_idx, dataset, number, conversation):
     for idx in list(dataset.contents["X"].index):
         if idx != query_idx:
             indices.append(idx)
-            texts.append(" ".join(dataset.contents["X"].loc[[idx]].values.tolist()[0]))
-    # TA use caching if the dataset is too big?
-    similarity_model = conversation.prompts.sentence_emb_model
-    query_embedding = similarity_model.encode(query)
-    sent_embeddings = similarity_model.encode(texts)
+            texts.append(dataset.contents["X"].loc[[idx]][feature_name].values[0])
+
+    device = str(conversation.decoder.gpt_model.device.type)
+
+    similarity_model = conversation.prompts.sentence_emb_model.to(device)
+    query_embedding = similarity_model.encode(query, convert_to_tensor=True).to(device)
+    sent_embeddings = similarity_model.encode(texts, convert_to_tensor=True).to(device)
     cos_sim = util.cos_sim(query_embedding, sent_embeddings)[0].tolist()
+
     # sort by cossim
     similars = []
     for i in range(len(cos_sim)):
