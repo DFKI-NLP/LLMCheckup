@@ -226,6 +226,8 @@ def get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field=N
         prompt_template += f"choices: {convert_str_to_options(second_field)}\n"
         prompt_template += f"prediction: "
 
+    conversation.current_prompt = prompt_template
+
     return first_field, second_field, prompt_template
 
 

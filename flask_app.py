@@ -15,7 +15,7 @@ from flask import render_template, request, Blueprint
 from logging.config import dictConfig
 
 from actions.prediction.predict import convert_str_to_options
-from actions.util_functions import text2int
+from actions.util_functions import text2int, get_current_prompt
 from logic.core import ExplainBot
 from logic.sample_prompts_by_action import sample_prompt_for_action
 
@@ -363,6 +363,11 @@ def reset_temp_dataset():
     app.logger.info("Reset temp dataset successfully!")
 
     return "reset temp_dataset"
+
+
+@bp.route("/get_prompt", methods=["Post"])
+def get_prompt():
+    return get_current_prompt(BOT.parsed_text, BOT.conversation)
 
 
 app = Flask(__name__)

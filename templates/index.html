@@ -546,10 +546,21 @@
                 <div class="single-select-checkbox" style="margin-top: 50px">
                     <div>
                         <img src="../static/images/pen.png" width="40px" height="40px">
-                        <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;">Prompt modification</h3>
+                        <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;">Prompt
+                            modification</h3>
                         <i style="font-size:24px; color: white" class="fa" id="icon"
-                       title="Enter/select prompt that will be appended in the original prompt">&#xf05a;</i>
+                           title="Enter/select prompt that will be appended in the original prompt">&#xf05a;</i>
                     </div>
+
+                    <div style="border-style: dashed; border-color: lightslategrey">
+                        <h5 style="color: lightseagreen">Current used system prompt:</h5>
+                        <p id="prompt_holder">
+
+                        </p>
+                        <img src="../static/icons/loading-arrow.png" style="height: 40px; margin-bottom: 10px"
+                                 onclick="get_current_prompt()" type="button" data-toggle="tooltip" data-placement="right" title="Refresh to get the current system prompt!">
+                    </div>
+
                     <input type="radio" id="p_option1" name="options" value="Option 1" checked>
                     <label for="p_option1" style="color: #579ffb">No additional prompt</label>
                     <i style="font-size:24px; color: white" class="fa" id="icon"
@@ -559,7 +570,7 @@
                     <input type="radio" id="p_option2" name="options" value="Option 2">
                     <label for="p_option2" style="color: #579ffb">Zero-shot CoT</label>
                     <i style="font-size:24px; color: white" class="fa" id="icon"
-                       title="Additional prompt: &quot;Let's think step by step&quot;"\>&#xf05a;</i>
+                       title="Additional prompt: &quot;Let's think step by step&quot;" \>&#xf05a;</i>
                     <br>
 
                     <input type="radio" id="p_option3" name="options" value="Option 3">
@@ -575,7 +586,8 @@
 
                     <br>
                     <input type="radio" id="p_option5" name="options" value="Option 5">
-                    <input id="custom_prompt_input" onfocus="document.getElementById('p_option5').checked=true" for="p_option5" placeholder="additional prompt..."/>
+                    <input id="custom_prompt_input" onfocus="document.getElementById('p_option5').checked=true"
+                           for="p_option5" placeholder="additional prompt..."/>
                     <i style="font-size:24px; color: white" class="fa" id="icon"
                        title="Additional prompt: &quot;Take a deep breath and work on this problem step-by-step&quot;">&#xf05a;</i>
 
@@ -604,6 +616,41 @@
 </messagebody>
 </body>
 </html>
+
+<script>
+    function get_current_prompt() {
+        event.preventDefault();
+
+        $.ajax({
+            url: "{{ url_for('.get_prompt') }}",
+            type: 'POST',
+            data: {},
+            processData: false,
+            contentType: false,
+            success: function (data) {
+
+                let temp = data;
+                let returned_prompt = "<details><summary style='color: #64bd63'>";
+                const split_arr = temp.split(" ");
+
+                returned_prompt += split_arr[0]
+                returned_prompt += "..."
+                returned_prompt += "</summary>"
+                returned_prompt += "<p style='color: #64bd63'>"
+                returned_prompt += data;
+                returned_prompt += "</p>"
+                returned_prompt += "</details>"
+
+                // document.getElementById("prompt_holder").insertAdjacentHTML("afterend", returned_prompt);
+                document.getElementById("prompt_holder").innerHTML = returned_prompt;
+            },
+            error: function (error) {
+                console.log('Error:', error);
+            }
+        });
+    }
+
+</script>
 
 <script>
     let recorder;
@@ -980,14 +1027,14 @@
 
 </script>
 <script>
-    function get_prompt_type(){
-        if (document.getElementById("p_option1").checked){
+    function get_prompt_type() {
+        if (document.getElementById("p_option1").checked) {
             return "none";
         } else if (document.getElementById("p_option2").checked) {
             return "zero_shot";
-        } else if (document.getElementById("p_option3").checked){
+        } else if (document.getElementById("p_option3").checked) {
             return "plan_and_solve"
-        } else if (document.getElementById("p_option4").checked){
+        } else if (document.getElementById("p_option4").checked) {
             return "opro";
         } else {
             return document.getElementById("custom_prompt_input").value;

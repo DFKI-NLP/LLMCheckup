@@ -18,6 +18,8 @@ def get_augmentation(conversation, original_text):
 
     prompt_template = f"Based on '{original_text}', generate a semantic similar one."
 
+    conversation.current_prompt = prompt_template
+
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
         output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40,

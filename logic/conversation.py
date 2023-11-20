@@ -114,6 +114,8 @@ class Conversation:
         self.user_input = None
         self.prompt_type = "none"
 
+        self.current_prompt = ""
+
     def get_feature_definition(self, feature_name):
         """Gets semantic feature definition."""
         if feature_name not in self.feature_definitions or self.feature_definitions is None:

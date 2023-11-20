@@ -171,3 +171,18 @@ def text2int(textnum):
         curstring += repr(result + current)
 
     return curstring
+
+
+def get_current_prompt(parsed_text, conversation):
+    ops = ["predict", "randompredict", "augment", "cfe", "rationalize"]
+
+    if parsed_text is None:
+        return "Current operation don't have system prompt!"
+
+    for op in ops:
+        if op in parsed_text:
+            return conversation.current_prompt
+
+    conversation.current_prompt = ""
+    return "Current operation don't have system prompt!"
+

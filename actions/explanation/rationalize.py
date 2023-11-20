@@ -72,6 +72,8 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
             prompt_template += conversation.prompt_type
     print(f"[Prompt] Using customized additional prompt: *** {conversation.prompt_type} ***")
 
+    conversation.current_prompt = prompt_template
+
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
         output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)
