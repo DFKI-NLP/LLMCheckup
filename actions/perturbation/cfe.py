@@ -1,5 +1,6 @@
 import torch
 
+from actions.demonstrations import get_cfe_prompt_by_demonstrations
 from actions.prediction.predict import prediction_generation, convert_str_to_options
 
 
@@ -42,29 +43,15 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
     if conversation.describe.get_dataset_name() == "covid_fact":
 
-        prompt_template += f"claim: {claim}\n"
-        prompt_template += f"evidence: {evidence}\n"
-
-        if prediction == "SUPPORTED":
-            reversed_prediction = "REFUTED"
-        else:
-            reversed_prediction = "SUPPORTED"
-
-        # zero-shot prompting
-        prompt_template += f"Modify only the evidence such that " \
-                           f"based on modified evidence, the claim is predicted as <b>{reversed_prediction.lower()}</b> rather <b>{prediction}</b>."
+        prompt_template += get_cfe_prompt_by_demonstrations("covid_fact", claim, evidence, prediction)
     else:
-        prompt_template += "You are presented with a multiple-choice question and its options. Generate a " \
-                           "counterfactual statement for the given question."
-        prompt_template += f"Modify only the question such that {choices.split('-')[prediction]} will not be selected.\n"
-        prompt_template += f"question: {question}\n"
-        prompt_template += f"choices: {convert_str_to_options(choices)}\n"
+        prompt_template += get_cfe_prompt_by_demonstrations("covid_fact", question, choices, int(prediction))
 
     conversation.current_prompt = prompt_template
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
-        output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=128)
+        output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40, max_new_tokens=512)
     result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
     return_s = f"Instance with ID <b>{idx}</b><br>"
