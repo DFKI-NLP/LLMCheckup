@@ -133,7 +133,11 @@ def get_prediction_by_prompt(prompt_template, conversation, choice=None):
                                          pad_token_id=model.config.pad_token_id,
                                          eos_token_id=parser.eos_token, device=model.device.type)
 
-    prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
+    decoder_name = conversation.decoder.parser_name
+    if "falcon" in decoder_name or "pythia" in decoder_name:
+        prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" [e]")[0].split(" ")[1]
+    else:
+        prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
 
     return prediction
 

@@ -4,7 +4,7 @@ This class 'decodes' natural language inputs into the grammar. There are several
 supported, such as fine-tuned t5 models, few-shot gpt-j models, and KNN.
 """
 import gin
-from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig, GPTNeoXForCausalLM
 from petals import AutoDistributedModelForCausalLM
 
 
@@ -92,7 +92,7 @@ class Decoder:
 
             def complete(prompt, grammar):
                 return predict_f(text=prompt, grammar=grammar)
-        elif "Llama" in parsing_model_name or "Mistral" in parsing_model_name:
+        elif "Llama" in parsing_model_name or "Mistral" in parsing_model_name or "falcon" in parsing_model_name:
             """original model"""
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
@@ -103,6 +103,21 @@ class Decoder:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)
                 self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
                 self.gpt_parser_initialized = True
+
+            from parsing.gpt.few_shot_inference import get_few_shot_predict_f
+            predict_f = get_few_shot_predict_f(model=self.gpt_model,
+                                               tokenizer=self.gpt_tokenizer,
+                                               use_guided_decoding=self.use_guided_dec)
+
+            def complete(prompt, grammar):
+                return predict_f(text=prompt, grammar=grammar)
+        elif "pythia" in parsing_model_name:
+            if not self.gpt_parser_initialized:
+                self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
+                self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name)
+
+            self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
+            self.gpt_parser_initialized = True
 
             from parsing.gpt.few_shot_inference import get_few_shot_predict_f
             predict_f = get_few_shot_predict_f(model=self.gpt_model,
