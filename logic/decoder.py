@@ -1,7 +1,6 @@
 """Parsing engine that converts natural language to the grammar.
 
-This class 'decodes' natural language inputs into the grammar. There are several parsing options
-supported, such as fine-tuned t5 models, few-shot gpt-j models, and KNN.
+This class 'decodes' natural language inputs into the grammar.
 """
 import gin
 from transformers import AutoModelForCausalLM, AutoTokenizer, GPTQConfig, GPTNeoXForCausalLM
@@ -21,14 +20,8 @@ class Decoder:
         """Init
 
         Arguments:
-            parsing_model_name: The name of the parsing model. The currently supported are:
-                                   * t5 models: if using a t5 model, parsing_model_name must be the name of
-                                     the model path or huggingface directory
-                                   * gpt-j few shot models: if using few-shot, this must be the name of the
-                                     hugging face directory, e.g., 'EleutherAI/gpt-j-6B'
-                                   * nearest-neighbor: if this, will use knn on the prompts to parse
-                                Note, that for t5 and gpt models to be handled correctly, 't5' or 'gpt'
-                                **must** be specified in parsing_model_name.
+            parsing_model_name: The name of the parsing model.
+            in_8_bits: if True, then load model in 8 bits
             no_init: If True, will not init any parsing model
             use_guided_decoding: Whether to use guided decoding
             dataset_name: The name of the dataset
@@ -41,22 +34,18 @@ class Decoder:
         self.parser_name = parsing_model_name
         self.init_model(parsing_model_name,
                         in_8_bits,
-                        no_init=no_init,
-                        dataset_name=dataset_name)
+                        no_init=no_init)
 
     def init_model(self,
                    parsing_model_name: str,
                    in_8_bits: bool,
-                   no_init: bool = False,
-                   dataset_name: str = None):
+                   no_init: bool = False):
         """Initializes the model
 
         Args:
-            dataset_name: The semantic name of the dataset
-            no_init: Do not init the model
-            parsing_model_name: the name of the model
-            config_file: a gin config file required for t5 models
-            :param in_8_bits:
+            :param no_init: Do not init the model
+            :param parsing_model_name: the name of the model
+            :param in_8_bits: load model in 8 bits
         """
 
         # Does not initialize a model
@@ -65,7 +54,7 @@ class Decoder:
 
         if "petals-team" in parsing_model_name:
             """p2p models from petals-team"""
-            self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
+            self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name, device_map="auto")
             self.gpt_model = AutoDistributedModelForCausalLM.from_pretrained(parsing_model_name)
             self.gpt_parser_initialized = True
 
@@ -80,7 +69,8 @@ class Decoder:
             """GPTQ quantized model"""
             self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
             quantization_config = GPTQConfig(bits=4, tokenizer=self.gpt_tokenizer)
-            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, quantization_config=quantization_config,
+            self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name,
+                                                                  quantization_config=quantization_config,
                                                                   device_map="auto")
             self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
             self.gpt_parser_initialized = True
@@ -98,9 +88,9 @@ class Decoder:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
                 if in_8_bits:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0',
-                                                                          load_in_8bit=True)
+                                                                          load_in_8bit=in_8_bits)
                 else:
-                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name)
+                    self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
                 self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
                 self.gpt_parser_initialized = True
 
@@ -114,8 +104,12 @@ class Decoder:
         elif "pythia" in parsing_model_name:
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
-                self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name)
 
+                if in_8_bits:
+                    self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0',
+                                                                        load_in_8bit=in_8_bits)
+                else:
+                    self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
             self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
             self.gpt_parser_initialized = True
 
