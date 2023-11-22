@@ -8,7 +8,7 @@ or: " or"
 followup: " followup"
 done: " [e]"
 
-operation: augment | cfe | data | define | featureattribution | filter | function | globaltopk | includes | keywords | label | labelfilter | lastturnfilter | lastturnop | mistakes | modeldescription | ndatapoints | predfilter | predictions | qatutorial | randomprediction | rationalize | score | show | similarity | whatami
+operation: augment | cfe | data | define | featureattribution | filter | function  | includes | keywords | label | labelfilter | lastturnfilter | lastturnop | mistakes | modeldescription | ndatapoints | predfilter | predictions | qatutorial | randomprediction | rationalize | score | show | similarity | whatami
 
 augment: " augment"
 
@@ -32,9 +32,6 @@ filterword: " filter"
 featuretype: {availablefeaturetypes}
 
 function: " function"
-
-globaltopk: globaltopkword
-globaltopkword: " important" (class | " all" | topk)
 
 includes: " includes"
 
@@ -66,7 +63,8 @@ qatutorial : tutorial qaops
 tutorial: " qatutorial"
 qaops: " qacfe" | " qafa" | " qada" | " qarationale" | " qasim"
 
-randomprediction: " randompredict"
+randomprediction:  random ( {topkvalues} )
+random: " randompredict"
 
 rationalize: " rationalize"
 

@@ -7,7 +7,7 @@ from actions.demonstrations import get_augmentation_prompt_by_demonstrations
 from actions.prediction.predict import prediction_generation, convert_str_to_options
 
 
-def get_augmentation(conversation, first_field=None, second_field=None, num_token=128):
+def get_augmentation(conversation, first_field=None, second_field=None, num_token=64):
     """
     Get augmented text based on original text
     :param num_token: number of max token

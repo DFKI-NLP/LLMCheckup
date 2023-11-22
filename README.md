@@ -1,5 +1,38 @@
 # LLMCheckup
+![Static Badge](https://img.shields.io/badge/python-3.8-blue)
+![Static Badge](https://img.shields.io/badge/python-3.9-blue)
+![Static Badge](https://img.shields.io/badge/python-3.10-blue)
+![Static Badge](https://img.shields.io/badge/python-3.11-blue)
+
 Dialogical Interpretability Tool for LLMs
+
+## Running with conda / virtualenv
+**Note: Please use Python 3.8+ and torch2.0+**
+### Create the environment and install dependencies
+
+#### Conda
+```shell
+conda create -n llmcheckup python=3.9
+conda activate llmcheckup
+```
+
+#### venv
+```shell
+python -m venv venv
+source venv/venv/activate
+```
+
+### 📝Install the requirements
+```shell
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python -m nltk.downloader averaged_perceptron_tagger
+```
+
+### 🚀Launch system
+```shell
+python flask_app.py
+```
 
 ## Supported explainability methods
 - Feature Attribution
@@ -25,14 +58,14 @@ In our study, we identified three LLMs for our purposes.
   - Quantized Mistral (https://huggingface.co/TheBloke/Mistral-7B-v0.1-GPTQ)
 - Stable Beluga 2 (finetuned llama2-70B) (https://huggingface.co/petals-team/StableBeluga2)
 
-### Deployment:
+### 🐳Deployment:
 We support different methods for deployment:
 - Original models
 - Quantized by [GPTQ](https://arxiv.org/abs/2210.17323)
 - Loading model in 8-bits by [bitsandbytes](https://github.com/TimDettmers/bitsandbytes)
 - peer2peer by [petals](https://github.com/bigscience-workshop/petals)
 
-### Support:
+### ✏️Support:
 |    Method    | Unix-based | Windows |
 |:------------:|:----------:|:-------:|
 |   Original   |    ✅    |   ✅   |

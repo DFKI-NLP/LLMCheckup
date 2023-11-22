@@ -5,30 +5,23 @@ import pandas as pd
 
 from logic.utils import read_precomputed_prediction
 
-str2int = {"offensive": 1, "non-offensive": 0}
 
-
-def get_predictions_and_labels(name, indices, conversation):
+def get_predictions_and_labels(conversation):
     """
-    Args:
-        name: dataset name
-        indices: indices of temp_dataset
-    Returns:
-        predictions and labels
+    Get predictions and labels from subset
+    :param conversation: conversation objects
+    :return: predictions, golden labels, indices
     """
-    json_list = read_precomputed_prediction(conversation)
-    y_pred, y_true, ids = [], [], []
+    df = conversation.precomputation_of_prediction
 
-    for item in json_list:
-        if item["idx"] in indices:
-            y_pred.append(str2int[item["prediction"]])
-            ids.append(item["idx"])
+    y_pred = []
+    y_true = []
+    ids = []
 
-    df = pd.read_csv("./data/offensive_val.csv")
-    labels = list(df["label"])
-    for i in range(len(labels)):
-        if i in indices:
-            y_true.append(labels[i])
+    for i in range(len(df)):
+        ids.append(df.loc[i]["id"])
+        y_pred.append(df.loc[i]["prediction"])
+        y_true.append(conversation.temp_dataset.contents['y'].values[df.loc[i]["id"]])
 
     y_pred = np.array(y_pred)
     y_true = np.array(y_true)

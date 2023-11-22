@@ -325,28 +325,6 @@
                             </span>
                         </div> <!-- Move custom input prediction button here -->
                         <div class="tooltip-wrapper">
-                            <button id="pred_dataset" class="idea-button" onclick="samplePredictDataset()">
-                                Dataset prediction
-                            </button>
-                            <span class="tooltip-text">
-                                Lets the model predict the <b>entire dataset</b> or any subset with <b>multiple instances</b>.
-                            </span>
-                        </div>
-                        {#
-                        <div class="tooltip-wrapper">#}
-                            {#
-                            <button id="pred_likelihood" class="idea-button" onclick="sampleLikelihood()">#}
-                                {# Likelihood#}
-                                {#
-                            </button>
-                            #}
-                            {# <span class="tooltip-text">#}
-{#                                For a <b>single example</b> (ID), gets the <b>probability</b> that the model predicts a certain <b>label</b>.#}
-{#                            </span>#}
-                            {#
-                        </div>
-                        #}
-                        <div class="tooltip-wrapper">
                             <button id="pred_score" class="idea-button" onclick="samplePerformance()">
                                 Performance
                             </button>
@@ -404,36 +382,6 @@
                             </button>
                             <span class="tooltip-text">
                                 Indicates which <b>tokens</b> for a <b>single example</b> (ID) are <b>most important</b>. Also prints a heatmap visualization.
-                            </span>
-                        </div>
-                        {#
-                        <div class="tooltip-wrapper">#}
-                            {#
-                            <button id="x_sentence" class="idea-button" onclick="sampleSentence()">#}
-                                {# Sentence-level feature importance#}
-                                {#
-                            </button>
-                            #}
-                            {# <span class="tooltip-text">#}
-{#                                Indicates which <b>sentences</b> for a <b>single example</b> (ID) are <b>most important</b>.#}
-{#                            </span>#}
-                            {#
-                        </div>
-                        #}
-                        <div class="tooltip-wrapper">
-                            <button id="x_global" class="idea-button" onclick="sampleImportant()">
-                                Global feature importance
-                            </button>
-                            <span class="tooltip-text">
-                                Indicates which <b>tokens</b> are <b>most important</b> if <b>aggregated</b> over the <b>entire dataset</b>.
-                            </span>
-                        </div>
-                        <div class="tooltip-wrapper">
-                            <button id="x_class" class="idea-button" onclick="sampleImportantClass()">
-                                Class-based feature importance
-                            </button>
-                            <span class="tooltip-text">
-                                Indicates which <b>tokens</b> are <b>most important</b> if <b>aggregated</b> over one <b>label subset</b> of the data.
                             </span>
                         </div>
                         <div class="tooltip-wrapper">
@@ -937,14 +885,6 @@
         doSample("rationalization");
     }
 
-    function sampleImportant() {
-        doSample("important");
-    }
-
-    function sampleImportantClass() {
-        doSample("important_class");
-    }
-
     function sampleLabels() {
         doSample("labels");
     }
@@ -959,14 +899,6 @@
 
     function samplePredict() {
         doSample("predict");
-    }
-
-    function samplePredictDataset() {
-        doSample("predict_dataset");
-    }
-
-    function sampleLikelihood() {
-        doSample("likelihood");
     }
 
     function sampleShow() {

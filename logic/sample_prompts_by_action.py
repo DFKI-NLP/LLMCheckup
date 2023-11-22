@@ -15,9 +15,7 @@ ACTION_2_FILENAME = {
     "labels": "label.txt",
     # Prediction
     "predict": "predict.txt",
-    "predict_dataset": "predict_dataset.txt",
     "random_predict": ["random_predict.txt", "random_predict_chatgpt.txt"],
-    "likelihood": "likelihood.txt",
     "score": "score.txt",
     "mistake_count": "mistake_count.txt",
     "mistake_sample": "mistake_sample.txt",
@@ -26,18 +24,13 @@ ACTION_2_FILENAME = {
     "keyword": "keywords.txt",
     # Explanation
     "explain": ["local_feature_importance.txt", "local_feature_importance_chatgpt.txt"],
-    "sentence": "local_feature_importance_sentence.txt",
-    "important": "global_feature_importance.txt",
-    "important_class": "global_feature_importance_class.txt",
     "rationalization": ["rationalize.txt", "rationalize_chatgpt.txt"],
     # Custom input
     "custom_input_prediction": ["custom_input_prediction_chatgpt.txt", "custom_input_prediction.txt"],
     "custom_input_feature_importance": ["custom_input_feature_importance_chatgpt.txt", "custom_input_feature_importance.txt"],
-    "custom_input_feature_importance_on_sentence_level": "custom_feature_importance_sentence_chatgpt.txt",
     # Perturbation
     "cfe": "cfe.txt",
     "augment": ["augmentation_chatgpt.txt", "augmentation.txt"],
-    "adversarial": ["adversarial_chatgpt.txt", "adversarial.txt"],
     "c_rationale": ["custom_input_rationalize.txt", "custom_input_rationalize_chatgpt.txt"],
     "c_cfe": ["custom_input_cfe.txt", "custom_input_cfe_chatgpt.txt"],
     "c_data": ["custom_input_data_augmentation.txt", "custom_input_data_augmentation_chatgpt.txt"]

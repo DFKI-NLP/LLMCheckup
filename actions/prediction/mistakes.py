@@ -11,6 +11,7 @@ from timeout import timeout
 import matplotlib.pyplot as plt
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
+
 def one_mistake(y_true, y_pred, conversation, intro_text):
     """One mistake text"""
     label = y_true[0]
@@ -58,7 +59,7 @@ def count_mistakes(y_true, y_pred, conversation, intro_text):
     return_string = (f"{intro_text} the model is incorrect {incorrect_num} out of {total_num} "
                      f"times (error rate {error_rate}).")
 
-    labels = [v for k,v in conversation.class_names.items()]
+    labels = [v for k, v in conversation.class_names.items()]
     y_true_labels = [conversation.get_class_name_from_label(lbl) for lbl in y_true]
     y_pred_labels = [conversation.get_class_name_from_label(lbl) for lbl in y_pred]
     cm = confusion_matrix(y_true_labels, y_pred_labels)
@@ -113,13 +114,10 @@ def typical_mistakes(data, y_true, y_pred, conversation, intro_text, ids):
 
 @timeout(60)
 @gin.configurable
-def show_mistakes_operation(conversation, parse_text, i, n_features_to_show=float("+inf"), **kwargs):
+def show_mistakes_operation(conversation, parse_text, i, **kwargs):
     """Generates text that shows the model mistakes."""
 
-    # Get dataset name
-    name = conversation.describe.get_dataset_name()
-    data_indices = conversation.temp_dataset.contents["X"].index.to_list()
-    y_pred, y_true, ids = get_predictions_and_labels(name, data_indices)
+    y_pred, y_true, ids = get_predictions_and_labels(conversation)
 
     # The filtering text
     intro_text = get_parse_filter_text(conversation)
@@ -144,13 +142,6 @@ def show_mistakes_operation(conversation, parse_text, i, n_features_to_show=floa
                                        y_pred,
                                        conversation,
                                        intro_text)
-    # elif parse_text[i+1] == "typical":
-    #     return_string = typical_mistakes(data,
-    #                                      y_true,
-    #                                      y_pred,
-    #                                      conversation,
-    #                                      intro_text,
-    #                                      ids)
     else:
         raise NotImplementedError(f"No mistake type {parse_text[i + 1]}")
 

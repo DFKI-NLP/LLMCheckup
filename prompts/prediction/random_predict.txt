@@ -1,11 +1,11 @@
-User: show me a random prediction
-Parsed: randompredict [E]
+User: precompute 10 instances
+Parsed: randompredict 10 [E]
 
-User: predict one instance from the data at random
-Parsed: randompredict [E]
+User: Compute 5 instances in advance.
+Parsed: randompredict 5 [E]
 
-User: could you randomly select an example and predict it?
-Parsed: randompredict [E]
+User: Calculate 3 instances in advance
+Parsed: randompredict 3 [E]
 
-User: please choose one input text and show the model's outcome
+User: precompute
 Parsed: randompredict [E]

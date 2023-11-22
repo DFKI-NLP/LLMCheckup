@@ -11,7 +11,6 @@ from actions.context.last_turn_filter import last_turn_filter
 from actions.context.last_turn_operation import last_turn_operation
 from actions.explanation.feature_importance import feature_importance_operation
 from actions.explanation.rationalize import rationalize_operation
-from actions.explanation.global_topk import global_top_k
 from actions.filter.filter import filter_operation
 from actions.filter.includes_token import includes_operation
 from actions.metadata.count_data_points import count_data_points
@@ -57,7 +56,6 @@ def get_all_action_functions_map():
         'similar': similar_instances_operation,
         'rationalize': rationalize_operation,
         'nlpattribute': feature_importance_operation,
-        'important': global_top_k,
         'cfe': counterfactuals_operation,
         'augment': augment_operation,
         'qatutorial': tutorial_operation

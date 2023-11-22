@@ -152,7 +152,7 @@ def convert_str_to_options(choice):
     options = choice.split("-")
 
     for idx, op in enumerate(options):
-        res += f"({idx+1}) {op} "
+        res += f"({idx + 1}) {op} "
     return res
 
 
@@ -233,9 +233,29 @@ def get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field=N
     return first_field, second_field, prompt_template
 
 
-def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None, external_call=True):
+def store_prediction(conversation, _id, prediction):
+    """
+    Store prediction into dataframe
+    :param conversation: conversation object
+    :param _id: id of instance
+    :param prediction: prediction of the given instance
+    """
+    df = conversation.precomputation_of_prediction
+
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        # Reverse the class name dictionary to get prediction in digits
+        prediction = {v: k for k, v in conversation.class_names.items()}[prediction]
+
+    # Check if available
+    if not any(df["id"] == _id):
+        df.loc[len(df)] = {"id": _id, "prediction": int(prediction)}
+
+
+def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None,
+                          external_call=True, external_search=True):
     """
     prediction generator
+    :param external_search: external information retrieval
     :param external_call: external call
     :param given_first_field: perturbed text
     :param given_second_field: perturbed text
@@ -247,7 +267,8 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
     """
     return_s = ""
 
-    first_field, second_field, prompt_template = get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field, given_second_field)
+    first_field, second_field, prompt_template = get_fields_and_prompt(data, conversation, _id, num_shot,
+                                                                       given_first_field, given_second_field)
 
     if not external_call:
         conversation.current_prompt = prompt_template
@@ -255,6 +276,9 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
     print(prompt_template)
 
     prediction = get_prediction_by_prompt(prompt_template, conversation, choice=second_field)
+
+    # Store prediction in precomputation dataframe
+    store_prediction(conversation, _id, prediction)
 
     if _id is not None:
         filter_string = f"<b>id equal to {_id}</b>"
@@ -272,9 +296,11 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
         return_s += "<b>Prediction:</b> "
         return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>.<br><br>"
 
-        # Do information retrieval
-        link_ls = list(search(first_field))
-        return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+        if external_search:
+            # Do information retrieval
+            link_ls = list(search(first_field))
+            return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+
         return return_s, prediction
     else:
         # prediction in format: i
@@ -285,14 +311,15 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
             return_s += f"<b>Choices:</b> {convert_str_to_options(second_field)}<br>"
         return_s += "<b>Prediction:</b> "
 
-        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction)-1]}</span>.<br><br>"
+        return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction) - 1]}</span>.<br><br>"
 
-        # Do information retrieval
-        link_ls = list(search(first_field))
-        return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+        # if external_search:
+        #     # Do information retrieval
+        #     link_ls = list(search(first_field))
+        #     return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
 
         # Return index of choice
-        return return_s, int(prediction)-1
+        return return_s, int(prediction) - 1
 
 
 def predict_operation(conversation, parse_text, i, **kwargs):

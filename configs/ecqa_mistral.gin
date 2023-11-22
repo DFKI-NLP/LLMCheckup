@@ -34,7 +34,7 @@ Prompts.num_per_knn_prompt_template = 1
 Prompts.num_prompt_template = 7
 
 # Conversation params
-Conversation.class_names = {0: "", 1: "", 2: "", 3: "", 4: ""}
+Conversation.class_names = {0: "option1", 1: "option2", 2: "option3", 3: "option4", 4: "option5"}
 
 # Dataset description
 DatasetDescription.dataset_objective = "choose the correct option from 5 choices based on question"

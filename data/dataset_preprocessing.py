@@ -50,7 +50,7 @@ if dataset_name == "covid":
     fig, ax = plt.subplots()
     size = [counter_0 / total, counter_1 / total]
     ax.pie(size, labels=text_labels, autopct='%1.1f%%', shadow=True, startangle=90, colors=["lightcoral", "cornflowerblue"])
-    plt.show
+    plt.show()
     name_dict = {
         "claims": claims,
         "labels": labels,
