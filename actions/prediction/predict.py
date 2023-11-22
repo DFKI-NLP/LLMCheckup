@@ -230,14 +230,13 @@ def get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field=N
         prompt_template += f"choices: {convert_str_to_options(second_field)}\n"
         prompt_template += f"prediction: "
 
-    conversation.current_prompt = prompt_template
-
     return first_field, second_field, prompt_template
 
 
-def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None):
+def prediction_generation(data, conversation, _id, num_shot=3, given_first_field=None, given_second_field=None, external_call=True):
     """
     prediction generator
+    :param external_call: external call
     :param given_first_field: perturbed text
     :param given_second_field: perturbed text
     :param data: filtered data
@@ -246,9 +245,12 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
     :param num_shot: number of demonstrations
     :return: string for prediction operation
     """
-    return_s = ''
+    return_s = ""
 
     first_field, second_field, prompt_template = get_fields_and_prompt(data, conversation, _id, num_shot, given_first_field, given_second_field)
+
+    if not external_call:
+        conversation.current_prompt = prompt_template
 
     print(prompt_template)
 
@@ -297,7 +299,7 @@ def predict_operation(conversation, parse_text, i, **kwargs):
     """The prediction operation."""
     if conversation.custom_input is not None and conversation.used is False:
         # if custom input is available
-        return_s, _ = prediction_generation(None, conversation, None)
+        return_s, _ = prediction_generation(None, conversation, None, external_call=False)
 
         return return_s, 1
 
@@ -310,7 +312,7 @@ def predict_operation(conversation, parse_text, i, **kwargs):
 
     if len(data) == 1:
         # `filter id and predict [E]`
-        return_s, _ = prediction_generation(data, conversation, _id)
+        return_s, _ = prediction_generation(data, conversation, _id, external_call=False)
     else:
         raise ValueError("Too many ids are given!")
     return return_s, 1

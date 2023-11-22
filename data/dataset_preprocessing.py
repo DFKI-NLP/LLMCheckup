@@ -2,7 +2,7 @@ import json
 import pandas as pd
 import matplotlib.pyplot as plt
 
-dataset_name = "ECQA"
+dataset_name = "covid"
 
 if dataset_name == "covid":
 
@@ -41,16 +41,16 @@ if dataset_name == "covid":
 
     for l in labels:
         if l == 0:
-            counter_0 += 1
-        else:
             counter_1 += 1
+        else:
+            counter_0 += 1
 
     text_labels = ["REFUTED", "SUPPORTED"]
     total = counter_0 + counter_1
     fig, ax = plt.subplots()
     size = [counter_0 / total, counter_1 / total]
     ax.pie(size, labels=text_labels, autopct='%1.1f%%', shadow=True, startangle=90, colors=["lightcoral", "cornflowerblue"])
-
+    plt.show
     name_dict = {
         "claims": claims,
         "labels": labels,

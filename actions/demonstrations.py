@@ -48,6 +48,68 @@ ecqa_cfe_demonstrations = {
     ]
 }
 
+covid_fact_claim_data_augmentation_demonstrations = {
+    "original_text": [
+        "Coronavirus dons a new term",
+        "Fenofibrate decreased the amount of sulfatide which seems beneficial against covid-19",
+        "25-hydroxyvitamin d concentrations are higher in patients with positive pcr for sars-cov-2"
+    ],
+    "augmented_text": [
+        "A fresh term emerges for the coronavirus.",
+        "The administration of fenofibrate resulted in a decrease in sulfatide levels, suggesting potential benefits in the fight against COVID-19.",
+        "Higher levels of 25-hydroxyvitamin D are observed in individuals who have a positive PCR result for SARS-CoV-2."
+    ]
+}
+
+covid_fact_evidence_data_augmentation_demonstrations = {
+    "original_text": [
+        "In Pfizers trial, all four participants who experienced Bells palsy received the vaccine. These are 3 of the 4 volunteers who developed Bells palsy after being vaccinated with the Pfizer (SIC) covid experimental vaccine. As the United Kingdom began administering people with the Pfizer-BioNTech vaccine, four people who got Pfizer's coronavirus vaccine in the firm's trial developed Bell's palsy, a form of temporary facial paralysis, according to US regulators' report on the shot. Ill go on to say there were deaths in the trial and none of them were linked to the vaccine. To be clear, four participants in the Pfizer vaccine trial and four participants in Modernas trial did experience Bells palsy.",
+        "\"We strongly believe the vaccine distribution process could begin as soon as the week of December 14,\" Pence said, according to audio of the call obtained by CBS News. We strongly believe the vaccine distribution process could begin as soon as the week of Dec. 14, Pence said on the call, according to CBS News. Siphiwe Sibeko, Associated Press Vice President Mike Pence recently told governors across the country that some doses of the COVID-19 vaccine could be distributed in two weeks, CBS News reports.",
+        "Overall, positive baseline anti-spike antibodies were associated with lower rates of PCR-positivity (with or without symptoms) (adjusted rate ratio 0.24 [95%CI 0.08-0.76, p=0.015]). Conclusions Prior SARS-CoV-2 infection that generated antibody responses offered protection from reinfection for most people in the six months following infection."
+    ],
+    "augmented_text": [
+        "In Pfizer's clinical trial, all four individuals who encountered Bell's palsy received the vaccine. These include three out of the four volunteers who developed Bell's palsy after receiving the experimental COVID vaccine from Pfizer. As the United Kingdom initiated the administration of the Pfizer-BioNTech vaccine, four participants in Pfizer's vaccine trial reported cases of Bell's palsy, a temporary facial paralysis, as documented in the regulatory report from US health authorities. It's important to note that there were deaths recorded during the trial; however, none of these fatalities were linked to the vaccine. It's noteworthy that four participants in both Pfizer's and Moderna's vaccine trials experienced incidents of Bell's palsy.",
+        "\"We have a strong belief that the commencement of the vaccine distribution process could initiate as early as the week of December 14,\" Pence conveyed during a call, as revealed by audio obtained by CBS News. This statement echoes Vice President Mike Pence's recent communication to governors nationwide, where he suggested that certain doses of the COVID-19 vaccine might be distributed within the next two weeks, according to a report by CBS News, citing Siphiwe Sibeko of the Associated Press.",
+        "In summary, individuals with positive baseline anti-spike antibodies exhibited lower rates of PCR-positivity, whether symptomatic or asymptomatic (adjusted rate ratio 0.24 [95% CI 0.08-0.76, p=0.015]). The findings lead to the conclusion that a previous SARS-CoV-2 infection, resulting in the generation of antibody responses, conferred protection against reinfection for the majority of individuals within the six months following the initial infection."
+    ]
+}
+
+ecqa_data_augmentation_demonstrations = {
+    "original_text": [
+        "Where do you find wild cats?",
+        "The robber wanted to conceal his pistol, where did he put it?",
+        "What are students trying to do?"
+    ],
+    "augmented_text": [
+        "Where can one encounter wild felines?",
+        "The thief aimed to hide his firearm; where did he choose to conceal it?",
+        "What objectives are students attempting to achieve?"
+    ]
+}
+
+
+def get_augmentation_prompt_by_demonstrations(ds, first_field, second_field):
+    if ds == "covid_fact":
+        if first_field is not None:
+            temp = first_field
+            dictionary = covid_fact_claim_data_augmentation_demonstrations
+        else:
+            temp = second_field
+            dictionary = covid_fact_evidence_data_augmentation_demonstrations
+    else:
+        dictionary = ecqa_data_augmentation_demonstrations
+        temp = first_field
+
+    prompt = "Each 2 items in the following list contains the original text and augmented. " \
+             "Your task is to generate a new augmented text based on the given input.\n"
+
+    for i in range(len(dictionary["original_text"])):
+        prompt += f"Original text: {dictionary['original_text'][i]}\nAugmented text: {dictionary['augmented_text'][i]}\n\n"
+
+    prompt += f"Original text: {temp}\nAugmented text:"
+
+    return prompt
+
 
 def reverse_covid_fact_prediction(prediction: str) -> str:
     if prediction == "supported":

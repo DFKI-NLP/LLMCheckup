@@ -3,27 +3,31 @@
 import nlpaug.augmenter.word as naw
 import torch
 
+from actions.demonstrations import get_augmentation_prompt_by_demonstrations
 from actions.prediction.predict import prediction_generation, convert_str_to_options
 
 
-def get_augmentation(conversation, original_text):
+def get_augmentation(conversation, first_field=None, second_field=None, num_token=128):
     """
     Get augmented text based on original text
+    :param num_token: number of max token
+    :param second_field:
+    :param first_field:
     :param conversation: conversation object
-    :param original_text: original text
     :return: augmented text
     """
     model = conversation.decoder.gpt_model
     tokenizer = conversation.decoder.gpt_tokenizer
 
-    prompt_template = f"Based on '{original_text}', generate a semantic similar one."
+    prompt_template = get_augmentation_prompt_by_demonstrations(conversation.describe.get_dataset_name(),
+                                                                first_field, second_field)
 
     conversation.current_prompt = prompt_template
 
     input_ids = tokenizer(prompt_template, return_tensors='pt').input_ids.to(model.device.type)
     with torch.no_grad():
         output = model.generate(inputs=input_ids, temperature=0.7, do_sample=True, top_p=0.95, top_k=40,
-                                max_new_tokens=128)
+                                max_new_tokens=num_token)
     result = tokenizer.decode(output[0]).split(prompt_template)[1][:-4]
 
     return result
@@ -33,6 +37,8 @@ def augment_operation(conversation, parse_text, i, **kwargs):
     """Data augmentation."""
     data = conversation.temp_dataset.contents['X']
     idx = None
+
+    few_shot = False
 
     if conversation.custom_input is not None and conversation.used is False:
         if conversation.describe.get_dataset_name() == "covid_fact":
@@ -56,24 +62,35 @@ def augment_operation(conversation, parse_text, i, **kwargs):
 
     return_s = f"Instance of ID <b>{idx}</b> <br>"
 
-    _, pre_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=None, given_second_field=None)
+    _, pre_prediction = prediction_generation(data, conversation, idx, num_shot=3,
+                                              given_first_field=None, given_second_field=None)
 
     aug = naw.SynonymAug(aug_src='wordnet')
 
     # Word augmenter
     if conversation.describe.get_dataset_name() == "covid_fact":
         # Augment both claim and evidence to create a new instance
-        augmented_first_field = aug.augment(claim)
-        augmented_second_field = aug.augment(evidence)
+        if not few_shot:
+            augmented_first_field = aug.augment(claim)
+            augmented_second_field = aug.augment(evidence)
+        else:
+            augmented_first_field = get_augmentation(conversation, first_field=claim)
+            augmented_second_field = get_augmentation(conversation, second_field=evidence, num_token=512)
 
         return_s += f"<b>Claim</b>: {claim}<br>"
         return_s += f"<b>Original evidence:</b> {evidence}<br>"
-        return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">{pre_prediction}</span><br><br>"
+        return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">" \
+                    f"{pre_prediction}</span><br><br>"
         return_s += f"<b>Augmented claim:</b> {augmented_first_field}<br>"
         return_s += f"<b>Augmented evidence:</b> {augmented_second_field}<br>"
+        _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3,
+                                                   given_first_field=augmented_first_field,
+                                                   given_second_field=augmented_second_field)
     else:
-        augmented_first_field = aug.augment(question)
-        # augmented_first_field = get_augmentation(conversation, question)
+        if not few_shot:
+            augmented_first_field = aug.augment(question)
+        else:
+            augmented_first_field = get_augmentation(conversation, first_field=question)
 
         split_choices = choices.split("-")
 
@@ -83,14 +100,18 @@ def augment_operation(conversation, parse_text, i, **kwargs):
 
         return_s += f"<b>Original question:</b> {question}<br>"
         return_s += f"<b>Original choices:</b> {convert_str_to_options(choices)}<br>"
-        return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">{split_choices[pre_prediction]}</span><br><br>"
+        return_s += f"<b>Prediction before augmentation</b>: <span style=\"background-color: #6CB4EE\">" \
+                    f"{split_choices[pre_prediction]}</span><br><br>"
         return_s += f"<b>Augmented question:</b> {augmented_first_field}<br>"
 
-    _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3, given_first_field=augmented_first_field, given_second_field=None)
+        _, post_prediction = prediction_generation(data, conversation, idx, num_shot=3,
+                                                   given_first_field=augmented_first_field, given_second_field=None)
 
     if conversation.describe.get_dataset_name() == "covid_fact":
-        return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">{post_prediction}</span>"
+        return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">" \
+                    f"{post_prediction}</span>"
     else:
-        return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">{split_choices[post_prediction]}</span>"
+        return_s += f"<b>Prediction after augmentation</b>: <span style=\"background-color: #6CB4EE\">" \
+                    f"{split_choices[post_prediction]}</span>"
 
     return return_s, 1
