@@ -1,3 +1,4 @@
+![](./static/images/logo.png)
 # LLMCheckup
 ![Static Badge](https://img.shields.io/badge/python-3.8-blue)
 ![Static Badge](https://img.shields.io/badge/python-3.9-blue)
@@ -6,8 +7,8 @@
 
 Dialogical Interpretability Tool for LLMs
 
-## Running with conda / virtualenv
-**Note: Please use Python 3.8+ and torch2.0+**
+## 💥Running with conda / virtualenv
+**Note: Please use Python 3.8+ and torch 2.0+**
 ### Create the environment and install dependencies
 
 #### Conda
@@ -22,7 +23,7 @@ python -m venv venv
 source venv/venv/activate
 ```
 
-### 📝Install the requirements
+### ⚙️Install the requirements
 ```shell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
@@ -34,10 +35,10 @@ python -m nltk.downloader averaged_perceptron_tagger
 python flask_app.py
 ```
 
-## Supported explainability methods
+## 💟Supported explainability methods
 - Feature Attribution
   - Attention, Integrated gradient, etc.
-  - Implemented by [inseq](https://github.com/inseq-team/inseq) package
+  - Implemented by 🐛[inseq](https://github.com/inseq-team/inseq) package
 - Semantic Similarity
 - Free-text rationalization
   - Zero-shot CoT
@@ -49,7 +50,7 @@ python flask_app.py
   - Implemented by [NLPAug](https://github.com/makcedward/nlpaug) package or few-shot prompting
 - Counterfactual Generation
 
-## Models:
+## 🤗Models:
 In our study, we identified three LLMs for our purposes.
 
 - LLama2 (https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
@@ -80,7 +81,7 @@ python -m pip install https://github.com/jllllll/bitsandbytes-windows-webui/rele
 
 **: petals is currently not supported in windows, since a lot of Unix-specific things are used in petals. See issue [here](https://github.com/bigscience-workshop/petals/issues/488). petals is still usable if running ``LLMCheckup`` in Docker or WSL 2.
 
-## Use case:
+## 🔍Use case:
 ### Fact checking
 Dataset: COVID-Fact
 
@@ -111,7 +112,7 @@ Link: https://github.com/dair-iitd/ECQA-Dataset
 }
 ```
 
-## Input with multi modalities
+## 📝Input with multi modalities
 - Text
 - Image
   - Image upload
