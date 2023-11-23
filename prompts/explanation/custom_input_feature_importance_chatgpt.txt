@@ -1,32 +1,32 @@
-User: Can you display the feature attribution for this data point?
-Parsed: nlpattribute [E]
+User: Can you display the feature attribution for this data point using attention?
+Parsed: nlpattribute attention [E]
 
-User: I need the token importance for this specific input.
-Parsed: nlpattribute [E]
+User: I need the token importance for this specific input by attention.
+Parsed: nlpattribute attention [E]
 
-User: I'm interested in the feature significance of this input.
-Parsed: nlpattribute [E]
+User: I'm interested in the feature significance of this input using lime.
+Parsed: nlpattribute lime [E]
 
 User: I'd like to know the feature significance for my data point.
-Parsed: nlpattribute [E]
+Parsed: nlpattribute default [E]
 
-User: Please, can you provide the word attributions for this particular input?
-Parsed: nlpattribute [E]
+User: Please, can you provide the word attributions for this particular input using input gradient?
+Parsed: nlpattribute input_x_gradient [E]
 
-User: Could you determine the feature significance of this given text?
-Parsed: nlpattribute [E]
+User: Could you determine the feature significance of this given text using input gradient?
+Parsed: nlpattribute input_x_gradient [E]
 
 User: Please evaluate the saliency for this input I provided.
-Parsed: nlpattribute [E]
+Parsed: nlpattribute default [E]
 
-User: Could you list the top 2 most influential features for this given input?
-Parsed: nlpattribute topk 2 [E]
+User: Could you list the top 2 most influential features for this given input using attention?
+Parsed: nlpattribute topk 2 attention [E]
 
 User: What are the 4 most significant features for the input I defined?
-Parsed: nlpattribute topk 4 [E]
+Parsed: nlpattribute topk 4 default [E]
 
-User: What are the 5 most important features in this text?
-Parsed: nlpattribute topk 5 [E]
+User: What are the 5 most important features in this text using integrated gradient?
+Parsed: nlpattribute topk 5 integrated_gradients [E]
 
 User: Tell me the top 6 critical features for the provided input.
 Parsed: nlpattribute topk 6 [E]

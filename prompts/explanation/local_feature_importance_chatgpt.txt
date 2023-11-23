@@ -1,17 +1,17 @@
-User: what are the key features for data point 1200
-Parsed: filter id 1200 and nlpattribute all [E]
+User: what are the key features for data point 1200 using lime
+Parsed: filter id 1200 and nlpattribute all lime [E]
 
 User: Can you tell me the main features for instance 567?
-Parsed: filter id 567 and nlpattribute all [E]
+Parsed: filter id 567 and nlpattribute all default [E]
 
-User: primary features of data point 110002
-Parsed: filter id 110002 and nlpattribute all [E]
+User: primary features of data point 110002 by input gradient
+Parsed: filter id 110002 and nlpattribute all input_x_gradient [E]
 
-User: what are the major features for instance 888?
-Parsed: filter id 888 and nlpattribute all [E]
+User: what are the major features for instance 888 by attention?
+Parsed: filter id 888 and nlpattribute all attention [E]
 
 User: key features for data point 100
-Parsed: filter id 100 and nlpattribute all [E]
+Parsed: filter id 100 and nlpattribute all default [E]
 
 User: what are the main attributes for instance 777?
 Parsed: filter id 777 and nlpattribute all [E]
@@ -19,41 +19,41 @@ Parsed: filter id 777 and nlpattribute all [E]
 User: most influential feature for data point 111?
 Parsed: filter id 111 and nlpattribute topk 1 [E]
 
-User: which feature is most significant for data point 44?
-Parsed: filter id 44 and nlpattribute topk 1 [E]
+User: which feature is most significant for data point 44 using integrated gradient?
+Parsed: filter id 44 and nlpattribute topk 1 integrated_gradients [E]
 
 User: most impactful feature for data point 222?
-Parsed: filter id 222 and nlpattribute topk 1 [E]
+Parsed: filter id 222 and nlpattribute topk 1 default [E]
 
-User: most significant feature for instance 9
-Parsed: filter id 9 and nlpattribute topk 1 [E]
+User: most significant feature for instance 9 by attention
+Parsed: filter id 9 and nlpattribute topk 1 attention [E]
 
-User: most critical feature for id 8
-Parsed: filter id 8 and nlpattribute topk 1 [E]
+User: most critical feature for id 8 using lime
+Parsed: filter id 8 and nlpattribute topk 1 lime [E]
 
-User: top 2 features influencing the model's prediction on data point 29?
-Parsed: filter id 29 and nlpattribute topk 2 [E]
+User: top 2 features influencing the model's prediction on data point 29 using input gradient?
+Parsed: filter id 29 and nlpattribute topk 2 input_x_gradient [E]
 
-User: what are the 2 most relevant features for the model's decision on data point 27?
-Parsed: filter id 27 and nlpattribute topk 2 [E]
+User: what are the 2 most relevant features for the model's decision on data point 27 using input gradient?
+Parsed: filter id 27 and nlpattribute topk 2 input_x_gradient [E]
 
-User: Please provide the 4 most critical features for data point 78
-Parsed: filter id 78 and nlpattribute topk 4 [E]
+User: Please provide the 4 most critical features for data point 78 using input gradient
+Parsed: filter id 78 and nlpattribute topk 4 input_x_gradient [E]
 
-User: Show me the 5 most important features for data point 81
-Parsed: filter id 81 and nlpattribute topk 5 [E]
+User: Show me the 5 most important features for data point 81 by attention
+Parsed: filter id 81 and nlpattribute topk 5 attention [E]
 
-User: 4 most important features for ids 987
-Parsed: filter id 987 and nlpattribute topk 4 [E]
+User: 4 most important features for ids 987 using lime
+Parsed: filter id 987 and nlpattribute topk 4 lime [E]
 
-User: what are the top 5 influential features for ids 12
-Parsed: filter id 12 and nlpattribute topk 5 [E]
+User: what are the top 5 influential features for ids 12 using integrated gradient
+Parsed: filter id 12 and nlpattribute topk 5 integrated_gradients [E]
 
-User: top 6 features affecting the predictions for ids 1234
-Parsed: filter id 1234 and nlpattribute topk 6 [E]
+User: top 6 features affecting the predictions for ids 1234 using integrated gradients
+Parsed: filter id 1234 and nlpattribute topk 6 integrated_gradients [E]
 
 User: 8 most crucial features for ids 30
-Parsed: filter id 3 and nlpattribute topk 8 [E]
+Parsed: filter id 30 and nlpattribute topk 8 [E]
 
 User: 7 most important features for ids 2
 Parsed: filter id 2 and nlpattribute topk 7 [E]

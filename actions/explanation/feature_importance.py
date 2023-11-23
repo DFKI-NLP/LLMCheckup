@@ -1,100 +1,37 @@
 import inseq
-import json
-import numpy as np
+
+SUPPORTED_METHODS = ["integrated_gradients", "attention", "lime", "input_x_gradient"]
 
 
-def handle_input(parse_text):
+def handle_input(parse_text, i):
     """
     Handle the parse text and return the list of numbers(ids) and topk value if given
     Args:
         parse_text: parse_text from bot
 
-    Returns: id_list, topk
+    Returns: method, topk
 
     """
-    id_list = []
-    topk = None
-
-    for item in parse_text:
-        try:
-            if int(item):
-                if int(item) > 0:
-                    id_list.append(int(item))
-        except:
-            pass
-
-    if "topk" in parse_text:
-        if len(id_list) >= 1:
-            topk = id_list[-1]
-
-        # filter id 5 or filter id 151 or filter id 315 and nlpattribute topk 10 [E]
-        if len(id_list) > 1:
-            return id_list[:-1], topk
-        else:
-            # nlpattribute topk 3 [E]
-            return None, topk
+    if parse_text[i + 1] == "all":
+        topk = 5
     else:
-        if len(id_list) >= 1:
-            # filter id 213 and nlpattribute all [E]
-            if "all" in parse_text:
-                return id_list, None
-
-        # nlpattribute [E]
-        return id_list, topk
-
-
-def get_visualization(attr, topk, original_text):
-    """
-    Get visualization on given input
-    Args:
-        attr: attribution list
-        topk: top k value
-        original_text: original text
-        conversation: conversation object
-
-    Returns:
-        heatmap in html form
-    """
-    return_s = ""
-
-    # Get indices according to absolute attribution scores ascending
-    idx = np.argsort(np.absolute(np.copy(attr)))
-
-    # Get topk tokens
-    topk_tokens = []
-    for i in np.argsort(attr)[-topk:][::-1]:
-        topk_tokens.append(original_text[i])
-
-    score_ranking = []
-    for i in range(len(idx)):
-        score_ranking.append(list(idx).index(i))
-    fraction = 1.0 / (len(original_text) - 1)
-
-    return_s += f"Top {topk} token(s): "
-    for i in topk_tokens:
-        return_s += f"<b>{i}</b>"
-        return_s += " "
-    return_s += '<br>'
-
-    return_s += "<details><summary>"
-    return_s += "The visualization: "
-    return_s += "</summary>"
-    # for i in range(1, len(text_list) - 1):
-    for i in range(len(original_text)):
-        if attr[i] >= 0:
-            # Assign red to tokens with positive attribution
-            return_s += f"<span style='background-color:rgba(255,0,0,{round(fraction * score_ranking[i], 2)});padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 2; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone'>"
-        else:
-            # Assign blue to tokens with negative attribution
-            return_s += f"<span style='background-color:rgba(0,0,255,{round(fraction * score_ranking[i], 2)});padding: 0.45em 0.6em; margin: 0 0.25em; line-height: 2; border-radius: 0.35em; box-decoration-break: clone; -webkit-box-decoration-break: clone'>"
-        # return_s += text_list[i]
-        return_s += original_text[i]
-        return_s += "</span>"
-        return_s += ' '
-    return_s += "</details>"
-    return_s += '<br><br><br>'
-
-    return return_s
+        try:
+            topk = int(parse_text[i + 2])
+        except ValueError:
+            topk = 5
+    try:
+        if parse_text[i + 1] in SUPPORTED_METHODS:
+            # Without topk
+            method_name = parse_text[i + 1]
+        elif parse_text[i + 2] in SUPPORTED_METHODS:
+            # with all
+            method_name = parse_text[i + 2]
+        elif parse_text[i + 3] in SUPPORTED_METHODS:
+            # with topk value
+            method_name = parse_text[i + 3]
+    except IndexError:
+        method_name = "input_x_gradient"
+    return topk, method_name
 
 
 def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str, int):
@@ -109,24 +46,18 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     Returns:
         formatted string
     """
-    # filter id 5 or filter id 151 or filter id 315 and nlpattribute topk 10 [E]
     # filter id 213 and nlpattribute all [E]
     # filter id 33 and nlpattribute topk 1 [E]
 
-    # TODO: handle "all" and "topk" cases
-
     # TODO: custom input
 
-    id_list, topk = handle_input(parse_text)
-
-    if topk is None:
-        topk = 5  # TODO: Currently unused
+    topk, method_name = handle_input(parse_text, i)
 
     model = conversation.decoder.gpt_model
 
     inseq_model = inseq.load_model(
         model,
-        "input_x_gradient",  # TODO: Allow different choices of attribution_method
+        method_name,
         device=str(conversation.decoder.gpt_model.device.type),  # Use same device as already loaded GPT model
     )
 
@@ -192,4 +123,3 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     return_s += "</details><br>"
 
     return return_s, 1
-

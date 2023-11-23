@@ -68,38 +68,6 @@ def read_and_format_data(filepath,
     return dataset, y_values, cat_features, num_features
 
 
-def read_precomputed_explanation_data(dataset_name):
-    if dataset_name == 'daily_dialog':
-        path = f"./cache/{dataset_name}/ig_explainer_{dataset_name}_prediction.json"
-    else:
-        path = f"./cache/{dataset_name}/ig_explainer_{dataset_name}_explanation.json"
-    try:
-        fileObject = open(path, "r")
-        jsonContent = fileObject.read()
-        json_list = json.loads(jsonContent)
-    except:
-        raise FileNotFoundError(f"The required cache with path {path} doesn't exist!")
-    return json_list
-
-
-def read_precomputed_prediction(conversation):
-    model_name = conversation.decoder.parser_name
-    if model_name == 'EleutherAI/gpt-neo-2.7B':
-        path = f"./cache/guided/olid_gpt-neo-2.7b_5_shot_prediction.json"
-    elif model_name == "EleutherAI/gpt-j-6b":
-        path = f"./cache/guided/olid_gpt-j-6b_20_shot_prediction.json"
-    else:
-        raise NotImplementedError(f"Model {model_name} is unknown!")
-
-    try:
-        fileObject = open(path, "r")
-        jsonContent = fileObject.read()
-        json_list = json.loads(jsonContent)
-    except:
-        raise FileNotFoundError(f"The required cache with path {path} doesn't exist!")
-    return json_list
-
-
 def setup_gpt3():
     with open('openai_key.txt', 'r') as f:
         key = f.readline().strip()

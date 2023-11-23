@@ -21,11 +21,12 @@ dataop: " data"
 define: defineword allfeaturenames
 defineword: " define"
 
-featureattribution: featureattributionword (allfeaturenames | allfeaturesword | topk )
+featureattribution: featureattributionword (allfeaturenames | allfeaturesword | topk ) ( methodflag )
 featureattributionword: " nlpattribute"
 allfeaturesword: " all"
 topk: topkword ( {topkvalues} )
 topkword: " topk"
+methodflag: " default" | " integrated_gradients" | " attention" | " lime" | " input_x_gradient"
 
 filter: filterword featuretype
 filterword: " filter"

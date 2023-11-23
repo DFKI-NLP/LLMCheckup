@@ -2,15 +2,9 @@
 
 This operation computes a score metric on the data or the eval data.
 """
-import json
-
-import numpy as np
-
 from actions.prediction.pred_utils import get_predictions_and_labels
 from actions.util_functions import get_parse_filter_text
 from timeout import timeout
-
-MAPPING = {'dummy': 0, 'inform': 1, 'question': 2, 'directive': 3, 'commissive': 4}
 
 
 @timeout(60)

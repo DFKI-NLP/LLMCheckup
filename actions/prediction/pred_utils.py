@@ -1,9 +1,4 @@
-import json
-
 import numpy as np
-import pandas as pd
-
-from logic.utils import read_precomputed_prediction
 
 
 def get_predictions_and_labels(conversation):
