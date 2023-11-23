@@ -25,9 +25,8 @@ from logic.conversation import Conversation
 from logic.decoder import Decoder
 from logic.parser import Parser, get_parse_tree
 from logic.prompts import Prompts
-from logic.utils import read_and_format_data, read_precomputed_prediction
+from logic.utils import read_and_format_data
 from logic.write_to_log import log_dialogue_input
-from logic.transformers import TransformerModel
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -42,14 +41,6 @@ def load_sklearn_model(filepath):
     with open(filepath, 'rb') as file:
         model = pickle.load(file)
     return model
-
-
-@gin.configurable
-def load_hf_model(model_id, name):
-    """ Loads a (local) Hugging Face model from a directory containing a pytorch_model.bin file and a config.json file.
-    """
-    return TransformerModel(model_id, name)
-    # transformers.AutoModel.from_pretrained(model_id)
 
 
 @gin.configurable
@@ -144,7 +135,7 @@ class ExplainBot:
                                          text_fields=self.text_fields)
 
         # Load the model into the conversation
-        self.load_model()
+        # self.load_model()
 
         # Load the dataset into the conversation
         self.load_dataset(dataset_file_path,
@@ -292,54 +283,54 @@ class ExplainBot:
         """Inits a var from manual load."""
         self.manual_var_filename = name.decode("utf-8")
 
-    def load_model(self):
-        """Loads a model.
-
-        This routine loads a model into the conversation
-        from a specified file path. The model will be saved as a variable
-        names 'model' in the conversation, overwriting an existing model.
-
-        The routine determines the type of model from the file extension.
-        Scikit learn models should be saved as .pkl's and torch as .pt.
-
-        Arguments:
-            filepath: the filepath of the model.
-        Returns:
-            success: whether the model was saved successfully.
-        """
-        app.logger.info(f"Loading inference model...")
-
-        class Model:
-            def predict(self, data, text, conversation=None):
-                """
-                Arguments:
-                    data: Pandas DataFrame containing columns of text data
-                    text: preprocessed parse_text
-                    conversation:
-                """
-                str2int = {"offensive": 1, "non-offensive": 0}
-
-                json_list = read_precomputed_prediction(conversation)
-
-                # Get indices of dataset to filter json_list with
-                if data is not None:
-                    data_indices = data.index.to_list()
-
-                if text is None:
-                    temp = []
-                    for item in json_list:
-                        if item["idx"] in data_indices:
-                            temp.append(str2int[item["prediction"]])
-
-                    return np.array(temp)
-                else:
-                    res = list([str2int[json_list[text]["prediction"]]])
-                    return np.array(res)
-
-        model = Model()
-        self.conversation.add_var('model', model, 'model')
-        app.logger.info("...done")
-        return 'success'
+    # def load_model(self):
+    #     """Loads a model.
+    #
+    #     This routine loads a model into the conversation
+    #     from a specified file path. The model will be saved as a variable
+    #     names 'model' in the conversation, overwriting an existing model.
+    #
+    #     The routine determines the type of model from the file extension.
+    #     Scikit learn models should be saved as .pkl's and torch as .pt.
+    #
+    #     Arguments:
+    #         filepath: the filepath of the model.
+    #     Returns:
+    #         success: whether the model was saved successfully.
+    #     """
+    #     app.logger.info(f"Loading inference model...")
+    #
+    #     class Model:
+    #         def predict(self, data, text, conversation=None):
+    #             """
+    #             Arguments:
+    #                 data: Pandas DataFrame containing columns of text data
+    #                 text: preprocessed parse_text
+    #                 conversation:
+    #             """
+    #             str2int = {"offensive": 1, "non-offensive": 0}
+    #
+    #             json_list = read_precomputed_prediction(conversation)
+    #
+    #             # Get indices of dataset to filter json_list with
+    #             if data is not None:
+    #                 data_indices = data.index.to_list()
+    #
+    #             if text is None:
+    #                 temp = []
+    #                 for item in json_list:
+    #                     if item["idx"] in data_indices:
+    #                         temp.append(str2int[item["prediction"]])
+    #
+    #                 return np.array(temp)
+    #             else:
+    #                 res = list([str2int[json_list[text]["prediction"]]])
+    #                 return np.array(res)
+    #
+    #     model = Model()
+    #     self.conversation.add_var('model', model, 'model')
+    #     app.logger.info("...done")
+    #     return 'success'
 
     def load_dataset(self,
                      filepath: str,
@@ -633,7 +624,7 @@ class ExplainBot:
                     ls[idx] = i.split("<s>")[0]
             ls = [i for i in ls if i != '']
             parsed_text = " ".join(ls)
-            # parsed_text = "filter id 75 and augment [E]"
+            # parsed_text = "filter id 213 and nlpattribute all [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
 
