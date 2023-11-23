@@ -1,5 +1,5 @@
-User: most important features for data point 100055
-Parsed: filter id 100055 and nlpattribute all [E]
+User: most important features for data point 1000
+Parsed: filter id 1000 and nlpattribute all [E]
 
 User: I was wondering what are the most important features for instance 213?
 Parsed: filter id 213 and nlpattribute all [E]
@@ -46,8 +46,8 @@ Parsed: filter id 21 and predict and nlpattribute all [E]
 User: what's the most important feature for data point 33?
 Parsed: filter id 33 and nlpattribute topk 1 [E]
 
-User: what three features most influence the model's predictions for ids 1515 and 55
-Parsed: filter id 1515 or filter id 55 and nlpattribute topk 3 [E]
+User: what three features most influence the model's predictions for ids 1515
+Parsed: filter id 1515 and nlpattribute topk 3 [E]
 
 User: Could you show top 3 most important features for the data point 98
 Parsed: filter id 98 and nlpattribute topk 3 [E]
@@ -58,5 +58,5 @@ Parsed: filter id 32 and nlpattribute topk 3 [E]
 User: most important feature for id 10
 Parsed: filter id 10 and nlpattribute topk 10 [E]
 
-User: 10 most important features for id's 5, 151, 315
-Parsed: filter id 5 or filter id 151 or filter id 315 and nlpattribute topk 10 [E]
+User: 10 most important features for id's 5
+Parsed: filter id 5 and nlpattribute topk 10 [E]
