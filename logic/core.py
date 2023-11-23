@@ -146,24 +146,17 @@ class ExplainBot:
 
         self.parsed_text = None
         self.user_text = None
+        
+        self.operations_with_id = ["show", "predict", "likelihood", "similar", "nlpattribute", "rationalize", "cfe", "augment"]
 
         self.deictic_words = ["this", "that", "it", "here"]
-        self.model_slots = ["lr", "epochs", "loss", "optimizer", "task", "model_name", "model_summary"]
-        self.model_slot_words_map = {"lr": ["lr", "learning rate"], "epochs": ["epoch"], "loss": ["loss"],
-                                     "optimizer": ["optimizer"], "task": ["task", "function"],
-                                     "model_name": ["name", "call"], "model_summary": ["summary", "overview"]}
 
         self.st_model = SentenceTransformer("all-mpnet-base-v2")
         confirm = ["Yes", "Of course", "I agree", "Correct", "Yeah", "Right", "That's what I meant", "Indeed",
                    "Exactly", "True"]
         disconfirm = ["No", "Nope", "Sorry, no", "I think there is some misunderstanding", "Not right", "Incorrect",
                       "Wrong", "Disagree"]
-        data_name = ["inform me test data name", "name of training data", "how is the test set called?",
-                     "what's the name of the data?"]
-        data_source = ["where does training data come from", "where do you get test data", "the source of the dataset?"]
-        data_language = ["show me the language of training data", "language of training data",
-                         "tell me the language of testing data", "what's the language of the model?"]
-        data_number = ["how many training data is used", "count test data points", "tell me the number of data points"]
+
         thanks = ["Thanks!", "OK!", "I see", "Thanks a lot!", "Thank you.", "Alright, thank you!",
                   "That's nice, thanks a lot :)", "Good, thanks!", "Thank you very much.", "Looks good, thank you!",
                   "Great, thank you very much!", "Ok, thanks!", "Thank you for the answer."]
@@ -182,12 +175,6 @@ class ExplainBot:
                                             "This was a bit unclear. Could you rephrase it, please?",
                                             "Let's try another option. I'm afraid I don't have an answer for this."]}
 
-        # Compute embedding for data flags
-        self.data_name = self.st_model.encode(data_name, convert_to_tensor=True)
-        self.data_source = self.st_model.encode(data_source, convert_to_tensor=True)
-        self.data_language = self.st_model.encode(data_language, convert_to_tensor=True)
-        self.data_number = self.st_model.encode(data_number, convert_to_tensor=True)
-
         # Compute embeddings for confirm/disconfirm
         self.confirm = self.st_model.encode(confirm, convert_to_tensor=True)
         self.disconfirm = self.st_model.encode(disconfirm, convert_to_tensor=True)
@@ -196,85 +183,21 @@ class ExplainBot:
         self.thanks = self.st_model.encode(thanks, convert_to_tensor=True)
         self.bye = self.st_model.encode(bye, convert_to_tensor=True)
 
-    def get_data_type(self, text: str):
-        """Checks the data type (train/test supported)"""
-        if "test" in text:
-            return "test"
-        else:
-            return "train"
-
-    def get_data_flag(self, text: str):
-        """Checks whether the user asks about specific details of the data"""
-        # Compute cosine-similarities
-        text = self.st_model.encode(text, convert_to_tensor=True)
-        dname_scores = util.cos_sim(text, self.data_name)
-        dname_score = torch.mean(dname_scores, dim=-1).item()
-
-        dsource_scores = util.cos_sim(text, self.data_source)
-        dsource_score = torch.mean(dsource_scores, dim=-1).item()
-
-        dlang_scores = util.cos_sim(text, self.data_language)
-        dlang_score = torch.mean(dlang_scores, dim=-1).item()
-
-        dnum_scores = util.cos_sim(text, self.data_number)
-        dnum_score = torch.mean(dnum_scores, dim=-1).item()
-
-        max_score_name = None
-        max_score = 0
-        for score in [("name", dname_score), ("source", dsource_score), ("language", dlang_score),
-                      ("number", dnum_score)]:
-            if score[1] > max_score and score[1] > 0.5:
-                max_score = score[1]
-                max_score_name = score[0]
-        return max_score_name
-
     def has_deictic(self, text):
         for deictic in self.deictic_words:
             if " " + deictic in text.lower() or deictic + " " in text.lower():
                 return True
         return False
 
-    def get_intent_annotations(self, intext):
-        """Returns intent annotations for user input (using adapters)"""
-        text_anno = self.intent_classifier(intext)[0]
-        labels = []
-        for entry in text_anno:
-            labels.append((self.id2label_str[int(entry["label"].replace("LABEL_", ""))], entry["score"]))
-        labels.sort(key=lambda x: x[1], reverse=True)
-        return labels[:5]
-
-    def get_slot_annotations(self, intext):
-        """Returns slot annotations for user input (using adapters)"""
-        text_anno = self.slot_tagger(intext)
-        intext_chars = list(intext)
-        # slot_types = ["class_names", "data_type", "id", "includetoken", "metric", "number", "sent_level"]
-        slot2spans = dict()
-        for anno in text_anno:
-            slot_type = anno["entity"][2:]
-            if not (slot_type) in slot2spans:
-                slot2spans[slot_type] = []
-            slot2spans[slot_type].append((anno["word"], anno["start"], anno["end"], anno["entity"]))
-        final_slot2spans = dict()
-        for slot_type in slot2spans:
-            final_slot2spans[slot_type] = []
-            span_starts = [s for s in slot2spans[slot_type] if s[-1].startswith("B-")]
-            span_starts.sort(key=lambda x: x[1])
-            span_ends = [s for s in slot2spans[slot_type] if s[-1].startswith("I-")]
-            span_ends.sort(key=lambda x: x[1])
-            for i, span_start in enumerate(span_starts):
-                if i < len(span_starts) - 1:
-                    next_span_start = span_starts[i + 1]
-                else:
-                    next_span_start = None
-                selected_ends = [s[2] for s in span_ends if
-                                 s[1] >= span_start[1] and (next_span_start is None or s[1] < next_span_start[1])]
-                if len(selected_ends) > 0:
-                    span_end = max(selected_ends)
-                else:
-                    span_end = span_start[2]
-                span_start = span_start[1]
-                final_slot2spans[slot_type].append("".join(intext_chars[span_start:span_end]))
-        return final_slot2spans
+    def id_needed(self, parsed_text):
+        operation_needs_id = False
+        for w in parsed_text.replace("<s>","").strip().split():
+            if w in self.operations_with_id:
+                operation_needs_id = True
+                break
+        if not(" id " in parsed_text) and operation_needs_id:
+            return True
+        return False
 
     def init_loaded_var(self, name: bytes):
         """Inits a var from manual load."""
@@ -381,67 +304,6 @@ class ExplainBot:
             'system_response': system_response
         }
 
-    def clean_up(self, text: str):
-        while len(text) > 0 and text[-1] in string.punctuation:
-            text = text[:-1]
-        return text
-
-    def clean_up_number(self, text: str):
-        text = self.clean_up(text)
-        try:
-            text = w2n.word_to_num(text)
-            text = str(text)
-        except:
-            text = ""
-            app.logger.info(f"value is not a number: {text}")
-        return text
-
-    def check_heuristics(self, decoded_text: str, orig_text: str):
-        """Checks heuristics for those intents/actions that were identified but their core slots are missing.
-        """
-        id_adhoc = ""
-        number_adhoc = ""
-        token_adhoc = ""
-        if "includes" in decoded_text:
-            indicators = ["word ", "words ", "token ", "tokens "]
-            for indicator in indicators:
-                if indicator in orig_text:
-                    word_start = orig_text.index(indicator) + len(indicator)
-                    if word_start < len(orig_text):
-                        includeword = orig_text[word_start:]
-                        token_adhoc = self.clean_up(includeword)
-                        break
-            # check for quotes
-            in_quote = re.search(self.quote_pattern, orig_text)
-            if in_quote is not None:
-                token_adhoc = self.clean_up(in_quote.group())
-        if "id " in orig_text:
-            splitted = orig_text[orig_text.index("id ") + 2:].strip().split()
-            if len(splitted) > 0:
-                id_adhoc = self.clean_up(splitted[0])
-        splitted_text = orig_text.split()
-        for tkn in splitted_text:
-            if tkn.isdigit() and not (tkn == id_adhoc):
-                number_adhoc = tkn
-                break
-        return id_adhoc, number_adhoc, token_adhoc
-
-    def get_num_value(self, text: str):
-        """Converts text to number if possible"""
-        for ch in string.punctuation:
-            if ch in text:
-                text = text.replace(ch, "")
-        if len(text) > 0 and not (text.isdigit()):
-            try:
-                converted_num = w2n.word_to_num(text)
-            except:
-                converted_num = None
-            if converted_num is not None:
-                text = str(converted_num)
-        if not (text.isdigit()):
-            text = ""
-        return text
-
     def is_confirmed(self, text: str):
         """Checks whether the user provides a confirmation or not"""
         # Compute cosine-similarities
@@ -498,6 +360,18 @@ class ExplainBot:
         # NOTE: currently, we're using only the decoded text and not the full
         # tree. If we need to support more complicated parses, we can change this.
         parse_tree, parsed_text = get_parse_tree(decoded_text)
+        if self.id_needed(parsed_text) and self.has_deictic(text):
+            if self.conversation.custom_input is None and self.conversation.prev_id is not None:
+                parsed_text = "<s>  filter<s>  id " + str(self.conversation.prev_id) + "<s>  and<s>  " + parsed_text
+        # store the previous id value
+        current_id = None
+        parsed_words = parsed_text.replace("<s>","").strip().split()
+        for w_i, w in enumerate(parsed_words):
+            if w == "id":
+                current_id = parsed_words[w_i+1]
+        if not(current_id is None):
+            self.conversation.prev_id = current_id
+        
         if error_analysis:
             return parse_tree, parsed_text, nn_prompts
         else:
