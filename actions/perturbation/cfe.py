@@ -1,6 +1,6 @@
 import torch
 
-from actions.demonstrations import get_cfe_prompt_by_demonstrations
+from actions.demonstration_utils import get_cfe_prompt_by_demonstrations
 from actions.prediction.predict import prediction_generation, convert_str_to_options
 
 
