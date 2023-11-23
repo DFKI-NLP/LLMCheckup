@@ -1,0 +1,11 @@
+User: Can you provide me an instance that is analogous this?
+Parsed: similar 1 [E]
+
+User: Show me 5 data points that are analogous to this.
+Parsed: similar 5 [E]
+
+User: Show me a data point that is analogous to custom input.
+Parsed: similar 1 [E]
+
+User: Retrieve 3 examples that are similar to this.
+Parsed: similar 3 [E]

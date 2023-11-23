@@ -113,6 +113,10 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     # filter id 213 and nlpattribute all [E]
     # filter id 33 and nlpattribute topk 1 [E]
 
+    # TODO: handle "all" and "topk" cases
+
+    # TODO: custom input
+
     id_list, topk = handle_input(parse_text)
 
     if topk is None:

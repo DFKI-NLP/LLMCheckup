@@ -136,31 +136,6 @@ def log_feedback():
         "timestamp": str_time
     }
 
-    files = [f for f in os.listdir("./feedback") if isfile(join("./feedback", f))]
-    json_files = [f for f in files if (
-            f.endswith(".json") and not f.endswith("boolq.json") and not f.endswith("olid.json") and not f.endswith(
-        "daily_dialog.json"))]
-
-    if len(json_files) == 0:
-        feedback_cache = f"./feedback/feedback-{my_uuid}.json"
-    else:
-        feedback_cache = f"./feedback/{json_files[0]}"
-
-    print(feedback_cache)
-
-    if os.path.exists(feedback_cache):
-        fileObject = open(feedback_cache, "r")
-        jsonContent = fileObject.read()
-        json_list = json.loads(jsonContent)
-        json_list.append(logging_info)
-    else:
-        json_list = [logging_info]
-
-    jsonString = json.dumps(json_list)
-    jsonFile = open(feedback_cache, "w")
-    jsonFile.write(jsonString)
-    jsonFile.close()
-
     BOT.log(logging_info)
     return ""
 
@@ -293,6 +268,10 @@ def get_bot_response():
                 elif data['custom_input'] == '1':
                     # custom input
                     user_text = data["userInput"]
+
+                    if BOT.conversation.describe.get_dataset_name() == "ECQA":
+                        if len(user_text["second_input"].split("-")) != 5:
+                            return "5 choices should be provided and concatenated by '-'!"
 
                     BOT.conversation.custom_input = user_text
                     BOT.conversation.used = False

@@ -28,12 +28,13 @@ ACTION_2_FILENAME = {
     # Custom input
     "custom_input_prediction": ["custom_input_prediction_chatgpt.txt", "custom_input_prediction.txt"],
     "custom_input_feature_importance": ["custom_input_feature_importance_chatgpt.txt", "custom_input_feature_importance.txt"],
+    "c_rationale": ["custom_input_rationalize.txt", "custom_input_rationalize_chatgpt.txt"],
+    "c_cfe": ["custom_input_cfe.txt", "custom_input_cfe_chatgpt.txt"],
+    "c_data": ["custom_input_data_augmentation.txt", "custom_input_data_augmentation_chatgpt.txt"],
+    "c_sim": "custom_input_similarity.txt",
     # Perturbation
     "cfe": "cfe.txt",
     "augment": ["augmentation_chatgpt.txt", "augmentation.txt"],
-    "c_rationale": ["custom_input_rationalize.txt", "custom_input_rationalize_chatgpt.txt"],
-    "c_cfe": ["custom_input_cfe.txt", "custom_input_cfe_chatgpt.txt"],
-    "c_data": ["custom_input_data_augmentation.txt", "custom_input_data_augmentation_chatgpt.txt"]
 }
 
 

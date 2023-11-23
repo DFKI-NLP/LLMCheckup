@@ -23,11 +23,11 @@ def extract_id_number(parse_text):
         raise ValueError("Too many numbers in parse text!")
 
 
-def similar_instances_operation(conversation, parse_text, i, **kwargs):
+def similar_instances_operation(conversation, parsed_text, i, **kwargs):
     """
     Args:
         conversation: conversation object
-        parse_text: parsed text from conversation
+        parsed_text: parsed text from conversation
         i: index of operation
     Returns:
         final_results  matched results
@@ -36,18 +36,26 @@ def similar_instances_operation(conversation, parse_text, i, **kwargs):
         return "There are no instances that meet this description!", 0
     dataset = conversation.stored_vars["dataset"]
 
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        feature_name = "claims"
+    else:
+        feature_name = "texts"
+
     if conversation.custom_input is not None and conversation.used is False:
         query = conversation.custom_input["first_field"]
-        idx = 0
-        number = 3
+        idx = None
+
+        try:
+            number = int(parsed_text[i+1])
+        except ValueError:
+            number = 3
+
     else:
-        idx, number = extract_id_number(parse_text)
+        idx, number = extract_id_number(parsed_text)
         data = conversation.temp_dataset.contents['X']
         if conversation.describe.get_dataset_name() == "covid_fact":
-            feature_name = "claims"
             query = data[feature_name].values[0]
         else:
-            feature_name = "texts"
             query = data[feature_name].values[0]
 
     final_results = get_similar_str(query, idx, number, dataset, conversation, feature_name)
@@ -66,7 +74,11 @@ def get_similar_str(query, idx, number, dataset, conversation, feature_name):
     filtered similarity response to a maximum of specified number
     """
     # preparing the output string
-    out_str = "The original text for <b>id " + str(idx) + "</b>:<br>"
+    if idx is not None:
+        out_str = "The original text for <b>id " + str(idx) + "</b>:<br>"
+    else:
+        out_str = f"Similarity of custom input <i>{query}</i>:<br>"
+
     query_tokens = query.split()
     query_preview = " ".join(query_tokens[:16])
     out_str += "<summary>" + query_preview + "...</summary><details>" + query + "</details><br>"

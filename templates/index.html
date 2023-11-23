@@ -207,7 +207,7 @@
                             Single prediction
                         </button>
                         <span class="tooltip-text">
-                            Lets the model predict a <b>custom single instance</b> provided by you.
+                            Lets the model predict a <b>custom input</b> provided by you.
                         </span>
                     </div>
                     <div class="tooltip-wrapper">
@@ -216,7 +216,7 @@
                             Data Augmentation
                         </button>
                         <span class="tooltip-text">
-                            Generates a <b>modified</b> version of a given <b>single example</b> that can be used as a <b>new data point</b>.
+                            Generates a <b>modified</b> version of a given <b>custom input</b> that can be used as a <b>new data point</b>.
                         </span>
                     </div>
                     <div class="tooltip-wrapper">
@@ -226,7 +226,7 @@
                             Counterfactual
                         </button>
                         <span class="tooltip-text">
-                            Generates a <b>modified</b> version of a given <b>single example</b> that <b>flips</b> the model's <b>prediction</b> from one label to another.
+                            Generates a <b>modified</b> version of a given <b>custom input</b> that <b>flips</b> the model's <b>prediction</b> from one label to another.
                         </span>
                     </div>
                     <div class="tooltip-wrapper">
@@ -236,7 +236,29 @@
                             Rationalization
                         </button>
                         <span class="tooltip-text">
-                            Generates a <b>free-text justification</b> for the model's prediction on a <b>given example</b>.
+                            Generates a <b>free-text justification</b> for the model's prediction on a <b>custom input</b>.
+                        </span>
+                    </div>
+
+                    <div class="tooltip-wrapper">
+                        <button id="c_fa" class="idea-button"
+                                style="background: rgba(235, 244, 61, 0.96);"
+                                onclick="sampleCustomInputFeatureAttribution()">
+                            Feature Attribution
+                        </button>
+                        <span class="tooltip-text">
+                            Indicates which <b>tokens</b> for a <b>custom input</b> are <b>most important</b>. Also prints a heatmap visualization.
+                        </span>
+                    </div>
+
+                    <div class="tooltip-wrapper">
+                        <button id="c_sim" class="idea-button"
+                                style="background: rgba(235, 215, 57, 0.96);"
+                                onclick="sampleCustomInputSimilarity()">
+                            Similarity
+                        </button>
+                        <span class="tooltip-text">
+                            Retrieves a number of <b>examples</b> from the dataset that are semantically <b>similar</b> to a given <b>custom input</b>.
                         </span>
                     </div>
                 </div>
@@ -440,7 +462,7 @@
     <section class="pins" id="my-pins">
         <header class="pins-header">
             <div class="pins-header-title">
-                Setting
+                ⚙️Setting
             </div>
         </header>
         <main class="pins-scroll">
@@ -468,18 +490,30 @@
                     <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom
                         Input</h3>
                     <i style="font-size:24px; color: white" class="fa" id="icon"
-                       title="For ECQA, please enter options splitted by ','">&#xf05a;</i>
+                       title="For ECQA, please enter options splitted by '-'">&#xf05a;</i>
                 </div>
 
                 <div>
                     <form>
+                        {% if dataset == 'ECQA' %}
+                        <label id="input_1"
+                               style="display: inline-block; text-align: right; color: white; width: 100px">Question:</label>
+                        <input type="text" id="first_text" placeholder="Your question..">
+                        {% else %}
                         <label id="input_1"
                                style="display: inline-block; text-align: right; color: white; width: 100px">Claim:</label>
                         <input type="text" id="first_text" placeholder="Your claim..">
+                        {% endif %}
                         <br>
+                        {% if dataset == 'ECQA' %}
+                        <label id="input_2"
+                               style="display: inline-block; text-align: right; color: white; width: 100px">Choices:</label>
+                        <input type="text" id="second_text" placeholder="Your chocies..">
+                        {% else %}
                         <label id="input_2"
                                style="display: inline-block; text-align: right; color: white; width: 100px">Evidence:</label>
                         <input type="text" id="second_text" placeholder="Your evidence..">
+                        {% endif %}
                         <br>
                         <button type="submit" class="ttm-send-btn" id="custom-input-send-btn-id" style="width: 100px"
                                 onclick="submit_custom_input()">Send
@@ -849,6 +883,14 @@
         doSample("custom_input_prediction");
     }
 
+    function sampleCustomInputFeatureAttribution(){
+        doSample("custom_input_feature_importance");
+    }
+
+    function sampleCustomInputSimilarity(){
+        doSample("c_sim");
+    }
+
     function sampleRandomPredict() {
         doSample("random_predict");
     }
@@ -1011,7 +1053,7 @@
     });
 
     function changeBtnColor(flag) {
-        let ids = ["c_rat", "c_cfe", "c_data", "c_pred"]
+        let ids = ["c_rat", "c_cfe", "c_data", "c_pred", "c_fa", "c_sim"]
 
         if (flag) {
             ids.forEach(id => {
