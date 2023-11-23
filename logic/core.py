@@ -134,9 +134,6 @@ class ExplainBot:
                                          decoder=self.decoder,
                                          text_fields=self.text_fields)
 
-        # Load the model into the conversation
-        # self.load_model()
-
         # Load the dataset into the conversation
         self.load_dataset(dataset_file_path,
                           dataset_index_column,
@@ -283,54 +280,6 @@ class ExplainBot:
         """Inits a var from manual load."""
         self.manual_var_filename = name.decode("utf-8")
 
-    # def load_model(self):
-    #     """Loads a model.
-    #
-    #     This routine loads a model into the conversation
-    #     from a specified file path. The model will be saved as a variable
-    #     names 'model' in the conversation, overwriting an existing model.
-    #
-    #     The routine determines the type of model from the file extension.
-    #     Scikit learn models should be saved as .pkl's and torch as .pt.
-    #
-    #     Arguments:
-    #         filepath: the filepath of the model.
-    #     Returns:
-    #         success: whether the model was saved successfully.
-    #     """
-    #     app.logger.info(f"Loading inference model...")
-    #
-    #     class Model:
-    #         def predict(self, data, text, conversation=None):
-    #             """
-    #             Arguments:
-    #                 data: Pandas DataFrame containing columns of text data
-    #                 text: preprocessed parse_text
-    #                 conversation:
-    #             """
-    #             str2int = {"offensive": 1, "non-offensive": 0}
-    #
-    #             json_list = read_precomputed_prediction(conversation)
-    #
-    #             # Get indices of dataset to filter json_list with
-    #             if data is not None:
-    #                 data_indices = data.index.to_list()
-    #
-    #             if text is None:
-    #                 temp = []
-    #                 for item in json_list:
-    #                     if item["idx"] in data_indices:
-    #                         temp.append(str2int[item["prediction"]])
-    #
-    #                 return np.array(temp)
-    #             else:
-    #                 res = list([str2int[json_list[text]["prediction"]]])
-    #                 return np.array(res)
-    #
-    #     model = Model()
-    #     self.conversation.add_var('model', model, 'model')
-    #     app.logger.info("...done")
-    #     return 'success'
 
     def load_dataset(self,
                      filepath: str,
