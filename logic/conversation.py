@@ -107,7 +107,7 @@ class Conversation:
         self.include_word = None
         self.prev_id = None
         self.text_fields = text_fields
-        self.needs_clarification = False
+        self.previous_operations = []
 
         # QA tutorial
         self.qa_level = "expert"

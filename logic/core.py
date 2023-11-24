@@ -27,9 +27,10 @@ from logic.parser import Parser, get_parse_tree
 from logic.prompts import Prompts
 from logic.utils import read_and_format_data
 from logic.write_to_log import log_dialogue_input
-from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map
+from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map, user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations
 
 from sentence_transformers import SentenceTransformer, util
+from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -66,6 +67,7 @@ class ExplainBot:
                  use_guided_decoding: bool = True,
                  feature_definitions: dict = None,
                  skip_prompts: bool = False,
+                 suggestions: bool = False,
                  ):
         """The init routine.
 
@@ -97,6 +99,7 @@ class ExplainBot:
             t5_config: The path to the configuration file for t5 models, if using one of these.
             skip_prompts: Whether to skip prompt generation. This is mostly useful for running fine-tuned
                           models where generating prompts is not necessary.
+            suggestions: Whether we suggest similar operations to the user.
         """
         super(ExplainBot, self).__init__()
         # Set seeds
@@ -129,6 +132,13 @@ class ExplainBot:
         # Add text fields, e.g. "question" and "passage" for BoolQ
         self.text_fields = text_fields
 
+        # Add suggestions mode
+        self.suggestions = suggestions
+        self.suggested_operation = None
+        
+        # Add dialogue flow map thanks/bye/sorry
+        self.dialogue_flow_map = dialogue_flow_map
+
         # Set up the conversation object
         self.conversation = Conversation(eval_file_path=dataset_file_path,
                                          feature_definitions=feature_definitions,
@@ -148,7 +158,11 @@ class ExplainBot:
         self.parsed_text = None
         self.user_text = None
         
-        self.st_model = SentenceTransformer("all-mpnet-base-v2")
+        self.device = 0 if torch.cuda.is_available() else -1
+        self.paraphrase_tokenizer = AutoTokenizer.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base")
+        self.paraphraser = AutoModelForSeq2SeqLM.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base").to(self.device)
+
+        self.st_model = SentenceTransformer("all-MiniLM-L6-v2")
 
         # Compute embeddings for confirm/disconfirm
         self.confirm = self.st_model.encode(confirm, convert_to_tensor=True)
@@ -166,7 +180,7 @@ class ExplainBot:
 
     def id_needed(self, parsed_text):
         operation_needs_id = False
-        for w in parsed_text.replace("<s>","").strip().split():
+        for w in parsed_text.strip().split():
             if w in operations_with_id:
                 operation_needs_id = True
                 break
@@ -306,6 +320,43 @@ class ExplainBot:
             return "bye"
         return None
 
+    def suggestion_confirmed(self, text: str):
+        """Checks whether the user confirmed the suggestion"""
+        text = self.st_model.encode(text, convert_to_tensor=True)
+        confirm_scores = util.cos_sim(text, self.confirm)
+        disconfirm_scores = util.cos_sim(text, self.disconfirm)
+        confirm_score = torch.mean(confirm_scores, dim=-1).item()
+        disconfirm_score = torch.mean(disconfirm_scores, dim=-1).item()
+        if (confirm_score > disconfirm_score):
+            return True, torch.max(confirm_scores.flatten()).item()
+        return False, torch.max(disconfirm_scores.flatten()).item()
+
+    def remove_filter_if_needed(self, suggested_operation: str, selected_operation: str):
+        if(selected_operation) in no_filter_operations:
+            return selected_operation + " [e]"
+        return suggested_operation
+
+    def pick_relevant_operation(self, parsed_text: str):
+        suggested_operation = None
+        suggestion_text = ""
+        parsed_text_operation = " ".join([w for w in parsed_text.split() if w in valid_operation_names])
+        if len(parsed_text_operation) > 0:
+            parsed_text_operation = parsed_text_operation
+            selected_operation = random.choice([op for op in operation2set[parsed_text_operation] if op != parsed_text_operation])
+            suggested_operation = parsed_text.replace(parsed_text_operation, selected_operation)
+            suggested_operation = self.remove_filter_if_needed(suggested_operation, selected_operation)
+            suggestion_text = map2suggestion[selected_operation]
+            input_ids = self.paraphrase_tokenizer(f'paraphrase: {suggestion_text}', return_tensors="pt", padding="longest", max_length=60, truncation=True).input_ids.to(self.device)
+            paraphrased = self.paraphraser.generate(input_ids, temperature=0.3, repetition_penalty=2.0, num_return_sequences=1, no_repeat_ngram_size=2, num_beams=5, num_beam_groups=5, max_length=60, diversity_penalty=2.0)
+            suggestion_text = self.paraphrase_tokenizer.batch_decode(paraphrased, skip_special_tokens=True)[0]
+        # check whether the user already asked about this operation
+        # or we suggested it earlier
+        if suggested_operation in self.conversation.previous_operations:
+            suggested_operation = None
+            suggestion_text = ""
+        return suggested_operation, "<br><div>" + suggestion_text + "</div>"
+
+
     def compute_parse_text(self, text: str, error_analysis: bool = False):
         """Computes the parsed text from the user text input.
 
@@ -337,10 +388,10 @@ class ExplainBot:
         parse_tree, parsed_text = get_parse_tree(decoded_text)
         if self.id_needed(parsed_text) and self.has_deictic(text):
             if self.conversation.custom_input is None and self.conversation.prev_id is not None:
-                parsed_text = "<s>  filter<s>  id " + str(self.conversation.prev_id) + "<s>  and<s>  " + parsed_text
+                parsed_text = "filter id " + str(self.conversation.prev_id) + " and " + parsed_text
         # store the previous id value
         current_id = None
-        parsed_words = parsed_text.replace("<s>","").strip().split()
+        parsed_words = parsed_text.strip().split()
         for w_i, w in enumerate(parsed_words):
             if w == "id":
                 current_id = parsed_words[w_i+1]
@@ -400,18 +451,45 @@ class ExplainBot:
             output: The response to the user input.
         """
 
-        if any([text is None, (self.decoding_model_name != "adapters" and self.prompts is None), self.parser is None]):
+        if self.suggestions and not(self.suggested_operation is None):
+            # check if the user agreed to suggestion
+            suggestion_confirmed, max_response_match = self.suggestion_confirmed(text)
+            username = user_session_conversation.username
+            response_id = self.gen_almost_surely_unique_id()
+            if suggestion_confirmed:
+                returned_item = run_action(
+                user_session_conversation, None, self.suggested_operation)
+                logging_info = self.build_logging_info(self.bot_name,
+                                                       username,
+                                                       response_id,
+                                                       text,
+                                                       self.suggested_operation,
+                                                       returned_item)
+                self.log(logging_info)
+                self.conversation.previous_operations.append(self.suggested_operation)
+
+                final_result = returned_item + f"<>{response_id}"
+                self.suggested_operation = None
+                return final_result
+            elif max_response_match >= 0.5:
+                returned_item = random.choice(user_prompts)
+                final_result = returned_item + f"<>{response_id}"
+                self.suggested_operation = None
+                return final_result
+            # reset the suggestions mode
+            self.suggested_operation = None
+
+        if any([text is None, self.prompts is None, self.parser is None]):
             return ''
 
         app.logger.info(f'USER INPUT: {text}')
         self.conversation.user_input = text
-        do_clarification = False
 
         # check if we have simply thanks or bye and return corresp. string in this case
         df_intent = self.check_dialogue_flow_intents(text)
         if df_intent is not None:
             parsed_text = df_intent
-            returned_item = random.choice(dialogue_flow_map[parsed_text])
+            returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
             parse_tree, parsed_text = self.compute_parse_text(text)
 
@@ -427,7 +505,6 @@ class ExplainBot:
             app.logger.info(f"parsed text: {parsed_text}")
 
             # Run the action in the conversation corresponding to the formal grammar
-            user_session_conversation.needs_clarification = False
             returned_item = run_action(
                 user_session_conversation, parse_tree, parsed_text)
 
@@ -442,7 +519,13 @@ class ExplainBot:
                                                text,
                                                parsed_text,
                                                returned_item)
+        # add the parsed operation
+        self.conversation.previous_operations.append(self.parsed_text)
+        if self.suggestions: #and random.random() > 0.5:
+            self.suggested_operation, suggestion_text = self.pick_relevant_operation(parsed_text)
+            returned_item += suggestion_text
         self.log(logging_info)
+
         # Concatenate final response, parse, and conversation representation
         # This is done so that we can split both the parse and final
         # response, then present all the data
