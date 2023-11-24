@@ -9,3 +9,9 @@ Parsed: randompredict 3 [E]
 
 User: precompute
 Parsed: randompredict [E]
+
+User: Could you compute predictions of 5 random instances in advance?
+Parsed: randompredict 5 [E]
+
+User: compute some random instances' prediction in advance?
+Parsed: randompredict [E]

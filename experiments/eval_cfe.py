@@ -7,7 +7,7 @@ from tqdm import tqdm
 from transformers import AutoTokenizer, AutoModelForCausalLM
 
 from actions.prediction.predict import convert_str_to_options
-from experiment.eval_data_augmentation import get_prediction
+from experiments.eval_data_augmentation import get_prediction
 
 if __name__ == "__main__":
     # ds = "covid_fact"

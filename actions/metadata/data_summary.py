@@ -28,6 +28,4 @@ def data_operation(conversation, parse_text, i, **kwargs):
         text += "</li>"
     text += "</ul><br>"
 
-    dataset_name = conversation.describe.get_dataset_name()
-
     return text, 1
