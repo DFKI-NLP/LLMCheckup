@@ -27,6 +27,7 @@ from logic.parser import Parser, get_parse_tree
 from logic.prompts import Prompts
 from logic.utils import read_and_format_data
 from logic.write_to_log import log_dialogue_input
+from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map
 
 from sentence_transformers import SentenceTransformer, util
 
@@ -147,33 +148,7 @@ class ExplainBot:
         self.parsed_text = None
         self.user_text = None
         
-        self.operations_with_id = ["show", "predict", "likelihood", "similar", "nlpattribute", "rationalize", "cfe", "augment"]
-
-        self.deictic_words = ["this", "that", "it", "here"]
-
         self.st_model = SentenceTransformer("all-mpnet-base-v2")
-        confirm = ["Yes", "Of course", "I agree", "Correct", "Yeah", "Right", "That's what I meant", "Indeed",
-                   "Exactly", "True"]
-        disconfirm = ["No", "Nope", "Sorry, no", "I think there is some misunderstanding", "Not right", "Incorrect",
-                      "Wrong", "Disagree"]
-
-        thanks = ["Thanks!", "OK!", "I see", "Thanks a lot!", "Thank you.", "Alright, thank you!",
-                  "That's nice, thanks a lot :)", "Good, thanks!", "Thank you very much.", "Looks good, thank you!",
-                  "Great, thank you very much!", "Ok, thanks!", "Thank you for the answer."]
-        bye = ["Goodbye!", "Bye-bye!", "Bye!", "Ok, bye then!", "That's all, bye!", "See you next time!",
-               "Thanks for the chat, bye!"]
-
-        self.dialogue_flow_map = {"thanks": ["You are welcome!", "No problem.", "I'm glad I could help.",
-                                             "Can I help you with something else?",
-                                             "Is there anything else I could do for you?"],
-                                  "bye": ["Goodbye!", "Bye-bye!", "Have a nice day!", "See you next time!"],
-                                  "sorry": ["Sorry! I couldn't understand that. Could you please try to rephrase?",
-                                            "My apologies, I did not get what you mean.",
-                                            "I'm sorry but could you rephrase the message, please?",
-                                            "I'm not sure I can do this. Maybe you have another request for me?",
-                                            "This is likely out of my expertise, can I help you with something else?",
-                                            "This was a bit unclear. Could you rephrase it, please?",
-                                            "Let's try another option. I'm afraid I don't have an answer for this."]}
 
         # Compute embeddings for confirm/disconfirm
         self.confirm = self.st_model.encode(confirm, convert_to_tensor=True)
@@ -184,7 +159,7 @@ class ExplainBot:
         self.bye = self.st_model.encode(bye, convert_to_tensor=True)
 
     def has_deictic(self, text):
-        for deictic in self.deictic_words:
+        for deictic in deictic_words:
             if " " + deictic in text.lower() or deictic + " " in text.lower():
                 return True
         return False
@@ -192,7 +167,7 @@ class ExplainBot:
     def id_needed(self, parsed_text):
         operation_needs_id = False
         for w in parsed_text.replace("<s>","").strip().split():
-            if w in self.operations_with_id:
+            if w in operations_with_id:
                 operation_needs_id = True
                 break
         if not(" id " in parsed_text) and operation_needs_id:
@@ -436,7 +411,7 @@ class ExplainBot:
         df_intent = self.check_dialogue_flow_intents(text)
         if df_intent is not None:
             parsed_text = df_intent
-            returned_item = random.choice(self.dialogue_flow_map[parsed_text])
+            returned_item = random.choice(dialogue_flow_map[parsed_text])
         else:
             parse_tree, parsed_text = self.compute_parse_text(text)
 
