@@ -141,9 +141,8 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     topk_tokens = [final_agg.target[i].token for i in k_highest_indices(first_token_attributions, topk)]
 
     # TODO: Find sensible verbalization
-    return_s = f"Top {topk} token(s):<br>"
-
-    return_s += f"<b>Feature attribution method: </b>{method_name}<br>"
+    return_s = f"<b>Feature attribution method: </b>{method_name}<br>"
+    return_s += f"Top {topk} token(s):<br>"
 
     for i in topk_tokens:
         if i == "<s>":  # This token causes strikethrough text in HTML! 🤨
