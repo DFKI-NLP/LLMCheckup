@@ -492,6 +492,14 @@ class ExplainBot:
             prompted_text, grammar=grammar)
         decoded_text = api_response['generation']
 
+        # post process the parsed text for llama/mistral
+        ls = decoded_text.split(" ")
+        for (idx, i) in enumerate(ls):
+            if "<s>" in i:
+                ls[idx] = i.split("<s>")[0]
+        ls = [i for i in ls if i != '']
+        decoded_text = " ".join(ls)
+
         app.logger.info(f'Decoded text {decoded_text}')
 
         # Compute the parse tree from the decoded text
@@ -566,13 +574,6 @@ class ExplainBot:
         else:
             parse_tree, parsed_text = self.compute_parse_text(text)
 
-            # Postprocess the parsed text (remove <s>)
-            ls = parsed_text.split(" ")
-            for (idx, i) in enumerate(ls):
-                if "<s>" in i:
-                    ls[idx] = i.split("<s>")[0]
-            ls = [i for i in ls if i != '']
-            parsed_text = " ".join(ls)
             # parsed_text = "filter id 213 and nlpattribute all [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
