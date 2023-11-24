@@ -1,5 +1,7 @@
 import inseq
 
+from actions.prediction.predict import prediction_generation, convert_str_to_options
+
 SUPPORTED_METHODS = ["integrated_gradients", "attention", "lime", "input_x_gradient"]
 
 
@@ -30,8 +32,21 @@ def handle_input(parse_text, i):
             # with topk value
             method_name = parse_text[i + 3]
     except IndexError:
-        method_name = "input_x_gradient"
+        method_name = "attention"
     return topk, method_name
+
+
+def k_highest_indices(lst, k):
+    # Create a list of tuples (value, index)
+    indexed_lst = list(enumerate(lst))
+
+    # Sort the list by the values in descending order
+    sorted_lst = sorted(indexed_lst, key=lambda x: x[1], reverse=True)
+
+    # Extract the first k indices
+    highest_indices = [index for index, value in sorted_lst[:k]]
+
+    return highest_indices
 
 
 def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str, int):
@@ -49,8 +64,7 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     # filter id 213 and nlpattribute all [E]
     # filter id 33 and nlpattribute topk 1 [E]
 
-    # TODO: custom input
-
+    # Get topk value and feature attribution method name
     topk, method_name = handle_input(parse_text, i)
 
     model = conversation.decoder.gpt_model
@@ -61,34 +75,60 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
         device=str(conversation.decoder.gpt_model.device.type),  # Use same device as already loaded GPT model
     )
 
-    # COVID-Fact dataset processing
-    # TODO: Allow other datasets that don't have "evidences" and "claims"
     dataset = conversation.temp_dataset.contents["X"]
-    evidences = dataset["evidences"].item()
-    claims = dataset["claims"].item()
 
-    # TODO: Import prompt from some central prompts file which are also used in prediction
-    input_text = (f"Your task is to predict the veracity of the claim based on the evidence. \n"
-                  f"Evidence: '{evidences}' \n"
-                  f"Claim: '{claims}' \n"
-                  f"Please provide your answer as one of the labels: Refuted or Supported. \n"
-                  f"Veracity prediction: ")
-    tokenized_input_text = conversation.decoder.gpt_tokenizer(input_text)
-    tokenized_length = len(tokenized_input_text.encodings[0].ids)
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        # COVID-Fact dataset processing
+        first_field_name = "claims"
+        second_field_name = "evidences"
+    else:
+        # ECQA
+        first_field_name = "texts"
+        second_field_name = "choices"
+
+    try:
+        idx = dataset.index[0]
+        second_field = dataset[second_field_name].item()
+        first_field = dataset[first_field_name].item()
+    except:
+        idx = None
+        first_field, second_field = conversation.custom_input['first_input'], conversation.custom_input['second_input']
+
+    # Get model prediction
+    _, prediction = prediction_generation(dataset, conversation, idx, external_call=True, external_search=False)
+
+    if conversation.describe.get_dataset_name() == "covid_fact":
+        # TODO: Import prompt from some central prompts file which are also used in prediction
+        input_text = (f"Your task is to predict the veracity of the claim based on the evidence. \n"
+                      f"Evidence: '{second_field}' \n"
+                      f"Claim: '{first_field}' \n"
+                      f"Please provide your answer as one of the labels: Refuted or Supported. \n"
+                      f"Veracity prediction: ")
+    else:
+        input_text = ( f"Each 3 items in the following list contains the question, choice and prediction. Your task "
+                       f"is to choose one of the choices as the answer for the question.\n"
+                       f"Question: '{first_field}'\n"
+                       f"Choice: '{convert_str_to_options(second_field)}'\n"
+                       f"Prediction: "
+        )
+        prediction = second_field.split("-")[int(prediction)]
+
+    # Store current system prompt for feature attribution
+    conversation.current_prompt = input_text
 
     # Attribute text
     out = inseq_model.attribute(
         input_texts=input_text,
+        generated_texts=f"{input_text}{prediction}",
         n_steps=1,
         return_convergence_delta=True,
         step_scores=["probability"],  # TODO: Check if necessary
         show_progress=True,  # TODO: Check if necessary
-        generation_args={"max_length": tokenized_length + 5},  # Dirty solution: Constrain to 5 new tokens
+        generation_args={}
     )
 
     out_agg = out.aggregate(inseq.data.aggregator.SubwordAggregator)
 
-    # TODO: Check if "Supported" or "Refuted" is the first token
     # Extract 1D heatmap (attributions for first token)
     final_agg = out_agg[0].aggregate()
     first_token_attributions = final_agg.target_attributions[:, 0]
@@ -98,19 +138,13 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     # Get HTML visualization from Inseq
     heatmap_viz = out_agg.show(return_html=True).split("<html>")[1].split("</html>")[0]
 
-    def k_highest_indices(lst, k):
-        # Create a list of tuples (value, index)
-        indexed_lst = list(enumerate(lst))
-        # Sort the list by the values in descending order
-        sorted_lst = sorted(indexed_lst, key=lambda x: x[1], reverse=True)
-        # Extract the first k indices
-        highest_indices = [index for index, value in sorted_lst[:k]]
-        return highest_indices
-
     topk_tokens = [final_agg.target[i].token for i in k_highest_indices(first_token_attributions, topk)]
 
     # TODO: Find sensible verbalization
     return_s = f"Top {topk} token(s):<br>"
+
+    return_s += f"<b>Feature attribution method: </b>{method_name}<br>"
+
     for i in topk_tokens:
         if i == "<s>":  # This token causes strikethrough text in HTML! 🤨
             i = "< s >"
