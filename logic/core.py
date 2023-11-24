@@ -339,22 +339,23 @@ class ExplainBot:
     def pick_relevant_operation(self, parsed_text: str):
         suggested_operation = None
         suggestion_text = ""
-        parsed_text_operation = " ".join([w for w in parsed_text.split() if w in valid_operation_names])
+        parsed_text_operation = " ".join([op for op in valid_operation_names if op in parsed_text])
         if len(parsed_text_operation) > 0:
             parsed_text_operation = parsed_text_operation
             selected_operation = random.choice([op for op in operation2set[parsed_text_operation] if op != parsed_text_operation])
             suggested_operation = parsed_text.replace(parsed_text_operation, selected_operation)
             suggested_operation = self.remove_filter_if_needed(suggested_operation, selected_operation)
             suggestion_text = map2suggestion[selected_operation]
-            input_ids = self.paraphrase_tokenizer(f'paraphrase: {suggestion_text}', return_tensors="pt", padding="longest", max_length=60, truncation=True).input_ids.to(self.device)
-            paraphrased = self.paraphraser.generate(input_ids, temperature=0.3, repetition_penalty=2.0, num_return_sequences=1, no_repeat_ngram_size=2, num_beams=5, num_beam_groups=5, max_length=60, diversity_penalty=2.0)
-            suggestion_text = self.paraphrase_tokenizer.batch_decode(paraphrased, skip_special_tokens=True)[0]
+            if random.random() > 0.5:
+                input_ids = self.paraphrase_tokenizer(f'paraphrase: {suggestion_text}', return_tensors="pt", padding="longest", max_length=60, truncation=True).input_ids.to(self.device)
+                paraphrased = self.paraphraser.generate(input_ids, temperature=0.3, repetition_penalty=2.0, num_return_sequences=1, no_repeat_ngram_size=2, num_beams=2, num_beam_groups=2, max_length=60, diversity_penalty=2.0)
+                suggestion_text = self.paraphrase_tokenizer.batch_decode(paraphrased, skip_special_tokens=True)[0]
         # check whether the user already asked about this operation
         # or we suggested it earlier
         if suggested_operation in self.conversation.previous_operations:
             suggested_operation = None
             suggestion_text = ""
-        return suggested_operation, "<br><div>" + suggestion_text + "</div>"
+        return suggested_operation, "<br><b>Follow-up:</b><br><div>" + suggestion_text + "</div>"
 
 
     def compute_parse_text(self, text: str, error_analysis: bool = False):
@@ -450,7 +451,6 @@ class ExplainBot:
         Returns:
             output: The response to the user input.
         """
-
         if self.suggestions and not(self.suggested_operation is None):
             # check if the user agreed to suggestion
             suggestion_confirmed, max_response_match = self.suggestion_confirmed(text)

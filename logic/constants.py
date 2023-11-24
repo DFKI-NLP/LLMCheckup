@@ -1,4 +1,4 @@
-operations_with_id = ["show", "predict", "likelihood", "similar", "nlpattribute", "rationalize", "cfe", "augment"]
+operations_with_id = ["show", "predict", "likelihood", "similar", "nlpattribute topk", "nlpattribute integrated_gradients", "nlpattribute attention", "nlpattribute lime", "nlpattribute input_x_gradient", "rationalize", "cfe", "augment"]
 
 deictic_words = ["this", "that", "it", "here"]
 
@@ -21,10 +21,8 @@ user_prompts = ["Ok, just let me know if you want to know anything else.", "Alri
 metadata = ["show", "data", "data train", "data test", "countdata", "label", "model"]
 prediction = ["predict", "score", "mistake count", "mistake sample"]
 understanding = ["similar", "keywords"]
-explanation = ["nlpattribute topk", "rationalize"]
+explanation = ["nlpattribute topk", "nlpattribute integrated_gradients", "nlpattribute attention", "nlpattribute lime", "nlpattribute input_x_gradient", "rationalize"]
 perturbation = ["cfe", "augment"]
-#TODO add choices for nlpattribute
-nlpattribute_methods = ["integrated_gradients", " attention", " lime", "input_x_gradient"]
 valid_operation_names = metadata + prediction + understanding + explanation + perturbation
 valid_operation_names_words = []
 # adding individual words for the cases like "nlpattribute sentence"
@@ -58,7 +56,11 @@ map2suggestion = {
     "mistake sample": "Do you want to have a look at some sample mistakes?",
     "similar": "Would you like to see a similar instance?",
     "keywords": "I can also show you the top keywords.",
-    "nlpattribute topk": "Shall I show you the importance scores?",#TODO
+    "nlpattribute topk": "Do you want to see the importance scores?",
+    "nlpattribute integrated_gradients": "Do you want to see the importance scores based on integrated gradients?",
+    "nlpattribute attention": "Do you want to see the importance scores based on attention?",
+    "nlpattribute lime": "Do you want to see the importance scores based on LIME?",
+    "nlpattribute input_x_gradient": "Do you want to see the importance scores based on input x gradient?",
     "rationalize": "Would you like to see a rationale?",
     "cfe": "Should I generate a counterfactual?",
     "augment": "Should I augment this instance?"
