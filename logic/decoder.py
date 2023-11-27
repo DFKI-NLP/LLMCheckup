@@ -13,7 +13,7 @@ class Decoder:
 
     def __init__(self,
                  parsing_model_name: str,
-                 in_8_bits: bool,
+                 load_in_4bits: bool = False,
                  no_init: bool = False,
                  use_guided_decoding: bool = True,
                  dataset_name: str = None):
@@ -21,7 +21,7 @@ class Decoder:
 
         Arguments:
             parsing_model_name: The name of the parsing model.
-            in_8_bits: if True, then load model in 8 bits
+            load_in_4bits: if True, then load model in 4 bits
             no_init: If True, will not init any parsing model
             use_guided_decoding: Whether to use guided decoding
             dataset_name: The name of the dataset
@@ -33,19 +33,19 @@ class Decoder:
         self.gpt_tokenizer = None
         self.parser_name = parsing_model_name
         self.init_model(parsing_model_name,
-                        in_8_bits,
+                        load_in_4bits,
                         no_init=no_init)
 
     def init_model(self,
                    parsing_model_name: str,
-                   in_8_bits: bool,
+                   load_in_4bits: bool,
                    no_init: bool = False):
         """Initializes the model
 
         Args:
             :param no_init: Do not init the model
             :param parsing_model_name: the name of the model
-            :param in_8_bits: load model in 8 bits
+            :param load_in_4bits: load model in 8 bits
         """
 
         # Does not initialize a model
@@ -86,9 +86,9 @@ class Decoder:
             """original model"""
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
-                if in_8_bits:
+                if load_in_4bits:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0',
-                                                                          load_in_8bit=in_8_bits)
+                                                                          load_in_4bit=load_in_4bits)
                 else:
                     self.gpt_model = AutoModelForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
                 self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id
@@ -105,9 +105,9 @@ class Decoder:
             if not self.gpt_parser_initialized:
                 self.gpt_tokenizer = AutoTokenizer.from_pretrained(parsing_model_name)
 
-                if in_8_bits:
+                if load_in_4bits:
                     self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name, device_map='cuda:0',
-                                                                        load_in_8bit=in_8_bits)
+                                                                        load_in_8bit=load_in_4bits)
                 else:
                     self.gpt_model = GPTNeoXForCausalLM.from_pretrained(parsing_model_name, device_map="auto")
             self.gpt_model.config.pad_token_id = self.gpt_model.config.eos_token_id

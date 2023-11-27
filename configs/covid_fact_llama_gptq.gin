@@ -11,7 +11,7 @@ ExplainBot.text_fields = ["claims", "evidences"]
 ExplainBot.seed = 0
 ExplainBot.background_dataset_file_path = "./data/COVIDFACT_dataset.csv"
 ExplainBot.dataset_file_path = "./data/COVIDFACT_dataset.csv"
-ExplainBot.in_8_bits = False
+ExplainBot.load_in_4bits = False
 
 ExplainBot.name = "COVID_FACT"
 
@@ -23,6 +23,7 @@ ExplainBot.remove_underscores = False
 
 ExplainBot.prompt_metric = "cosine"
 ExplainBot.prompt_ordering = "ascending"
+ExplainBot.suggestions = True
 
 # Prompt params
 Prompts.prompt_cache_size = 1_000_000

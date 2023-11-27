@@ -22,7 +22,7 @@ ExplainBot.remove_underscores = False
 
 ExplainBot.prompt_metric = "cosine"
 ExplainBot.prompt_ordering = "ascending"
-ExplainBot.in_8_bits = False
+ExplainBot.load_in_4bits = False
 
 # Prompt params
 Prompts.prompt_cache_size = 1_000_000

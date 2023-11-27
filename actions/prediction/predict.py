@@ -2,7 +2,9 @@
 import random
 
 import pandas as pd
-import requests.exceptions
+
+import requests
+
 import torch
 
 from actions.prediction.predict_grammar import COVID_GRAMMAR, ECQA_GRAMMAR
@@ -276,6 +278,7 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
                 return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
             except requests.exceptions.HTTPError:
                 pass
+
         # Return index of choice
         return return_s, int(prediction) - 1
 
