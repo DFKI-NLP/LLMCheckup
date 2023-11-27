@@ -241,12 +241,12 @@ def get_bot_response():
                 conversation = BOT.conversation
 
                 # Remove generated wav files
-                os.remove("recording.wav")
-                os.remove("tmp.wav")
+                os.remove("./recording.wav")
+                os.remove("./tmp.wav")
 
                 app.logger.info("generating the bot response")
                 response = f"<b>Recorded text</b>: {user_text}<br><br>"
-                response += BOT.update_state(user_text, conversation)
+
             elif flag == "text":
                 # Change level for QA
                 level = data["qalevel"]
