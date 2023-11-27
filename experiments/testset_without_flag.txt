@@ -95,7 +95,7 @@ Precomputation
 randompredict [E]
 
 Tell me, how accurate is the model?
-score default [E]
+score accuracy [E]
 
 It would be helpful if you could inform me about the model's F1 score.
 score f1  [E]
