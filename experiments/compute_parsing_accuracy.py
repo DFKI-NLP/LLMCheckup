@@ -1,7 +1,6 @@
 """Computes the parsing accuracy of the model on a test suite."""
 import argparse
 import copy
-import json
 import os
 from os.path import dirname, abspath, join  # noqa: E402, F401
 import sys
@@ -154,33 +153,32 @@ def main():
     print("Dataset:", dset, flush=True)
     print("Model:", model, flush=True)
 
-    if dset == "daily_dialog":
-        config_dset_id = "da"
-    else:
-        config_dset_id = dset
+    config_dset_id = dset
 
-    if dset not in ["boolq", "olid", "daily_dialog"]:
-        raise NameError(f"Unknown dataset {dset}")
-    test_suite = f"./experiments/parsing_interrolang_dev/dev_set_interrolang_{dset}.txt"
+    test_suite = f"./experiments/testset.txt"
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         if model == "nearest-neighbor":
-            config = f"./configs/{config_dset_id}_nn.gin"
-        elif model == "EleutherAI/gpt-neo-2.7B":
-            config = f"./configs/{config_dset_id}.gin"
-        elif model == "flan-t5-base":
-            config = f"./configs/{config_dset_id}_flan-t5.gin"
+            config = f"./configs/covid_fact_nn.gin"
+        elif model == "meta-llama/Llama-2-7b-chat-hf":
+            config = f"./configs/covid_fact_llama.gin"
+        elif model == "mistralai/Mistral-7B-v0.1":
+            config = f"./configs/covid_fact_mistral.gin"
+        elif model == "tiiuae/falcon-rw-1b":
+            config = f"./configs/covid_fact_falcon.gin"
         else:
-            config = f"./configs/{config_dset_id}_large.gin"
+            config = f"./configs/covid_fact_pythia.gin"
     elif sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
         if model == "\'nearest-neighbor\'":
-            config = f"./configs/{config_dset_id}_nn.gin"
-        elif model == "\'EleutherAI/gpt-neo-2.7B\'":
-            config = f"./configs/{config_dset_id}.gin"
-        elif model == "\'FLAN-T5\'":
-            config = f"./configs/{config_dset_id}_flan-t5.gin"
+            config = f"./configs/covid_fact_nn.gin"
+        elif model == "\'meta-llama/Llama-2-7b-chat-hf\'":
+            config = f"./configs/covid_fact_llama.gin"
+        elif model == "\'mistralai/Mistral-7B-v0.1\'":
+            config = f"./configs/covid_fact_mistral.gin"
+        elif model == "\'tiiuae/falcon-rw-1b\'":
+            config = f"./configs/covid_fact_falcon.gin"
         else:
-            config = f"./configs/{config_dset_id}_large.gin"
+            config = f"./configs/covid_fact_pythia.gin"
     else:
         raise OSError("Unknown operating system!")
 
@@ -269,15 +267,11 @@ def main():
 
 def load_n_prompts(model):
     n_prompts_configs = [
-        20
+        10
     ]
-    if model == "EleutherAI/gpt-j-6B":
-        n_prompts_configs = [10]
-    if model == "EleutherAI/gpt-neo-2.7B":
-        n_prompts_configs = [10]
     # doesn't matter if we draw many
     # when taking nn as result
-    if model == "nearest-neighbor" or "t5" in model:
+    if model == "nearest-neighbor" in model:
         n_prompts_configs = [1]
     return n_prompts_configs
 
@@ -285,33 +279,32 @@ def load_n_prompts(model):
 def load_model(dset, guided_decoding, model):
     """Loads the model"""
     print("Initializing model...", flush=True)
-    if "t5" not in model:
-        if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
-            gin.parse_config(f"ExplainBot.parsing_model_name = '{model}'")
-        elif sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
-            gin.parse_config(f"ExplainBot.parsing_model_name = {model}")
-        else:
-            raise OSError("Unknown operating system!")
+    if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
+        gin.parse_config(f"ExplainBot.parsing_model_name = '{model}'")
+    elif sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
+        gin.parse_config(f"ExplainBot.parsing_model_name = {model}")
+    else:
+        raise OSError("Unknown operating system!")
 
-        gin.parse_config(f"ExplainBot.use_guided_decoding = {guided_decoding}")
+    gin.parse_config(f"ExplainBot.use_guided_decoding = {guided_decoding}")
 
-        # if args.debug or "gpt-neo-2.7B" in model:
-        #     gin.parse_config("get_few_shot_predict_f.device = 'cpu'")
-        # else:
-        #     gin.parse_config("get_few_shot_predict_f.device = 'cuda'")
-        gin.parse_config("get_few_shot_predict_f.device = 'cpu'")
+    gin.parse_config("get_few_shot_predict_f.device = 'cuda'")
 
-        # Case for NN and few shot gpt models
-        bot = ExplainBot()
+    # Case for NN and few shot gpt models
+    bot = ExplainBot()
 
-        def get_parse_text(user_input_to_parse):
-            includes_all_words = None
-            try:
+    def get_parse_text(user_input_to_parse):
+        includes_all_words = None
+        try:
+            with torch.no_grad():
                 _, result_parse_text, includes_all_words = bot.compute_parse_text(user_input_to_parse,
-                                                                                  error_analysis=True)
-            except Exception as e:
-                result_parse_text = f"Exception: {e}, likely OOM"
-            return result_parse_text, includes_all_words
+                                                                                error_analysis=True)
+            import gc
+            torch.cuda.empty_cache()
+            gc.collect()
+        except Exception as e:
+            result_parse_text = f"Exception: {e}, likely OOM"
+        return result_parse_text, includes_all_words
     return bot, get_parse_text
 
 

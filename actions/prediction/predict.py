@@ -1,10 +1,10 @@
 """Prediction operation."""
-import os
-import csv
 import random
 
 import pandas as pd
+
 import requests
+
 import torch
 
 from actions.prediction.predict_grammar import COVID_GRAMMAR, ECQA_GRAMMAR
@@ -22,52 +22,6 @@ def handle_input(parse_text):
         except:
             pass
     return num
-
-
-def store_results(inputs, predictions, cache_path):
-    """
-    Store custom inputs and its predictions in csv file
-    Args:
-        inputs: custom input
-        predictions: corresponding predictions
-        cache_path: path to cache/csv
-    """
-    if not os.path.exists(cache_path):
-        with open(cache_path, 'w', newline='') as file:
-            writer = csv.writer(file)
-
-            # Write header
-            writer.writerow(["idx", "Input text", "Prediction"])
-            for i in range(len(inputs)):
-                writer.writerow([i, inputs[i], predictions[i]])
-            file.close()
-
-    else:
-        rows = []
-        with open(cache_path, 'r', ) as file:
-            fieldnames = ["idx", "Input text", "Prediction"]
-            reader = csv.DictReader(file, fieldnames=fieldnames)
-
-            for row in reader:
-                rows.append(row)
-            file.close()
-        length = len(rows)
-
-        with open(cache_path, 'w', newline='') as file:
-            fieldnames = ["idx", "Input text", "Prediction"]
-            writer = csv.DictWriter(file, fieldnames=fieldnames)
-            writer.writeheader()
-
-            for i in range(1, length):
-                writer.writerow(rows[i])
-
-            for i in range(len(inputs)):
-                writer.writerow({
-                    "idx": i + length - 1,
-                    "Input text": inputs[i],
-                    "Prediction": predictions[i]
-                })
-            file.close()
 
 
 def get_demonstrations(_id, num_shot, dataset_name):

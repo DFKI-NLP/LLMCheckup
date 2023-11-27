@@ -55,17 +55,29 @@ def get_prediction(tokenizer, model, idx, first, second, ds, num_shot=3):
         generation = model.greedy_search(input_ids, logits_processor=guided_preprocessor,
                                          pad_token_id=model.config.pad_token_id,
                                          eos_token_id=parser.eos_token, device=model.device.type)
-
-    prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
+    try:
+        prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" [e]")[0].split(" ")[1]
+    except IndexError:
+        if ds == "ecqa":
+            prediction = tokenizer.decode(generation[0]).split(prompt_template)[0][-5]
+        else:
+            temp = tokenizer.decode(generation[0]).split(prompt_template)[0][-11:-4]
+            if temp == "REFUTED":
+                prediction = temp
+            else:
+                prediction = "SUPPORTED"
+    # prediction = tokenizer.decode(generation[0]).split(prompt_template)[1].split(" ")[2].split("<s>")[0]
 
     return prediction
 
 
 if __name__ == "__main__":
-    # ds = "covid_fact"
-    ds = "ecqa"
+    ds = "covid_fact"
+    # ds = "ecqa"
     # model_name = "meta-llama/Llama-2-7b-chat-hf"
-    model_name = "mistralai/Mistral-7B-v0.1"
+    # model_name = "mistralai/Mistral-7B-v0.1"
+    model_name = "EleutherAI/pythia-2.8b-v0"
+    # model_name = "tiiuae/falcon-rw-1b"
 
     similarity_model = SentenceTransformer("all-mpnet-base-v2")
 
@@ -73,11 +85,9 @@ if __name__ == "__main__":
         df = pd.read_csv("../data/COVIDFACT_dataset.csv")
         claims = list(df["claims"])
         evidences = list(df["evidences"])
-        num_shot = 3
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cuda:0',
-                                                     load_in_4bit=True)
+        model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cuda:0', load_in_8bit=True)
 
         model.config.pad_token_id = model.config.eos_token_id
 
@@ -106,6 +116,8 @@ if __name__ == "__main__":
 
             agreement = 1 if (pre_prediction == post_prediction) else 0
 
+            print(pre_prediction, post_prediction)
+
             json_list.append({
                 "idx": idx,
                 "agreement": agreement,
@@ -117,11 +129,9 @@ if __name__ == "__main__":
         df = pd.read_csv("../data/ECQA_dataset.csv")
         texts = list(df["texts"])
         choices = list(df["choices"])
-        num_shot = 3
 
         tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cuda:0',
-                                                     load_in_4bit=True)
+        model = AutoModelForCausalLM.from_pretrained(model_name, device_map='cuda:0', load_in_8bit=True)
 
         model.config.pad_token_id = model.config.eos_token_id
 

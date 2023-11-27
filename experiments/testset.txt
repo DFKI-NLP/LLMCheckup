@@ -1,0 +1,257 @@
+What are the tasks you are capable of completing?
+function [E]
+
+What abilities do you possess in terms of functionality?
+function [E]
+
+What are the operations you can carry out?
+function [E]
+
+What actions are you able to perform?
+function [E]
+
+What are the various tasks you can execute?
+function [E]
+
+Can you provide a brief introduction about yourself?
+self [E]
+
+Could you give me some background information about who you are?
+self [E]
+
+Would you mind sharing a little about yourself?
+self [E]
+
+Tell me something about the model?
+model [E]
+
+describe the model!
+model [E]
+
+Introduce me something about data!
+data [E]
+
+What does the data look like?
+data [E]
+
+Can you provide me with an explanation of the model's prediction by analyzing token attributions for sample number 8?
+filter id 8 and nlpattribute all [E]
+
+I'm looking for a detailed breakdown of the model's prediction, specifically focusing on token attributions for sample number 201.
+filter id 201 and nlpattribute all [E]
+
+Could you elaborate on how token attributions contribute to the model's prediction for sample number 302?
+filter id 302 and nlpattribute all [E]
+
+I'd like to see the most important five features for instance 102, if possible.
+filter id 102 and nlpattribute topk 5 [E]
+
+Display the key ten features for instance 429, please.
+filter id 429 and nlpattribute topk 10 [E]
+
+Could you present the top three essential characteristics for instance 872?
+filter id 872 and nlpattribute topk 3 [E]
+
+Why predict the instance 20 using lime?
+filter id 20 and nlpattribute lime [E]
+
+Explain me the prediction of id 301 using attention?
+filter id 20 and nlpattribute attention [E]
+
+Show me the key features for id 1023 using input gradient?
+filter id 20 and nlpattribute input_x_gradient [E]
+
+I want to see the most important three features for id 97 using integrated gradient?
+filter id 97 and nlpattribute topk 3 integrated_gradient [E]
+
+I need a rationale for the output specifically attributed to id 14.
+filter id 14 and rationalize [E]
+
+Please rationalize the output for id 590 by providing a clear explanation.
+filter id 590 and rationalize [E]
+
+I would like a rationalization for the output linked to id 2084, please.
+filter id 2084 and rationalize [E]
+
+Can you offer an explanation for the output produced by id 1329?
+filter id 1329 and rationalize [E]
+
+Please provide a rationale for the output associated with id 2231.
+filter id 2231 and rationalize [E]
+
+How many data points does the dataset contain?
+countdata [E]
+
+Please inform me about the quantity of datapoints present in the dataset.
+countdata [E]
+
+What is the count of datapoints within the dataset?
+countdata [E]
+
+What classification labels do we have at our disposal?
+label [E]
+
+What are the different labeling options we have?
+label [E]
+
+What label options do we currently have access to?
+label [E]
+
+Can you present the contents associated with id 25?
+filter id 25 and show [E]
+
+I'd like to view the data related to id 675. Can you show it to me?
+filter id 675 and show [E]
+
+Is it possible to access and display the record with id 821?
+filter id 821 and show [E]
+
+Could you retrieve and present the information pertaining to id 120?
+filter id 120 and show [E]
+
+Please display the keyword tokens with the highest frequency.
+keywords all [E]
+
+I would like to see the keyword tokens that appear most frequently.
+keywords all [E]
+
+Show me the most common keyword tokens, please.
+keywords all [E]
+
+Can you present the keyword tokens that occur most often?
+keywords all [E]
+
+I would like to see a list of the 3 most common keywords. Could you display them?
+keywords 3 [E]
+
+Can you present the top 4 keywords based on their frequency of occurrence?
+keywords 4 [E]
+
+I'm interested in seeing the 10 keywords that occur most often. Could you display them?
+keywords 10 [E]
+
+Please fetch the 3 instances that share the highest similarity with ID 16.
+filter id 16 and similar 3 [E]
+
+I'm interested in knowing the 1 instance that have the closest resemblance to ID 542. Could you provide them?
+filter id 542 and similar 1 [E]
+
+Could you generate a list of the 5 instances that bear the greatest similarity to ID 982?
+filter id 982 and similar 5 [E]
+
+Is data augmentation available for id 32?
+filter id 32 and augment [E]
+
+Does your system offer data augmentation capabilities for id 673?
+filter id 673 and augment [E]
+
+Are you capable of performing data augmentation for id 344?
+filter id 344 and augment [E]
+
+I'm interested in examining the counterfactual scenarios related to id 6.
+filter id 6 and cfe [E]
+
+I would like to explore the alternative outcomes for id 72 through counterfactual analysis.
+filter id 72 and cfe [E]
+
+Can you provide me with the counterfactuals for id 864?
+filter id 864 and cfe [E]
+
+What is the frequency of mistakes? Are they common?
+mistake count [E]
+
+Are mistakes frequent? How frequently do they occur?
+mistake count [E]
+
+Do errors occur regularly? What is their occurrence rate?
+mistake count [E]
+
+How often do mistakes happen? Are they frequent?
+mistake count [E]
+
+Please provide a selection of random errors committed by the model.
+mistake sample [E]
+
+Can you show me a few randomly chosen inaccuracies made by the model?
+mistake sample [E]
+
+I would like to see a collection of randomly selected mistakes made by the model.
+mistake sample [E]
+
+What are the expected predictions when utilizing the training data?
+predict [E]
+
+What are the estimated outcomes on the training data?
+predict [E]
+
+What are the inferred predictions based on the training dataset?
+predict [E]
+
+What is the most probable inference for id 47?
+filter id 47 and predict [E]
+
+What is the expected prediction for id 873?
+filter id 873 and predict [E]
+
+What is the likely outcome or forecast for id 391?
+filter id 391 and predict [E]
+
+Could you compute predictions of 5 random instances
+randompredict 5 [E]
+
+Precomputation
+randompredict [E]
+
+Precompute 10 instances
+randompredict 10 [E]
+
+I would like to know the level of accuracy of the model.
+score accuracy [E]
+
+Could you provide me with information regarding the accuracy of the model?
+score accuracy [E]
+
+Tell me, how accurate is the model?
+score default [E]
+
+It would be helpful if you could inform me about the model's F1 score.
+score f1  [E]
+
+I'm curious to learn about the micro F1 score of the model. Could you enlighten me?
+score f1 micro [E]
+
+Could you provide me with the macro scores regarding precision?
+score precision macro [E]
+
+I'm interested in knowing the precision-related macro scores. Can you share them?
+score precision macro [E]
+
+In terms of precision, what would the macro scores look like?
+score precision macro [E]
+
+It would be great if you could provide me with the weighted recall score as well.
+score recall weighted [E]
+
+Could you possibly display the weighted recall score for me, too?
+score recall weighted [E]
+
+I'm interested in seeing the weighted recall score, perhaps you could show it to me?
+score recall weighted [E]
+
+Additionally, it would be helpful if you could show me the weighted recall score.
+score recall weighted [E]
+
+What is counterfactual?
+qatutorial qacfe [E]
+
+Can you provide a concise definition of semantic similarity?
+qatutorial qasim [E]
+
+Explain me data augmentation
+qatutorial qada [E]
+
+Explain me rationalization
+qatutorial qarationale [E]
+
+What's feature importance?
+qatutorial qafa [E]

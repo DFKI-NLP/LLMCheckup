@@ -7,22 +7,20 @@ parser = argparse.ArgumentParser(description="generate parsing results table")
 parser.add_argument("--id", type=str, required=True, help="a unique id to associate with the run")
 parser.add_argument("--slurm", action="store_true", help="whether to run on slurm cluster")
 parser.add_argument("--wandb", action="store_true", help="whether to use weights and biases")
-# parser.add_argument("--subset", choices=["train", "dev", "test", "user"])
 args = parser.parse_args()
 
 # The set of models for the sweep
 models = [
-    # "EleutherAI/gpt-neo-2.7B",
-    "EleutherAI/gpt-j-6b",
     # "nearest-neighbor",
-    # "flan-t5-base"
+    # "meta-llama/Llama-2-7b-chat-hf",
+    "mistralai/Mistral-7B-v0.1",
+    # "EleutherAI/pythia-2.8b-v0",
+    # "tiiuae/falcon-rw-1b"
 ]
 
 # The datasets for the sweep
 datasets = [
-    # "boolq",
-    "olid",
-    # "daily_dialog"
+    "covid"
 ]
 
 # This setting is for whether to use guided decoding (True) or not (False)
@@ -31,9 +29,6 @@ gd_choices = [True]
 for model in models:
     for ds in datasets:
         for gd in gd_choices:
-
-            # if gd and model == "nearest-neighbor":
-            #     continue
 
             if gd:
                 gd_text = "--gd"
