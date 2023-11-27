@@ -4,6 +4,7 @@ import csv
 import random
 
 import pandas as pd
+import requests
 import torch
 
 from actions.prediction.predict_grammar import COVID_GRAMMAR, ECQA_GRAMMAR
@@ -297,9 +298,12 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
         return_s += f"<span style=\"background-color: #6CB4EE\">{prediction}</span>.<br><br>"
 
         if external_search:
-            # Do information retrieval
-            link_ls = list(search(first_field))
-            return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+            try:
+                # Do information retrieval
+                link_ls = list(search(first_field))
+                return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+            except requests.exceptions.HTTPError:
+                pass
 
         return return_s, prediction
     else:
@@ -313,10 +317,13 @@ def prediction_generation(data, conversation, _id, num_shot=3, given_first_field
 
         return_s += f"<span style=\"background-color: #6CB4EE\">({prediction}) {second_field.split('-')[int(prediction) - 1]}</span>.<br><br>"
 
-        # if external_search:
-        #     # Do information retrieval
-        #     link_ls = list(search(first_field))
-        #     return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+        if external_search:
+            try:
+                # Do information retrieval
+                link_ls = list(search(first_field))
+                return_s += f"<b>Potential relevant link</b>: <a href='{link_ls[0]}'>{link_ls[0]}</a>"
+            except requests.exceptions.HTTPError:
+                pass
 
         # Return index of choice
         return return_s, int(prediction) - 1

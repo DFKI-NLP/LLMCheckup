@@ -17,9 +17,6 @@ import random
 from flask import Flask
 from random import seed as py_random_seed
 
-from word2number import w2n
-import string
-
 from logic.action import run_action
 from logic.conversation import Conversation
 from logic.decoder import Decoder
@@ -60,7 +57,7 @@ class ExplainBot:
                  name: str,
                  text_fields: list[str],
                  parsing_model_name: str,
-                 in_8_bits: bool,
+                 load_in_4bits: bool,
                  seed: int = 0,
                  prompt_metric: str = "cosine",
                  prompt_ordering: str = "ascending",
@@ -121,7 +118,7 @@ class ExplainBot:
 
         # Initialize completion + parsing modules
         app.logger.info(f"Loading parsing model {parsing_model_name}...")
-        self.decoder = Decoder(parsing_model_name, in_8_bits,
+        self.decoder = Decoder(parsing_model_name, load_in_4bits,
                                use_guided_decoding=self.use_guided_decoding, dataset_name=name)
 
         # Initialize parser + prompts as None
