@@ -1,0 +1,602 @@
+[
+  {
+    "idx": 1455,
+    "agreement": 1,
+    "claim_cos_sim": 0.98,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 584,
+    "agreement": 1,
+    "claim_cos_sim": 0.91,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 1117,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.96
+  },
+  {
+    "idx": 3383,
+    "agreement": 1,
+    "claim_cos_sim": 1.0,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 3669,
+    "agreement": 1,
+    "claim_cos_sim": 0.89,
+    "evidence_cos_sim": 0.96
+  },
+  {
+    "idx": 1978,
+    "agreement": 1,
+    "claim_cos_sim": 0.73,
+    "evidence_cos_sim": 0.94
+  },
+  {
+    "idx": 2020,
+    "agreement": 1,
+    "claim_cos_sim": 0.38,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 2284,
+    "agreement": 1,
+    "claim_cos_sim": 0.92,
+    "evidence_cos_sim": 0.93
+  },
+  {
+    "idx": 2402,
+    "agreement": 1,
+    "claim_cos_sim": 0.72,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 196,
+    "agreement": 1,
+    "claim_cos_sim": 0.81,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 1230,
+    "agreement": 1,
+    "claim_cos_sim": 0.93,
+    "evidence_cos_sim": 0.96
+  },
+  {
+    "idx": 2632,
+    "agreement": 1,
+    "claim_cos_sim": 0.83,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 1824,
+    "agreement": 1,
+    "claim_cos_sim": 0.92,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 3652,
+    "agreement": 1,
+    "claim_cos_sim": 0.91,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 1174,
+    "agreement": 1,
+    "claim_cos_sim": 0.63,
+    "evidence_cos_sim": 0.96
+  },
+  {
+    "idx": 1612,
+    "agreement": 1,
+    "claim_cos_sim": 1.0,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3267,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2534,
+    "agreement": 1,
+    "claim_cos_sim": 0.93,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2771,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.94
+  },
+  {
+    "idx": 2219,
+    "agreement": 1,
+    "claim_cos_sim": 0.91,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 941,
+    "agreement": 1,
+    "claim_cos_sim": 0.82,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 4035,
+    "agreement": 1,
+    "claim_cos_sim": 0.84,
+    "evidence_cos_sim": 0.9
+  },
+  {
+    "idx": 3001,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 1236,
+    "agreement": 1,
+    "claim_cos_sim": 0.76,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 398,
+    "agreement": 1,
+    "claim_cos_sim": 0.87,
+    "evidence_cos_sim": 0.93
+  },
+  {
+    "idx": 3627,
+    "agreement": 1,
+    "claim_cos_sim": 0.92,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 3293,
+    "agreement": 1,
+    "claim_cos_sim": 0.84,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2273,
+    "agreement": 1,
+    "claim_cos_sim": 0.79,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 3987,
+    "agreement": 1,
+    "claim_cos_sim": 0.77,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 812,
+    "agreement": 1,
+    "claim_cos_sim": 0.89,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 1555,
+    "agreement": 1,
+    "claim_cos_sim": 0.82,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 806,
+    "agreement": 1,
+    "claim_cos_sim": 0.94,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3822,
+    "agreement": 1,
+    "claim_cos_sim": 1.0,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 3164,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 3682,
+    "agreement": 1,
+    "claim_cos_sim": 0.89,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3878,
+    "agreement": 1,
+    "claim_cos_sim": 0.99,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 2093,
+    "agreement": 1,
+    "claim_cos_sim": 0.82,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 374,
+    "agreement": 1,
+    "claim_cos_sim": 0.85,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 901,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.91
+  },
+  {
+    "idx": 1714,
+    "agreement": 1,
+    "claim_cos_sim": 0.92,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 1348,
+    "agreement": 1,
+    "claim_cos_sim": 0.8,
+    "evidence_cos_sim": 0.92
+  },
+  {
+    "idx": 301,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2335,
+    "agreement": 1,
+    "claim_cos_sim": 0.99,
+    "evidence_cos_sim": 0.91
+  },
+  {
+    "idx": 1022,
+    "agreement": 1,
+    "claim_cos_sim": 0.8,
+    "evidence_cos_sim": 0.94
+  },
+  {
+    "idx": 2738,
+    "agreement": 1,
+    "claim_cos_sim": 0.9,
+    "evidence_cos_sim": 0.91
+  },
+  {
+    "idx": 2377,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 2092,
+    "agreement": 1,
+    "claim_cos_sim": 0.86,
+    "evidence_cos_sim": 0.79
+  },
+  {
+    "idx": 3305,
+    "agreement": 1,
+    "claim_cos_sim": 0.89,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2043,
+    "agreement": 1,
+    "claim_cos_sim": 0.79,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 2872,
+    "agreement": 1,
+    "claim_cos_sim": 0.87,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2137,
+    "agreement": 1,
+    "claim_cos_sim": 0.86,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3459,
+    "agreement": 1,
+    "claim_cos_sim": 1.0,
+    "evidence_cos_sim": 0.63
+  },
+  {
+    "idx": 2666,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 223,
+    "agreement": 1,
+    "claim_cos_sim": 0.77,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 1319,
+    "agreement": 1,
+    "claim_cos_sim": 0.64,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 2364,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 2477,
+    "agreement": 1,
+    "claim_cos_sim": 0.79,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2561,
+    "agreement": 1,
+    "claim_cos_sim": 0.86,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3357,
+    "agreement": 1,
+    "claim_cos_sim": 0.97,
+    "evidence_cos_sim": 0.9
+  },
+  {
+    "idx": 1433,
+    "agreement": 1,
+    "claim_cos_sim": 0.96,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 1291,
+    "agreement": 1,
+    "claim_cos_sim": 0.92,
+    "evidence_cos_sim": 0.9
+  },
+  {
+    "idx": 485,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 1739,
+    "agreement": 1,
+    "claim_cos_sim": 0.93,
+    "evidence_cos_sim": 0.93
+  },
+  {
+    "idx": 2552,
+    "agreement": 1,
+    "claim_cos_sim": 1.0,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 1380,
+    "agreement": 1,
+    "claim_cos_sim": 0.7,
+    "evidence_cos_sim": 0.76
+  },
+  {
+    "idx": 456,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 2490,
+    "agreement": 1,
+    "claim_cos_sim": 0.9,
+    "evidence_cos_sim": 0.73
+  },
+  {
+    "idx": 3326,
+    "agreement": 1,
+    "claim_cos_sim": 0.94,
+    "evidence_cos_sim": 0.89
+  },
+  {
+    "idx": 3537,
+    "agreement": 1,
+    "claim_cos_sim": 0.98,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 578,
+    "agreement": 1,
+    "claim_cos_sim": 0.81,
+    "evidence_cos_sim": 0.92
+  },
+  {
+    "idx": 197,
+    "agreement": 1,
+    "claim_cos_sim": 0.95,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2082,
+    "agreement": 1,
+    "claim_cos_sim": 0.54,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 2379,
+    "agreement": 1,
+    "claim_cos_sim": 0.8,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 4036,
+    "agreement": 1,
+    "claim_cos_sim": 0.86,
+    "evidence_cos_sim": 0.79
+  },
+  {
+    "idx": 2280,
+    "agreement": 1,
+    "claim_cos_sim": 0.98,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 131,
+    "agreement": 1,
+    "claim_cos_sim": 0.84,
+    "evidence_cos_sim": 0.92
+  },
+  {
+    "idx": 914,
+    "agreement": 1,
+    "claim_cos_sim": 0.81,
+    "evidence_cos_sim": 0.96
+  },
+  {
+    "idx": 1092,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 3263,
+    "agreement": 1,
+    "claim_cos_sim": 0.87,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 949,
+    "agreement": 1,
+    "claim_cos_sim": 0.93,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 2720,
+    "agreement": 1,
+    "claim_cos_sim": 0.81,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 1446,
+    "agreement": 1,
+    "claim_cos_sim": 0.87,
+    "evidence_cos_sim": 0.91
+  },
+  {
+    "idx": 2015,
+    "agreement": 1,
+    "claim_cos_sim": 0.52,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3534,
+    "agreement": 1,
+    "claim_cos_sim": 0.76,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 2732,
+    "agreement": 1,
+    "claim_cos_sim": 0.89,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 263,
+    "agreement": 1,
+    "claim_cos_sim": 0.67,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 338,
+    "agreement": 1,
+    "claim_cos_sim": 0.91,
+    "evidence_cos_sim": 0.97
+  },
+  {
+    "idx": 1536,
+    "agreement": 1,
+    "claim_cos_sim": 0.85,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 3673,
+    "agreement": 1,
+    "claim_cos_sim": 0.97,
+    "evidence_cos_sim": 1.0
+  },
+  {
+    "idx": 148,
+    "agreement": 1,
+    "claim_cos_sim": 0.81,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 3484,
+    "agreement": 1,
+    "claim_cos_sim": 0.79,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 3455,
+    "agreement": 1,
+    "claim_cos_sim": 0.48,
+    "evidence_cos_sim": 0.94
+  },
+  {
+    "idx": 3873,
+    "agreement": 1,
+    "claim_cos_sim": 0.87,
+    "evidence_cos_sim": 0.89
+  },
+  {
+    "idx": 3958,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 3658,
+    "agreement": 1,
+    "claim_cos_sim": 0.69,
+    "evidence_cos_sim": 0.98
+  },
+  {
+    "idx": 2555,
+    "agreement": 1,
+    "claim_cos_sim": 0.91,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 998,
+    "agreement": 1,
+    "claim_cos_sim": 0.75,
+    "evidence_cos_sim": 0.99
+  },
+  {
+    "idx": 2372,
+    "agreement": 1,
+    "claim_cos_sim": 0.72,
+    "evidence_cos_sim": 0.95
+  },
+  {
+    "idx": 1539,
+    "agreement": 1,
+    "claim_cos_sim": 0.88,
+    "evidence_cos_sim": 0.9
+  },
+  {
+    "idx": 14,
+    "agreement": 1,
+    "claim_cos_sim": 0.93,
+    "evidence_cos_sim": 0.98
+  }
+]

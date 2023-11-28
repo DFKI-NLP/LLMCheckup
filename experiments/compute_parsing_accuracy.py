@@ -155,7 +155,8 @@ def main():
 
     config_dset_id = dset
 
-    test_suite = f"./experiments/testset.txt"
+    # test_suite = f"./experiments/testset.txt"
+    test_suite = "./experiments/testset_without_flag.txt"
 
     if sys.platform.startswith('linux') or sys.platform.startswith('darwin'):
         if model == "nearest-neighbor":
@@ -166,6 +167,8 @@ def main():
             config = f"./configs/covid_fact_mistral.gin"
         elif model == "tiiuae/falcon-rw-1b":
             config = f"./configs/covid_fact_falcon.gin"
+        elif model == "petals":
+            config = f"./configs/covid_fact_petals.gin"
         else:
             config = f"./configs/covid_fact_pythia.gin"
     elif sys.platform.startswith('win32') or sys.platform.startswith('cygwin'):
@@ -177,6 +180,8 @@ def main():
             config = f"./configs/covid_fact_mistral.gin"
         elif model == "\'tiiuae/falcon-rw-1b\'":
             config = f"./configs/covid_fact_falcon.gin"
+        elif model == "\'petals\'":
+            config = f"./configs/covid_fact_petals.gin"
         else:
             config = f"./configs/covid_fact_pythia.gin"
     else:
@@ -267,7 +272,7 @@ def main():
 
 def load_n_prompts(model):
     n_prompts_configs = [
-        10
+        20
     ]
     # doesn't matter if we draw many
     # when taking nn as result

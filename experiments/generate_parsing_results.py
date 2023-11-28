@@ -14,6 +14,7 @@ models = [
     # "nearest-neighbor",
     # "meta-llama/Llama-2-7b-chat-hf",
     "mistralai/Mistral-7B-v0.1",
+    # "petals",
     # "EleutherAI/pythia-2.8b-v0",
     # "tiiuae/falcon-rw-1b"
 ]
