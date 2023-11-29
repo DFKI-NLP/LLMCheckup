@@ -53,7 +53,7 @@ python flask_app.py
 ## 🤗Models:
 In our study, we identified three LLMs for our purposes.
 
-- LLama2 (https://huggingface.co/meta-llama/Llama-2-7b-chat-hf)
+- 🦙LLama2 (Request access to its weights at the ♾️ Meta AI website)
   - Quantized Llama2 (https://huggingface.co/TheBloke/Llama-2-7B-Chat-GPTQ)
 - Mistral (https://huggingface.co/mistralai/Mistral-7B-v0.1)
   - Quantized Mistral (https://huggingface.co/TheBloke/Mistral-7B-v0.1-GPTQ)
@@ -74,7 +74,7 @@ We support different methods for deployment:
 | Bitsanbytes* |    ✅    |   ✅   |
 |   petals**   |    ✅     |   ❌  |
 
-*: For Windows: if you encounter errors while installing bitsandbytes, then try: 
+*: 🪟 For Windows: if you encounter errors while installing bitsandbytes, then try: 
 ```bash
 python -m pip install https://github.com/jllllll/bitsandbytes-windows-webui/releases/download/wheels/bitsandbytes-0.41.1-py3-none-win_amd64.whl
 ``` 
@@ -121,5 +121,5 @@ Link: https://github.com/dair-iitd/ECQA-Dataset
 - Audio
   - A lightweight [fairseq s2t](https://huggingface.co/facebook/s2t-small-librispeech-asr) model from meta
   - If you encounter errors when reading recorded files: `soundfile.LibsndfileError: Error opening path_to_wav: Format not recognised.`. Then please try to install `ffmpeg`.
-    - In Linux: ```sudo apt install ffmpeg``` or `pip3 install ffmpeg`
-    - In Windows: Download `ffmpeg` from [here](https://github.com/BtbN/FFmpeg-Builds/releases) and add the path to system environment
+    - 🐧In Linux: ```sudo apt install ffmpeg``` or `pip3 install ffmpeg`
+    - 🪟In Windows: Download `ffmpeg` from [here](https://github.com/BtbN/FFmpeg-Builds/releases) and add the path to system environment
