@@ -13,5 +13,5 @@ Parsed: qatutorial qasim [E]
 User: How is semantic similarity measured in NLP tasks?
 Parsed: qatutorial qasim [E]
 
-Can you provide a concise definition of semantic similarity in the context of NLP?
+User: Can you provide a concise definition of semantic similarity in the context of NLP?
 Parsed: qatutorial qasim [E]
