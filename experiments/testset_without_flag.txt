@@ -4,10 +4,40 @@ function [E]
 What abilities do you possess in terms of functionality?
 function [E]
 
+What tasks can you successfully accomplish?
+function [E]
+
+What functional capabilities do you possess?
+function [E]
+
+What tasks are within your capabilities?
+function [E]
+
+Tell me about the tasks you can handle.
+function [E]
+
+What functionalities are you capable of?
+function [E]
+
 Can you provide a brief introduction about yourself?
 self [E]
 
 Could you give me some background information about who you are?
+self [E]
+
+Can you provide me with a brief introduction about who you are?
+self [E]
+
+Could you give me some insights into your background and identity?
+self [E]
+
+Can you share some information about yourself and what you represent?
+self [E]
+
+Tell me a little bit about your background and who you are.
+self [E]
+
+I'm curious to know more about your identity and what defines you. Can you provide some background information?
 self [E]
 
 Tell me something about the model?
@@ -16,10 +46,40 @@ model [E]
 describe the model!
 model [E]
 
+Can you provide some details about the model?
+model [E]
+
+Could you describe the model in more detail?
+model [E]
+
+Tell me about the characteristics and features of the model.
+model [E]
+
+What can you tell me about the model and its functioning?
+model [E]
+
+I'm interested in learning more about the model. Can you provide a description?
+model [E]
+
 Introduce me something about data!
 data [E]
 
 What does the data look like?
+data [E]
+
+Can you provide some information about the concept of data?
+data [E]
+
+Could you introduce me to the topic of data and its significance?
+data [E]
+
+Tell me about the characteristics and types of data.
+data [E]
+
+What can you tell me about the nature and structure of data?
+data [E]
+
+I'm interested in learning more about data. Can you provide an introduction to the topic?
 data [E]
 
 Can you provide me with an explanation of the model's prediction by analyzing token attributions for sample number 8?
@@ -28,16 +88,61 @@ filter id 8 and nlpattribute all [E]
 I'm looking for a detailed breakdown of the model's prediction, specifically focusing on token attributions for sample number 201.
 filter id 201 and nlpattribute all [E]
 
+Can you provide me with a breakdown of the model's prediction by analyzing token attributions for sample number 74?
+filter id 74 and nlpattribute all [E]
+
+I'm interested in a detailed analysis of the model's prediction, particularly focusing on token attributions for sample number 349.
+filter id 349 and nlpattribute all [E]
+
+Can you give me an explanation of the model's prediction by examining token attributions for sample number 79?
+filter id 79 and nlpattribute all [E]
+
+I would like to understand the model's prediction in depth, specifically looking at token attributions for sample number 1024.
+filter id 1024 and nlpattribute all [E]
+
+Please provide me with an analysis of the model's prediction, specifically focusing on token attributions for sample number 836.
+filter id 836 and nlpattribute all [E]
+
 I need a rationale for the output specifically attributed to id 14.
 filter id 14 and rationalize [E]
 
 Please rationalize the output for id 590 by providing a clear explanation.
 filter id 590 and rationalize [E]
 
+Provide me a rationale for the output specifically attributed to id 3.
+filter id 3 and rationalize [E]
+
+Give me a clear explanation by rationalizing the output for id 2742.
+filter id 2742 and rationalize [E]
+
+Provide an explanation for the output associated with id 987, offering a rationale for it.
+filter id 987 and rationalize [E]
+
+Offer a clear explanation by providing a rationale for the output related to id 721.
+filter id 721 and rationalize [E]
+
+Generate a rationale for the output specifically associated with id 406.
+filter id 406 and rationalize [E]
+
 How many data points does the dataset contain?
 countdata [E]
 
 Please inform me about the quantity of datapoints present in the dataset.
+countdata [E]
+
+How many data points are there in the dataset?
+countdata [E]
+
+Could you provide information about the total number of data points in the dataset?
+countdata [E]
+
+Please let me know the quantity of data points present in the dataset.
+countdata [E]
+
+Can you share the count of data points in the dataset?
+countdata [E]
+
+I'm interested in knowing the number of data points in the dataset. Could you provide that information?
 countdata [E]
 
 What classification labels do we have at our disposal?
@@ -46,16 +151,61 @@ label [E]
 What are the different labeling options we have?
 label [E]
 
+What are the available classification labels?
+label [E]
+
+Could you provide information about the different labeling options?
+label [E]
+
+What classification labels do we have to work with?
+label [E]
+
+Please let me know about the various labeling options we have.
+label [E]
+
+What are the different labels that we can use for classification?
+label [E]
+
 Can you present the contents associated with id 25?
 filter id 25 and show [E]
 
 I'd like to view the data related to id 675. Can you show it to me?
 filter id 675 and show [E]
 
+Can you display the information linked with ID 54?
+filter id 54 and show [E]
+
+What details are associated with ID 752? Please present them.
+filter id 752 and show [E]
+
+Could you show me the contents related to ID 923?
+filter id 923 and show [E]
+
+I want to examine the data for ID 987. Can you present it?
+filter id 987 and show [E]
+
+What data is linked with ID 213? Please show it to me.
+filter id 213 and show [E]
+
 Please display the keyword tokens with the highest frequency.
 keywords all [E]
 
 I would like to see the keyword tokens that appear most frequently.
+keywords all [E]
+
+Can you present the keyword tokens with the highest frequency?
+keywords all [E]
+
+I'm interested in viewing the keyword tokens that have the highest frequency. Could you display them?
+keywords all [E]
+
+What are the keyword tokens with the highest frequency? Please show them.
+keywords all [E]
+
+Could you display the keyword tokens that appear most frequently?
+keywords all [E]
+
+I would like to see the keyword tokens that have the highest frequency. Can you present them?
 keywords all [E]
 
 Please fetch the 3 instances that share the highest similarity with ID 16.
@@ -64,11 +214,41 @@ filter id 16 and similar 3 [E]
 I'm interested in knowing the 1 instance that have the closest resemblance to ID 542. Could you provide them?
 filter id 542 and similar 1 [E]
 
+Can you fetch the 3 instances that share the highest similarity with ID 23?
+Parsed: filter id 23 and similar 3 [E]
+
+I'd like to know the 3 instances with the highest similarity to ID 451. Could you fetch them?
+Parsed: filter id 451 and similar 3 [E]
+
+What are the 3 instances that have the highest similarity to ID 1236? Please fetch them.
+Parsed: filter id 1236 and similar 3 [E]
+
+Could you provide the 1 instance that has the closest resemblance to ID 452?
+Parsed: filter id 452 and similar 1 [E]
+
+I'm interested in knowing the 1 instance with the highest similarity to ID 759. Could you provide it?
+Parsed: filter id 759 and similar 1 [E]
+
 Is data augmentation available for id 32?
 filter id 32 and augment [E]
 
 Does your system offer data augmentation capabilities for id 673?
 filter id 673 and augment [E]
+
+Can I apply data augmentation for ID 970?
+filter id 970 and augment [E]
+
+Is data augmentation an option for ID 278?
+filter id 278 and augment [E]
+
+Does the system support data augmentation for ID 704?
+filter id 704 and augment [E]
+
+Does your system provide data augmentation capabilities for ID 457?
+filter id 457 and augment [E]
+
+Is it possible to augment data for ID 2673?
+filter id 2673 and augment [E]
 
 I would like to explore the alternative outcomes for id 72 through counterfactual analysis.
 filter id 72 and cfe [E]
@@ -76,11 +256,41 @@ filter id 72 and cfe [E]
 Can you provide me with the counterfactuals for id 864?
 filter id 864 and cfe [E]
 
+I would like to explore the alternative outcomes for ID 512 through counterfactual analysis.
+filter id 512 and cfe [E]
+
+Could you present the counterfactuals for ID 674?
+filter id 674 and cfe [E]
+
+What are the alternative outcomes for ID 1712 through counterfactual analysis? Please show them.
+filter id 1712 and cfe [E]
+
+Can you provide me with the counterfactuals for ID 1864?
+filter id 1864 and cfe [E]
+
+I'm interested in exploring the alternative outcomes for ID 2421. Could you show me the counterfactuals?
+filter id 2421 and cfe [E]
+
 How often do mistakes happen? Are they frequent?
 mistake count [E]
 
 Please provide a selection of random errors committed by the model.
 mistake sample [E]
+
+How often do mistakes happen? Are they frequent?
+mistake count [E]
+
+Could you share some random errors committed by the model?
+mistake sample [E]
+
+Are mistakes frequent in the model's outputs? How often do they occur?
+mistake count [E]
+
+Please provide a selection of random errors made by the model.
+mistake sample [E]
+
+Are errors in the model's predictions common? How frequently do they happen?
+mistake count [E]
 
 What is the most probable inference for id 47?
 filter id 47 and predict [E]
@@ -88,14 +298,59 @@ filter id 47 and predict [E]
 What is the expected prediction for id 873?
 filter id 873 and predict [E]
 
+What is the most probable inference for ID 437?
+filter id 437 and predict [E]
+
+Could you provide the expected prediction for ID 502?
+filter id 502 and predict [E]
+
+What is the prediction most likely for ID 923?
+filter id 923 and predict [E]
+
+What is the expected prediction for ID 517?
+filter id 517 and predict [E]
+
+Can you tell me the most probable inference for ID 1823?
+filter id 1823 and predict [E]
+
 Could you compute predictions of 5 random instances
 randompredict 5 [E]
 
 Precomputation
 randompredict [E]
 
+Could you compute predictions for 5 random instances?
+randompredict 5 [E]
+
+I'm interested in the predictions for 5 random instances. Can you compute them?
+randompredict 5 [E]
+
+What are the predictions for 5 random instances? Please compute them.
+randompredict 5 [E]
+
+Can you perform predictions for 5 random instances?
+randompredict 5 [E]
+
+I'd like to see the predictions for 5 random instances. Could you compute them?
+randompredict 5 [E]
+
 Tell me, how accurate is the model?
 score accuracy [E]
 
 It would be helpful if you could inform me about the model's F1 score.
-score f1  [E]
+score f1 [E]
+
+Tell me, how accurate is the model?
+score accuracy [E]
+
+What is the model's accuracy score?
+score accuracy [E]
+
+Could you provide information on the model's accuracy?
+score accuracy [E]
+
+It would be helpful if you could inform me about the model's F1 score.
+score f1 [E]
+
+What is the F1 score of the model?
+score f1 [E]
