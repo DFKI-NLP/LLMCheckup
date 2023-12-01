@@ -1,7 +1,7 @@
 """Utils"""
+import os
 
 import gin
-import json
 import openai
 import pandas as pd
 from os import listdir
@@ -113,3 +113,38 @@ def add_to_dict_lists(key, value, dictionary):
         dictionary[key] = [value]
     else:
         dictionary[key].append(value)
+
+
+def get_user_questions_and_parsed_texts():
+    """Gather all user questions and parsed texts"""
+
+    folder_name = ['about', 'context', 'explanation', 'filter', 'metadata', 'nlu', 'perturbation', 'prediction',
+                   'qatutorial']
+
+    def check_format(file_name):
+        if file_name.endswith(".txt"):
+            return True
+        else:
+            return False
+
+    file_names = []
+    for f in folder_name:
+        temp = list(filter(check_format, os.listdir(f"./prompts/{f}")))
+        file_names += [f"./prompts/{f}/{i}" for i in temp]
+
+    user_question = []
+    parsed_text = []
+    for file in file_names:
+        f = open(file, "r")
+        while True:
+            content = f.readline()
+            if not content:
+                break
+            if content != "\n":
+                temp = content.split("\n")[0]
+                if temp.startswith("User"):
+                    user_question.append(temp.split("User: ")[1])
+                else:
+                    parsed_text.append(temp.split("Parsed: ")[1])
+
+    return user_question, parsed_text

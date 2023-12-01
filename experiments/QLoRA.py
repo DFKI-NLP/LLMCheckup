@@ -1,4 +1,3 @@
-import os
 import torch
 import wandb
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
@@ -6,39 +5,7 @@ from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
 import transformers
 from datasets import Dataset
 
-
-def get_data():
-    folder_name = ['about', 'context', 'explanation', 'filter', 'metadata', 'nlu', 'perturbation', 'prediction',
-                   'qatutorial']
-
-    def check_format(file_name):
-        if file_name.endswith(".txt"):
-            return True
-        else:
-            return False
-
-    file_names = []
-    for f in folder_name:
-        temp = list(filter(check_format, os.listdir(f"../prompts/{f}")))
-        file_names += [f"../prompts/{f}/{i}" for i in temp]
-
-    user_question = []
-    parsed_text = []
-    for file in file_names:
-        f = open(file, "r")
-        while True:
-            content = f.readline()
-            if not content:
-                break
-            if content != "\n":
-                temp = content.split("\n")[0]
-                if temp.startswith("User"):
-                    user_question.append(temp.split("User: ")[1])
-                else:
-                    parsed_text.append(temp.split("Parsed: ")[1])
-
-    return user_question, parsed_text
-
+from logic.utils import get_user_questions_and_parsed_texts
 
 model_id = "meta-llama/Llama-2-7b-chat-hf"
 # model_id = "mistralai/Mistral-7B-v0.1"
@@ -90,7 +57,7 @@ config = LoraConfig(
 model = get_peft_model(model, config)
 print_trainable_parameters(model)
 
-user_question, parsed_text = get_data()
+user_question, parsed_text = get_user_questions_and_parsed_texts()
 
 ds = Dataset.from_dict({"user_text": user_question,
                         "parsed_text": parsed_text})

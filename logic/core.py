@@ -22,7 +22,7 @@ from logic.conversation import Conversation
 from logic.decoder import Decoder
 from logic.parser import Parser, get_parse_tree
 from logic.prompts import Prompts
-from logic.utils import read_and_format_data
+from logic.utils import read_and_format_data, get_user_questions_and_parsed_texts
 from logic.write_to_log import log_dialogue_input
 from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map, \
     user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations
@@ -170,6 +170,8 @@ class ExplainBot:
         # Compute embeddings for thanks/bye
         self.thanks = self.st_model.encode(thanks, convert_to_tensor=True)
         self.bye = self.st_model.encode(bye, convert_to_tensor=True)
+
+        self.user_questions, self.parsed_texts = get_user_questions_and_parsed_texts()
 
     def has_deictic(self, text):
         for deictic in deictic_words:
@@ -449,6 +451,24 @@ class ExplainBot:
         else:
             return grammar, prompted_text
 
+    def check_prompt_availability(self, user_question):
+        """
+        Check if the user question is contained in our predefined prompt set
+        :param text: user question
+        :return: availability and idx
+        """
+        try:
+            idx = self.user_questions.index(user_question)
+            flag = True
+        except ValueError:
+            flag = False
+
+        if flag:
+            return flag, idx
+        else:
+            return flag, None
+
+
     def update_state(self, text: str, user_session_conversation: Conversation):
         """The main conversation driver.
 
@@ -501,9 +521,14 @@ class ExplainBot:
             parsed_text = df_intent
             returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
-            parse_tree, parsed_text = self.compute_parse_text(text)
+            flag, idx = self.check_prompt_availability(text)
 
-            # parsed_text = "filter id 213 and nlpattribute all [E]"
+            if flag:
+                parsed_text = self.parsed_texts[idx]
+                parse_tree = None
+            else:
+                parse_tree, parsed_text = self.compute_parse_text(text)
+                # parsed_text = "filter id 213 and nlpattribute all [E]"
 
             app.logger.info(f"parsed text: {parsed_text}")
 
