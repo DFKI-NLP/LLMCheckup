@@ -278,6 +278,39 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="row row1" data-sort="qa" style="display: table-row;">
+                    <div class="control" style="display: table-cell; text-align: right; padding: 10px;"><b>Tutorial</b>
+                    </div>
+                    <div class="buttons" style="display: table-cell;">
+                        <div class="tooltip-wrapper">
+                            <button id="qa_cfe" class="idea-button" onclick="sampleQAcfe()">
+                                Counterfactual
+                            </button>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="qa_da" class="idea-button" onclick="sampleQAaug()">
+                                Augmentation
+                            </button>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="qa_fa" class="idea-button" onclick="sampleQAFA()">
+                                Feature Importance
+                            </button>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="qa_rationale" class="idea-button" onclick="sampleQARationale()">
+                                Rationale
+                            </button>
+                        </div>
+                        <div class="tooltip-wrapper">
+                            <button id="qa_sim" class="idea-button" onclick="sampleQASim()">
+                                Similarity
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="row row2" data-sort="md_" style="display: table-row;">
                     <div class="control" style="display: table-cell; text-align: right; padding: 10px;"><b>Metadata</b>
                     </div>
@@ -849,6 +882,25 @@
                 ttmInput.value = data;
             }
         });
+    }
+
+    function sampleQAcfe(){
+        doSample("qa_cfe");
+    }
+    function sampleQAaug(){
+        doSample("qa_da")
+    }
+
+    function sampleQAFA(){
+        doSample("qa_fa")
+    }
+
+    function sampleQARationale(){
+        doSample("qa_rat")
+    }
+
+    function sampleQASim(){
+        doSample("qa_sim")
     }
 
     function sampleKeyword() {

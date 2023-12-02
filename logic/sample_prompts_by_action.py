@@ -35,6 +35,12 @@ ACTION_2_FILENAME = {
     # Perturbation
     "cfe": "cfe.txt",
     "augment": ["augmentation_chatgpt.txt", "augmentation.txt"],
+    # QA
+    "qa_cfe": "qacfe.txt",
+    "qa_da": "qada.txt",
+    "qa_fa": "qafeature_attribution.txt",
+    "qa_rat": "qarationale.txt",
+    "qa_sim": "qasim.txt"
 }
 
 
