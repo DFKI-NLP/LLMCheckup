@@ -13,6 +13,8 @@ ExplainBot.background_dataset_file_path = "./data/COVIDFACT_dataset.csv"
 ExplainBot.dataset_file_path = "./data/COVIDFACT_dataset.csv"
 ExplainBot.load_in_4bits = True
 
+ExplainBot.use_multi_prompt = True
+
 ExplainBot.name = "COVID_FACT"
 
 ExplainBot.dataset_index_column = "idx"

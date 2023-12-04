@@ -1,14 +1,20 @@
 import sys
 from os.path import dirname, abspath
+
 parent = dirname(dirname(dirname(abspath(__file__))))
 sys.path.append(parent)
 
-from parsing.multi_prompt.defined_prompts import operation_type_prompt, nlpattribute_prompt, rationalize_prompt, show_prompt, keywords_prompt, similar_prompt, augment_prompt, cfe_prompt, mistake_prompt, predict_prompt, score_prompt, operations_wo_attributes, operation2prompt, tutorial_operations, tutorial2operation, valid_operation_names, valid_operation_prompt_samples, valid_operation_meanings, operation2attributes, operation2tutorial, operation_needs_id
+from parsing.multi_prompt.defined_prompts import operation_type_prompt, nlpattribute_prompt, rationalize_prompt, \
+    show_prompt, keywords_prompt, similar_prompt, augment_prompt, cfe_prompt, mistake_prompt, predict_prompt, \
+    score_prompt, operations_wo_attributes, operation2prompt, tutorial_operations, tutorial2operation, \
+    valid_operation_names, valid_operation_prompt_samples, valid_operation_meanings, operation2attributes, \
+    operation2tutorial, operation_needs_id
 
 from sentence_transformers import SentenceTransformer, util
 from word2number import w2n
 
-from transformers import GenerationConfig
+from transformers import GenerationConfig, AutoModelForCausalLM, GPTQConfig
+
 
 class MultiPromptParser:
     def __init__(self, decoder_model, tokenizer, st_model, device):
@@ -46,8 +52,9 @@ class MultiPromptParser:
             if op in operation_words:
                 return True
         return False
-    
+
     """ checks if the parsed attributes are valid tokens for the operation """
+
     def check_attribute(self, attribute, main_operation, user_input):
         attribute = attribute.strip()
         for punct in [".", ",", ":"]:
@@ -67,28 +74,31 @@ class MultiPromptParser:
             return attribute
         else:
             # check the embedding similarity to the valid attributes
-            if(len(valid_attributes)>0):
+            if (len(valid_attributes) > 0):
                 valid_attributes_st = self.st_model.encode(valid_attributes, convert_to_tensor=True)
                 if attribute in self.attribute2st:
-                    attribute_st  = self.attribute2st[attribute]
+                    attribute_st = self.attribute2st[attribute]
                 else:
                     attribute_st = self.st_model.encode(attribute, convert_to_tensor=True)
                 attr_scores = util.cos_sim(attribute_st, valid_attributes_st)[0].tolist()
                 if max(attr_scores) >= 0.5:
-                    return valid_attributes[attr_scores.index(max(attr_scores))]    
+                    return valid_attributes[attr_scores.index(max(attr_scores))]
                 else:
-                    return ""       
+                    return ""
             else:
-               return ""
+                return ""
 
     """generates the parse given a user input and a prompt"""
+
     def generate_with_prompt(self, prompt, user_input):
         inputs = self.tokenizer(prompt + "\nInput: " + user_input + " Output:", return_tensors="pt").to(self.device)
+
         outputs = self.decoder_model.generate(**inputs, generation_config=self.generation_config)
+
         parsed_operation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         offset = len("Output:")
-        parsed_operation = parsed_operation[parsed_operation.rindex("Output:")+offset:].strip()
-        
+        parsed_operation = parsed_operation[parsed_operation.rindex("Output:") + offset:].strip()
+
         # each operation consists of:
         # - prefix ("filter id ...")
         # - main_operation (e.g., "cfe", "similar")
@@ -100,11 +110,12 @@ class MultiPromptParser:
         if parsed_operation.startswith("filter id") and len(splitted_op) > 4:
             op_prefix = " ".join(splitted_op[:4]) + " and "
             main_operation = " ".join(splitted_op[4:])
+
         splitted_main_op = main_operation.split()
         if len(splitted_main_op) > 0:
             main_operation = splitted_main_op[0]
 
-        if not(self.in_vocabulary(main_operation)):
+        if not (self.in_vocabulary(main_operation)):
             # find a similar operation with SBERT
             main_operation = self.find_similar_operation(user_input)
 
@@ -112,39 +123,44 @@ class MultiPromptParser:
         if len(splitted_main_op) > 1:
             attributes = " ".join(splitted_main_op[1:])
             if "[E]" in attributes:
-                attributes = attributes[:attributes.rindex("[E]")+3]
+                attributes = attributes[:attributes.rindex("[E]") + 3]
             checked_attributes = []
             for attribute in attributes.split():
                 attribute = self.check_attribute(attribute, main_operation, user_input)
-                if not(attribute in checked_attributes):
-                    if len(checked_attributes)<=2 and len(attribute)>0:
+                if not (attribute in checked_attributes):
+                    if len(checked_attributes) <= 2 and len(attribute) > 0:
                         checked_attributes.append(attribute)
                     else:
                         break
-            if len(checked_attributes)==0 and (main_operation in operation2attributes) and len(operation2attributes[main_operation])>0: # some operations can have numbers but no other fixed attributes
+            if len(checked_attributes) == 0 and (main_operation in operation2attributes) and len(operation2attributes[
+                                                                                                     main_operation]) > 0:  # some operations can have numbers but no other fixed attributes
                 attributes = operation2attributes[main_operation][0]
             else:
                 attributes = " ".join(checked_attributes)
-        
+
         parsed_operation = op_prefix + main_operation
         if len(attributes) > 0:
             parsed_operation += " " + attributes
-            
-        return parsed_operation    
+
+        return parsed_operation
 
     """fallback in case the id was not parsed correctly"""
+
     def find_id(self, user_input):
         correct_id = ""
         id_words = ["id", "instance", "sample"]
         for id_word in id_words:
             if id_word in user_input:
-                try: # if there is no id, e.g.: "counterfactual for this id"
-                    correct_id = user_input[user_input.rindex(id_word)+len(id_word):].split()[0].replace("?","").replace(".","").replace(",","")
+                try:  # if there is no id, e.g.: "counterfactual for this id"
+                    correct_id = user_input[user_input.rindex(id_word) + len(id_word):].split()[0].replace("?",
+                                                                                                           "").replace(
+                        ".", "").replace(",", "")
                 except:
                     correct_id = ""
         return correct_id
 
     """implements similarity check with SBERT between the user input and available operations"""
+
     def find_similar_operation(self, user_input):
         encoded_user_input = self.st_model.encode(user_input, convert_to_tensor=True)
         op_scores = util.cos_sim(encoded_user_input, self.encoded_op_meanings_st)[0].tolist()
@@ -152,10 +168,11 @@ class MultiPromptParser:
         return best_match_op
 
     """performs multi-prompt parsing for operations and their attributes"""
+
     def parse_user_input(self, user_input):
         parsed_operation = self.generate_with_prompt(operation_type_prompt, user_input).replace("[E]", "").strip()
         op_start = parsed_operation.split()[0]
-        if not((op_start in valid_operation_names) or (op_start == "filter")):
+        if not ((op_start in valid_operation_names) or (op_start == "filter")):
             parsed_operation = self.find_similar_operation(user_input)
         if parsed_operation in operations_wo_attributes:
             parsed_operation = parsed_operation + " [E]"
@@ -193,23 +210,23 @@ class MultiPromptParser:
             else:
                 filtered_pased_op_tokens.append(token)
         for i, token in enumerate(filtered_pased_op_tokens):
-            if token == "id" and not(filtered_pased_op_tokens[i+1] in user_input):
+            if token == "id" and not (filtered_pased_op_tokens[i + 1] in user_input):
                 # replace hallucinated id
                 found_id = self.find_id(user_input)
                 if len(found_id) > 0:
-                    filtered_pased_op_tokens[i+1] = found_id
+                    filtered_pased_op_tokens[i + 1] = found_id
                 break
         parsed_operation = " ".join(filtered_pased_op_tokens).strip()
 
         # check if we parsed a standard operation but there is no id
         splitted_op = parsed_operation.split()
-        if not(parsed_operation.startswith("filter")):
+        if not (parsed_operation.startswith("filter")):
             main_operation = splitted_op[0]
         elif len(splitted_op) > 4:
             main_operation = splitted_op[4]
-        if not "filter id " in parsed_operation and main_operation in operation2tutorial: # no filter for tutorial operations
+        if not "filter id " in parsed_operation and main_operation in operation2tutorial:  # no filter for tutorial operations
             parsed_operation = operation2tutorial[main_operation]
-        elif "filter id " in parsed_operation and main_operation in tutorial2operation: # if we have filter it's not the tutorial
+        elif "filter id " in parsed_operation and main_operation in tutorial2operation:  # if we have filter it's not the tutorial
             main_operation = tutorial2operation[main_operation]
             splitted_op = parsed_operation.split()
             if len(splitted_op) > 3:
@@ -228,7 +245,7 @@ class MultiPromptParser:
                 except:
                     continue
 
-        if not(parsed_operation.endswith(" [E]")):
+        if not (parsed_operation.endswith(" [E]")):
             parsed_operation += " [E]"
         # show by defult 10 top attributed tokens if the number was not identified
         if (parsed_operation.endswith("topk [E]")):
@@ -238,23 +255,27 @@ class MultiPromptParser:
 
         return parsed_operation
 
+
 ### code execution ###
 
 if __name__ == "__main__":
     # parsing accuracy evaluation (exact matches)
-    from transformers import AutoModelForCausalLM, GPTQConfig
-    model_id = "TheBloke/Llama-2-7b-Chat-GPTQ" #"TheBloke/Llama-2-7b-Chat-GPTQ" #"TheBloke/Mistral-7B-v0.1-GPTQ"
+
+    model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"  #"TheBloke/Mistral-7B-v0.1-GPTQ"
+
     quantization_config = GPTQConfig(bits=4, disable_exllama=True)
     # loading model and tokenizer
-    decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto", quantization_config=quantization_config)
-    from transformers import AutoTokenizer
+    decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto",
+                                                         quantization_config=quantization_config)
+    decoder_model.config.pad_token_id = decoder_model.config.eos_token_id
+
     tokenizer = AutoTokenizer.from_pretrained(model_id)
     # loading SBERT
     st_model = SentenceTransformer("all-MiniLM-L6-v2")
     device = "cuda"
     # initializing the multi-prompt parsing model
     parser = MultiPromptParser(decoder_model, tokenizer, st_model, device)
-    evaluation_file = "experiments/testset_without_flag.txt" # "experiments/testset.txt" # "experiments/testset_without_flag.txt"
+    evaluation_file = "experiments/testset_without_flag.txt"  # "experiments/testset.txt" # "experiments/testset_without_flag.txt"
     correct_parses = []
     user_inputs = []
     with open(evaluation_file) as f:
@@ -271,8 +292,8 @@ if __name__ == "__main__":
         print(parsed_operation + " >>> " + user_input)
         sys_parses.append(parsed_operation)
     matched = 0
-    assert(len(sys_parses) == len(correct_parses))
+    assert (len(sys_parses) == len(correct_parses))
     for i in range(len(sys_parses)):
         if sys_parses[i] == correct_parses[i]:
             matched += 1
-    print("matched:", matched, "total:", len(correct_parses), "acc:", matched/len(correct_parses))
+    print("matched:", matched, "total:", len(correct_parses), "acc:", matched / len(correct_parses))

@@ -21,6 +21,8 @@ def handle_input(parse_text, i):
             topk = int(parse_text[i + 2])
         except ValueError:
             topk = 5
+
+    method_name = "attention"
     try:
         if parse_text[i + 1] in SUPPORTED_METHODS:
             # Without topk
@@ -32,7 +34,7 @@ def handle_input(parse_text, i):
             # with topk value
             method_name = parse_text[i + 3]
     except IndexError:
-        method_name = "attention"
+        pass
     return topk, method_name
 
 
