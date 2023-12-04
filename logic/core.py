@@ -27,6 +27,8 @@ from logic.write_to_log import log_dialogue_input
 from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map, \
     user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations
 
+from parsing.multi_prompt.prompting_parser import MultiPromptParser
+
 from sentence_transformers import SentenceTransformer, util
 from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
@@ -66,6 +68,7 @@ class ExplainBot:
                  feature_definitions: dict = None,
                  skip_prompts: bool = False,
                  suggestions: bool = False,
+                 use_multi_prompt: bool = False,
                  ):
         """The init routine.
 
@@ -98,6 +101,7 @@ class ExplainBot:
             skip_prompts: Whether to skip prompt generation. This is mostly useful for running fine-tuned
                           models where generating prompts is not necessary.
             suggestions: Whether we suggest similar operations to the user.
+            use_multi_prompt: Whether we use a multi-prompt approach for parsing the user input 
         """
         super(ExplainBot, self).__init__()
         # Set seeds
@@ -133,7 +137,7 @@ class ExplainBot:
         # Add suggestions mode
         self.suggestions = suggestions
         self.suggested_operation = None
-
+        
         # Add dialogue flow map thanks/bye/sorry
         self.dialogue_flow_map = dialogue_flow_map
 
@@ -162,6 +166,13 @@ class ExplainBot:
             self.device)
 
         self.st_model = SentenceTransformer("all-MiniLM-L6-v2")
+
+        # Add multi-prompt parser (if needed)
+        self.use_multi_prompt = use_multi_prompt
+        if self.use_multi_prompt:
+            self.mprompt_parser = MultiPromptParser(self.decoder.gpt_model, self.decoder.gpt_tokenizer, self.st_model, self.device)
+        else:
+            self.mprompt_parser = None
 
         # Compute embeddings for confirm/disconfirm
         self.confirm = self.st_model.encode(confirm, convert_to_tensor=True)
@@ -380,25 +391,30 @@ class ExplainBot:
         else:
             grammar, prompted_text = self.compute_grammar(text, error_analysis=error_analysis)
         app.logger.info("About to decode")
-        # Do guided-decoding to get the decoded text
-        api_response = self.decoder.complete(
-            prompted_text, grammar=grammar)
-        decoded_text = api_response['generation']
+        if self.use_multi_prompt:
+            parsed_text = self.mprompt_parser.parse_user_input(text)
+            parse_tree = None
+        else:
+            # Do guided-decoding to get the decoded text
+            api_response = self.decoder.complete(
+                prompted_text, grammar=grammar)
+            decoded_text = api_response['generation']
 
-        # post process the parsed text for llama/mistral
-        ls = decoded_text.split(" ")
-        for (idx, i) in enumerate(ls):
-            if "<s>" in i:
-                ls[idx] = i.split("<s>")[0]
-        ls = [i for i in ls if i != '']
-        decoded_text = " ".join(ls)
+            # post process the parsed text for llama/mistral
+            ls = decoded_text.split(" ")
+            for (idx, i) in enumerate(ls):
+                if "<s>" in i:
+                    ls[idx] = i.split("<s>")[0]
+            ls = [i for i in ls if i != '']
+            decoded_text = " ".join(ls)
 
-        app.logger.info(f'Decoded text {decoded_text}')
+            app.logger.info(f'Decoded text {decoded_text}')
 
-        # Compute the parse tree from the decoded text
-        # NOTE: currently, we're using only the decoded text and not the full
-        # tree. If we need to support more complicated parses, we can change this.
-        parse_tree, parsed_text = get_parse_tree(decoded_text)
+            # Compute the parse tree from the decoded text
+            # NOTE: currently, we're using only the decoded text and not the full
+            # tree. If we need to support more complicated parses, we can change this.
+            parse_tree, parsed_text = get_parse_tree(decoded_text)
+
         if self.id_needed(parsed_text) and self.has_deictic(text):
             if self.conversation.custom_input is None and self.conversation.prev_id is not None:
                 parsed_text = "filter id " + str(self.conversation.prev_id) + " and " + parsed_text
