@@ -13,7 +13,7 @@ from parsing.multi_prompt.defined_prompts import operation_type_prompt, nlpattri
 from sentence_transformers import SentenceTransformer, util
 from word2number import w2n
 
-from transformers import GenerationConfig, AutoModelForCausalLM, GPTQConfig
+from transformers import GenerationConfig, AutoModelForCausalLM, GPTQConfig, AutoTokenizer
 
 
 class MultiPromptParser:
