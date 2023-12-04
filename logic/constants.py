@@ -23,7 +23,8 @@ prediction = ["predict", "score", "mistake count", "mistake sample"]
 understanding = ["similar", "keywords"]
 explanation = ["nlpattribute topk", "nlpattribute integrated_gradients", "nlpattribute attention", "nlpattribute lime", "nlpattribute input_x_gradient", "rationalize"]
 perturbation = ["cfe", "augment"]
-valid_operation_names = metadata + prediction + understanding + explanation + perturbation
+qatutorial = ["qacfe", "qada", "qafa", "qarationale", "qasim"]
+valid_operation_names = metadata + prediction + understanding + explanation + perturbation + qatutorial
 valid_operation_names_words = []
 # adding individual words for the cases like "nlpattribute sentence"
 for w in valid_operation_names:
@@ -39,8 +40,10 @@ for op in explanation:
     operation2set[op] = explanation
 for op in perturbation:
     operation2set[op] = perturbation
+for op in qatutorial:
+    operation2set[op] = qatutorial
 
-no_filter_operations = ["data", "data train", "data test", "countdata", "label", "model", "mistake count", "mistake sample", "keywords"]
+no_filter_operations = ["data", "data train", "data test", "countdata", "label", "model", "mistake count", "mistake sample", "keywords", "qacfe", "qada", "qafa", "qarationale", "qasim"]
 
 map2suggestion = {
     "show": "Would you like me to show a sample?",
@@ -63,5 +66,10 @@ map2suggestion = {
     "nlpattribute input_x_gradient": "Do you want to see the importance scores based on input x gradient?",
     "rationalize": "Would you like to see a rationale?",
     "cfe": "Should I generate a counterfactual?",
-    "augment": "Should I augment this instance?"
+    "augment": "Should I augment this instance?",
+    "qacfe": "Would you like to know how the counterfactual explanation works?",
+    "qada": "Should I also introduce the data augmentation operation?",
+    "qafa": "Would you like to know more about the feature attribution methods?",
+    "qarationale": "I could also explain you the process of rationalization.",
+    "qasim": "Would you like to know how the similarity operation works?",
     }

@@ -350,7 +350,11 @@ class ExplainBot:
     def pick_relevant_operation(self, parsed_text: str):
         suggested_operation = None
         suggestion_text = ""
-        parsed_text_operation = " ".join([op for op in valid_operation_names if op in parsed_text])
+        op_words = []
+        for word in parsed_text.split():
+            if word in valid_operation_names:
+                op_words.append(word)
+        parsed_text_operation = " ".join(op_words)
         if len(parsed_text_operation) > 0:
             parsed_text_operation = parsed_text_operation
             selected_operation = random.choice(
@@ -371,7 +375,9 @@ class ExplainBot:
         if suggested_operation in self.conversation.previous_operations:
             suggested_operation = None
             suggestion_text = ""
-        return suggested_operation, "<br><b>Follow-up:</b><br><div>" + suggestion_text + "</div>"
+        if len(suggestion_text) > 0:
+            suggestion_text = "<br><b>Follow-up:</b><br><div>" + suggestion_text + "</div>"
+        return suggested_operation, suggestion_text
 
     def compute_parse_text(self, text: str, error_analysis: bool = False):
         """Computes the parsed text from the user text input.
