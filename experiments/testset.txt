@@ -56,10 +56,10 @@ Why predict the instance 20 using lime?
 filter id 20 and nlpattribute lime [E]
 
 Explain me the prediction of id 301 using attention?
-filter id 20 and nlpattribute attention [E]
+filter id 301 and nlpattribute attention [E]
 
 Show me the key features for id 1023 using input gradient?
-filter id 20 and nlpattribute input_x_gradient [E]
+filter id 1023 and nlpattribute input_x_gradient [E]
 
 I want to see the most important three features for id 97 using integrated gradient?
 filter id 97 and nlpattribute topk 3 integrated_gradient [E]

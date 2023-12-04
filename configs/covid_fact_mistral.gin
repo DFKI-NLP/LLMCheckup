@@ -14,6 +14,8 @@ ExplainBot.dataset_file_path = "./data/COVIDFACT_dataset.csv"
 
 ExplainBot.load_in_4bits = True
 
+ExplainBot.use_multi_prompt = True
+
 ExplainBot.name = "COVID_FACT"
 
 ExplainBot.dataset_index_column = "idx"
@@ -24,6 +26,7 @@ ExplainBot.remove_underscores = False
 
 ExplainBot.prompt_metric = "cosine"
 ExplainBot.prompt_ordering = "ascending"
+ExplainBot.suggestions = True
 
 # Prompt params
 Prompts.prompt_cache_size = 1_000_000
