@@ -13,16 +13,7 @@ from parsing.multi_prompt.defined_prompts import operation_type_prompt, nlpattri
 from sentence_transformers import SentenceTransformer, util
 from word2number import w2n
 
-from transformers import GenerationConfig, AutoModelForCausalLM, GPTQConfig, AutoTokenizer
-
-generation_config = GenerationConfig(
-    penalty_alpha=0.6,
-    do_sample=True,
-    top_k=5,
-    temperature=0.1,
-    repetition_penalty=1.2,
-    max_new_tokens=100
-)
+from transformers import GenerationConfig, AutoModelForCausalLM, GPTQConfig
 
 
 class MultiPromptParser:
@@ -37,6 +28,23 @@ class MultiPromptParser:
         for operation in operation2attributes:
             for attribute in operation2attributes[operation]:
                 self.attribute2st[attribute] = self.st_model.encode(attribute, convert_to_tensor=True)
+        if "mistral" in self.decoder_model.name_or_path.lower():
+            max_new_tokens = 10
+        else:
+            max_new_tokens = 20
+        self.generation_config = GenerationConfig(
+            penalty_alpha=0.6,
+            do_sample = True,
+            top_k=5,
+            top_p=0.95,
+            temperature=0.1,
+            repetition_penalty=1.2,
+            max_new_tokens=max_new_tokens,#20,
+            bos_token_id=1,
+            eos_token_id=2,
+            pad_token_id=2
+        )
+
 
     def in_vocabulary(self, operation):
         operation_words = operation.split()
@@ -84,8 +92,9 @@ class MultiPromptParser:
 
     def generate_with_prompt(self, prompt, user_input):
         inputs = self.tokenizer(prompt + "\nInput: " + user_input + " Output:", return_tensors="pt").to(self.device)
-        generation_config.eos_token_id = decoder_model.config.eos_token_id
-        outputs = self.decoder_model.generate(**inputs, generation_config=generation_config)
+
+        outputs = self.decoder_model.generate(**inputs, generation_config=self.generation_config)
+
         parsed_operation = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
         offset = len("Output:")
         parsed_operation = parsed_operation[parsed_operation.rindex("Output:") + offset:].strip()
@@ -103,7 +112,8 @@ class MultiPromptParser:
             main_operation = " ".join(splitted_op[4:])
 
         splitted_main_op = main_operation.split()
-        main_operation = splitted_main_op[0]
+        if len(splitted_main_op) > 0:
+            main_operation = splitted_main_op[0]
 
         if not (self.in_vocabulary(main_operation)):
             # find a similar operation with SBERT
@@ -251,7 +261,8 @@ class MultiPromptParser:
 if __name__ == "__main__":
     # parsing accuracy evaluation (exact matches)
 
-    model_id = "TheBloke/Mistral-7B-v0.1-GPTQ"
+    model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"  #"TheBloke/Mistral-7B-v0.1-GPTQ"
+
     quantization_config = GPTQConfig(bits=4, disable_exllama=True)
     # loading model and tokenizer
     decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto",
