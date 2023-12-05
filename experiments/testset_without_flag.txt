@@ -215,19 +215,19 @@ I'm interested in knowing the 1 instance that have the closest resemblance to ID
 filter id 542 and similar 1 [E]
 
 Can you fetch the 3 instances that share the highest similarity with ID 23?
-Parsed: filter id 23 and similar 3 [E]
+filter id 23 and similar 3 [E]
 
 I'd like to know the 3 instances with the highest similarity to ID 451. Could you fetch them?
-Parsed: filter id 451 and similar 3 [E]
+filter id 451 and similar 3 [E]
 
 What are the 3 instances that have the highest similarity to ID 1236? Please fetch them.
-Parsed: filter id 1236 and similar 3 [E]
+filter id 1236 and similar 3 [E]
 
 Could you provide the 1 instance that has the closest resemblance to ID 452?
-Parsed: filter id 452 and similar 1 [E]
+filter id 452 and similar 1 [E]
 
 I'm interested in knowing the 1 instance with the highest similarity to ID 759. Could you provide it?
-Parsed: filter id 759 and similar 1 [E]
+filter id 759 and similar 1 [E]
 
 Is data augmentation available for id 32?
 filter id 32 and augment [E]
