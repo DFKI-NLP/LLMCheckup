@@ -77,45 +77,13 @@ def count_mistakes(y_true, y_pred, conversation, intro_text):
     return return_string
 
 
-def train_tree(data, target, depth: int = 1):
-    """Trains a decision tree"""
-    dt_string = []
-    tries = 0
-    while len(dt_string) < 3 and tries < 10:
-        tries += 1
-        dt = DecisionTreeClassifier(max_depth=depth).fit(data, target)
-        dt_string = get_rules(dt,
-                              feature_names=list(data.columns),
-                              class_names=["correct", "incorrect"])
-        depth += 1
-
-    return dt_string
-
-
-def typical_mistakes(data, y_true, y_pred, conversation, intro_text, ids):
-    """Typical mistakes sub-operation
-    `mistake typical [E]`
-    """
-    if len(y_true) == 1:
-        return_string = one_mistake(y_true, y_pred, conversation, intro_text)
-    else:
-        incorrect_vals = y_true != y_pred
-        return_options = train_tree(data, incorrect_vals)
-
-        if len(return_options) == 0:
-            return "I couldn't find any patterns for mistakes the model typically makes."
-
-        return_string = f"{intro_text} the model typically predicts incorrect:<br><br>"
-        for rule in return_options:
-            return_string += rule + "<br><br>"
-
-    return return_string
-
-
 @timeout(60)
 @gin.configurable
 def show_mistakes_operation(conversation, parse_text, i, **kwargs):
     """Generates text that shows the model mistakes."""
+
+    if len(conversation.precomputation_of_prediction["id"]) == 0:
+        return "Please call <i>random predict operation</i> first to have a subset precomputed!", 1
 
     y_pred, y_true, ids = get_predictions_and_labels(conversation)
 

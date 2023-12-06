@@ -9,7 +9,9 @@ from timeout import timeout
 
 @timeout(60)
 def score_operation(conversation, parse_text, i, **kwargs):
-    """Self description."""
+
+    if len(conversation.precomputation_of_prediction["id"]) == 0:
+        return "Please call <i>random predict operation</i> first to have a subset precomputed!", 1
 
     # Get the name of the metric
     metric = parse_text[i + 1]
