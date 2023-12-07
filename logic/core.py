@@ -161,10 +161,6 @@ class ExplainBot:
         self.user_text = None
 
         self.device = 0 if torch.cuda.is_available() else -1
-        self.paraphrase_tokenizer = AutoTokenizer.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base")
-        self.paraphraser = AutoModelForSeq2SeqLM.from_pretrained("humarin/chatgpt_paraphraser_on_T5_base").to(
-            self.device)
-
         self.st_model = SentenceTransformer("all-MiniLM-L6-v2")
 
         # Add multi-prompt parser (if needed)
@@ -361,15 +357,7 @@ class ExplainBot:
                 [op for op in operation2set[parsed_text_operation] if op != parsed_text_operation])
             suggested_operation = parsed_text.replace(parsed_text_operation, selected_operation)
             suggested_operation = self.remove_filter_if_needed(suggested_operation, selected_operation)
-            suggestion_text = map2suggestion[selected_operation]
-            if random.random() > 0.5:
-                input_ids = self.paraphrase_tokenizer(f'paraphrase: {suggestion_text}', return_tensors="pt",
-                                                      padding="longest", max_length=60, truncation=True).input_ids.to(
-                    self.device)
-                paraphrased = self.paraphraser.generate(input_ids, temperature=0.3, repetition_penalty=2.0,
-                                                        num_return_sequences=1, no_repeat_ngram_size=2, num_beams=2,
-                                                        num_beam_groups=2, max_length=60, diversity_penalty=2.0)
-                suggestion_text = self.paraphrase_tokenizer.batch_decode(paraphrased, skip_special_tokens=True)[0]
+            suggestion_text = random.choice(map2suggestion[selected_operation])
         # check whether the user already asked about this operation
         # or we suggested it earlier
         if suggested_operation in self.conversation.previous_operations:
