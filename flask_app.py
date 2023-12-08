@@ -150,7 +150,7 @@ def sample_prompt():
     prompt = sample_prompt_for_action(action,
                                       BOT.prompts.filename_to_prompt_id,
                                       BOT.prompts.final_prompt_set,
-                                      real_ids=BOT.conversation.get_training_data_ids())
+                                      BOT.conversation)
     logging_info = {
         "username": username,
         "requested_action_generation": action,

@@ -137,7 +137,7 @@ class ExplainBot:
         # Add suggestions mode
         self.suggestions = suggestions
         self.suggested_operation = None
-        
+
         # Add dialogue flow map thanks/bye/sorry
         self.dialogue_flow_map = dialogue_flow_map
 
@@ -166,7 +166,8 @@ class ExplainBot:
         # Add multi-prompt parser (if needed)
         self.use_multi_prompt = use_multi_prompt
         if self.use_multi_prompt:
-            self.mprompt_parser = MultiPromptParser(self.decoder.gpt_model, self.decoder.gpt_tokenizer, self.st_model, self.device)
+            self.mprompt_parser = MultiPromptParser(self.decoder.gpt_model, self.decoder.gpt_tokenizer, self.st_model,
+                                                    self.device)
         else:
             self.mprompt_parser = None
 
@@ -467,17 +468,33 @@ class ExplainBot:
         :param text: user question
         :return: availability and idx
         """
-        try:
-            idx = self.user_questions.index(user_question)
-            flag = True
-        except ValueError:
-            flag = False
 
-        if flag:
-            return flag, idx
-        else:
-            return flag, None
+        def compare_str(str1, str2):
+            str1 = str1.split()
+            str2 = str2.split()
 
+            if len(str1) == len(str2):
+                counter = 0
+                for j in range(len(str1)):
+                    if counter <= 2:
+                        if str1[j] != str2[j]:
+                            counter += 1
+                    else:
+                        return False
+                if counter <= 2:
+                    return True
+            else:
+                return False
+
+        flag = False
+        idx = None
+
+        for (i, item) in enumerate(self.user_questions):
+            if compare_str(item, user_question):
+                idx = i
+                flag = True
+
+        return flag, idx
 
     def update_state(self, text: str, user_session_conversation: Conversation):
         """The main conversation driver.
@@ -532,7 +549,7 @@ class ExplainBot:
             returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
             flag, idx = self.check_prompt_availability(text)
-
+            app.logger.info("[attention]!!!!!!!!!!!!!!!" + str(flag))
             if flag:
                 parsed_text = self.parsed_texts[idx]
                 parse_tree = None

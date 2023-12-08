@@ -297,10 +297,10 @@ def predict_operation(conversation, parse_text, i, **kwargs):
         return 'There are no instances that meet this description!', 0
 
     _id = handle_input(parse_text)
-
+    print(data)
     if len(data) == 1:
         # `filter id and predict [E]`
         return_s, _ = prediction_generation(data, conversation, _id, external_call=False)
     else:
-        raise ValueError("Too many ids are given!")
+        raise ValueError("Too less/much ids are given!")
     return return_s, 1

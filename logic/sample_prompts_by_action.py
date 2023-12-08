@@ -75,11 +75,10 @@ def replace_non_existent_id_with_real_id(prompt: str, real_ids: list[int]) -> st
 def sample_prompt_for_action(action: str,
                              filename_to_prompt_ids: dict,
                              prompt_set: dict,
-                             real_ids: list[int]) -> str:
+                             conversation) -> str:
     """Samples a prompt for a specific action.
 
     Arguments:
-        real_ids: A list of naturally occurring **data point** ids.
         prompt_set: The full prompt set. This is a dictionary that maps from **prompt** ids
                     to info about the prompt.
         action: The action to sample a prompt for
@@ -89,6 +88,8 @@ def sample_prompt_for_action(action: str,
     Returns:
         prompt: The sampled prompt
     """
+
+    real_ids = conversation.get_training_data_ids()
     if action == "self":
         return "Could you tell me a bit more about what this is?"
     elif action == "function":
@@ -102,6 +103,10 @@ def sample_prompt_for_action(action: str,
 
         for filename in filename_to_prompt_ids:
             if ("includes" not in filename) and filename.endswith(filename_end):
+
+                if conversation.used:
+                    if "custom_input" in filename:
+                        continue
 
                 prompt_ids = filename_to_prompt_ids[filename]
                 chosen_id = np.random.choice(prompt_ids)

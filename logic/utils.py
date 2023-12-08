@@ -118,7 +118,7 @@ def add_to_dict_lists(key, value, dictionary):
 def get_user_questions_and_parsed_texts():
     """Gather all user questions and parsed texts"""
 
-    folder_name = ['about', 'context', 'explanation', 'filter', 'metadata', 'nlu', 'perturbation', 'prediction',
+    folder_name = ['about', 'explanation', 'metadata', 'nlu', 'perturbation', 'prediction',
                    'qatutorial']
 
     def check_format(file_name):
@@ -146,5 +146,6 @@ def get_user_questions_and_parsed_texts():
                     user_question.append(temp.split("User: ")[1])
                 else:
                     parsed_text.append(temp.split("Parsed: ")[1])
+    assert len(user_question) == len(parsed_text)
 
     return user_question, parsed_text
