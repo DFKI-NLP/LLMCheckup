@@ -549,7 +549,7 @@ class ExplainBot:
             returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
             flag, idx = self.check_prompt_availability(text)
-            app.logger.info("[attention]!!!!!!!!!!!!!!!" + str(flag))
+
             if flag:
                 parsed_text = self.parsed_texts[idx]
                 parse_tree = None
