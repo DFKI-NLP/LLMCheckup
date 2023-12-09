@@ -335,9 +335,9 @@ class ExplainBot:
         disconfirm_scores = util.cos_sim(text, self.disconfirm)
         confirm_score = torch.mean(confirm_scores, dim=-1).item()
         disconfirm_score = torch.mean(disconfirm_scores, dim=-1).item()
-        if (confirm_score > disconfirm_score):
-            return True, torch.max(confirm_scores.flatten()).item()
-        return False, torch.max(disconfirm_scores.flatten()).item()
+        if confirm_score > disconfirm_score:
+            return True, torch.max(confirm_scores.flatten()).item(), confirm_score
+        return False, torch.max(disconfirm_scores.flatten()).item(), disconfirm_score
 
     def remove_filter_if_needed(self, suggested_operation: str, selected_operation: str):
         if (selected_operation) in no_filter_operations:
@@ -470,31 +470,41 @@ class ExplainBot:
         """
 
         def compare_str(str1, str2):
+            """
+
+            :param str1: original string
+            :param str2: predefined user question
+            :return:
+            """
+
             str1 = str1.split()
             str2 = str2.split()
+
+            idx_list = []
 
             if len(str1) == len(str2):
                 counter = 0
                 for j in range(len(str1)):
                     if counter <= 2:
                         if str1[j] != str2[j]:
+                            idx_list.append((j, str2[j]))
                             counter += 1
                     else:
-                        return False
+                        return False, None
                 if counter <= 2:
-                    return True
+                    return True, idx_list
             else:
-                return False
+                return False, None
 
         flag = False
         idx = None
 
         for (i, item) in enumerate(self.user_questions):
-            if compare_str(item, user_question):
-                idx = i
-                flag = True
+            flag, idx_list = compare_str(item, user_question)
+            if flag:
+                return flag, i, idx_list
 
-        return flag, idx
+        return flag, idx, None
 
     def update_state(self, text: str, user_session_conversation: Conversation):
         """The main conversation driver.
@@ -510,10 +520,10 @@ class ExplainBot:
         """
         if self.suggestions and not (self.suggested_operation is None):
             # check if the user agreed to suggestion
-            suggestion_confirmed, max_response_match = self.suggestion_confirmed(text)
+            suggestion_confirmed, max_response_match, score = self.suggestion_confirmed(text)
             username = user_session_conversation.username
             response_id = self.gen_almost_surely_unique_id()
-            if suggestion_confirmed:
+            if suggestion_confirmed and score > 0.7:
                 returned_item = run_action(
                     user_session_conversation, None, self.suggested_operation)
                 logging_info = self.build_logging_info(self.bot_name,
@@ -533,6 +543,7 @@ class ExplainBot:
                 final_result = returned_item + f"<>{response_id}"
                 self.suggested_operation = None
                 return final_result
+
             # reset the suggestions mode
             self.suggested_operation = None
 
@@ -548,10 +559,24 @@ class ExplainBot:
             parsed_text = df_intent
             returned_item = random.choice(self.dialogue_flow_map[parsed_text])
         else:
-            flag, idx = self.check_prompt_availability(text)
+            flag, idx, idx_list = self.check_prompt_availability(text)
 
             if flag:
                 parsed_text = self.parsed_texts[idx]
+                for (_, temp_str) in idx_list:
+                    try:
+                        _ = int(temp_str)
+                        temp = parsed_text.split()
+                        for i, item in enumerate(temp):
+                            try:
+                                _id = int(item)
+                                temp[i] = str(temp_str)
+                            except ValueError:
+                                pass
+                        parsed_text = " ".join(temp)
+                        break
+                    except ValueError:
+                        pass
                 parse_tree = None
             else:
                 parse_tree, parsed_text = self.compute_parse_text(text)
