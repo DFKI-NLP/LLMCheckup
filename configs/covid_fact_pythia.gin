@@ -9,7 +9,6 @@ ExplainBot.parsing_model_name = "EleutherAI/pythia-2.8b-v0"
 ExplainBot.skip_prompts = False
 ExplainBot.text_fields = ["claims", "evidences"]
 ExplainBot.seed = 0
-ExplainBot.background_dataset_file_path = "./data/COVIDFACT_dataset.csv"
 ExplainBot.dataset_file_path = "./data/COVIDFACT_dataset.csv"
 
 ExplainBot.use_multi_prompt = False

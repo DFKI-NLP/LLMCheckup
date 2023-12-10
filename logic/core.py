@@ -8,8 +8,6 @@ the functions to get the responses to user inputs.
 import gin
 import numpy as np
 import os
-import re
-import pickle
 import secrets
 import sys
 import torch
@@ -30,19 +28,10 @@ from logic.constants import operations_with_id, deictic_words, confirm, disconfi
 from parsing.multi_prompt.prompting_parser import MultiPromptParser
 
 from sentence_transformers import SentenceTransformer, util
-from transformers import AutoTokenizer, AutoModelForSeq2SeqLM
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 app = Flask(__name__)
-
-
-@gin.configurable
-def load_sklearn_model(filepath):
-    """Loads a sklearn model."""
-    with open(filepath, 'rb') as file:
-        model = pickle.load(file)
-    return model
 
 
 @gin.configurable
@@ -51,7 +40,6 @@ class ExplainBot:
 
     def __init__(self,
                  dataset_file_path: str,
-                 background_dataset_file_path: str,
                  dataset_index_column: int,
                  target_variable_name: str,
                  categorical_features: list[str],
@@ -73,13 +61,8 @@ class ExplainBot:
         """The init routine.
 
         Arguments:
-            model_file_path: The filepath of the **user provided** model to logic. This model
-                             should end with .pkl and support sklearn style functions like
-                             .predict(...) and .predict_proba(...)
             dataset_file_path: The path to the dataset used in the conversation. Users will understand
                                the model's predictions on this dataset.
-            background_dataset_file_path: The path to the dataset used for the 'background' data
-                                          in the explanations.
             dataset_index_column: The index column in the data. This is used when calling
                                   pd.read_csv(..., index_col=dataset_index_column)
             target_variable_name: The name of the column in the dataset corresponding to the target,
@@ -97,7 +80,6 @@ class ExplainBot:
             prompt_metric: The metric used to compute the nearest neighbor prompts. The supported options
                            are cosine, euclidean, and random
             prompt_ordering:
-            t5_config: The path to the configuration file for t5 models, if using one of these.
             skip_prompts: Whether to skip prompt generation. This is mostly useful for running fine-tuned
                           models where generating prompts is not necessary.
             suggestions: Whether we suggest similar operations to the user.
@@ -481,7 +463,6 @@ class ExplainBot:
             str2 = str2.split()
 
             idx_list = []
-
             if len(str1) == len(str2):
                 counter = 0
                 for j in range(len(str1)):
@@ -490,21 +471,25 @@ class ExplainBot:
                             idx_list.append((j, str2[j]))
                             counter += 1
                     else:
-                        return False, None
+                        return False, []
                 if counter <= 2:
                     return True, idx_list
             else:
-                return False, None
+                return False, []
 
         flag = False
         idx = None
 
         for (i, item) in enumerate(self.user_questions):
-            flag, idx_list = compare_str(item, user_question)
+            try:
+                flag, idx_list = compare_str(item, user_question)
+            except TypeError:
+                pass
+
             if flag:
                 return flag, i, idx_list
 
-        return flag, idx, None
+        return flag, idx, []
 
     def update_state(self, text: str, user_session_conversation: Conversation):
         """The main conversation driver.
@@ -561,7 +546,7 @@ class ExplainBot:
         else:
             flag, idx, idx_list = self.check_prompt_availability(text)
 
-            if flag:
+            if flag and idx_list != []:
                 parsed_text = self.parsed_texts[idx]
                 for (_, temp_str) in idx_list:
                     try:
@@ -571,10 +556,11 @@ class ExplainBot:
                             try:
                                 _id = int(item)
                                 temp[i] = str(temp_str)
+                                break
                             except ValueError:
                                 pass
                         parsed_text = " ".join(temp)
-                        break
+
                     except ValueError:
                         pass
                 parse_tree = None
