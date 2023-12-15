@@ -252,6 +252,8 @@ class MultiPromptParser:
             parsed_operation = parsed_operation.replace("topk [E]", "topk 10 [E]")
         # remove invalid insertion of the filter (e.g., happens with the inputs like "counterfactual for this id")
         parsed_operation = parsed_operation.replace("filter id and", "")
+        if parsed_operation.split()[0] in tutorial_operations:
+            parsed_operation = "qatutorial " + parsed_operation
 
         return parsed_operation
 
