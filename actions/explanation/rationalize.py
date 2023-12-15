@@ -58,7 +58,7 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
 
         prediction = choices.split("-")[prediction]
         prompt_template += f"text: {texts}"
-        prompt_template += f"choice: {choices}"
+        prompt_template += f"choice: {convert_str_to_options(choices)}."
 
         # zero-shot prompting
         prompt_template += f"Based on text, the prediction of the choice is {prediction}. Explain why it " \
@@ -91,6 +91,11 @@ def rationalize_operation(conversation, parse_text, i, **kwargs):
 
     return_s += f"The <b>prediction</b> is <span style=\"background-color: #6CB4EE\">{prediction}</span>.<br>"
     return_s += f"<b>Reasoning: </b><br>"
+    return_s += "<details>"
+
+    return_s += f"<summary>{result[:200]}...</summary>"
     return_s += result
+
+    return_s += "</details>"
 
     return return_s, 1
