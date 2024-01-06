@@ -128,8 +128,10 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
         show_progress=True,  # TODO: Check if necessary
         generation_args={}
     )
-
-    out_agg = out.aggregate(inseq.data.aggregator.SubwordAggregator)
+    try:
+        out_agg = out.aggregate(inseq.data.aggregator.SubwordAggregator)
+    except ValueError and AssertionError:
+        out_agg = out.aggregate(inseq.data.aggregator.Aggregator)
 
     # Extract 1D heatmap (attributions for first token)
     final_agg = out_agg[0].aggregate()
