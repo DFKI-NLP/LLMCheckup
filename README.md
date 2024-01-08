@@ -27,7 +27,7 @@ source venv/venv/activate
 ```shell
 python -m pip install --upgrade pip
 pip install -r requirements.txt
-python -m nltk.downloader averaged_perceptron_tagger
+python -m nltk.downloader "averaged_perceptron_tagger" "wordnet" "omw-1.4"
 ```
 
 ### 🚀Launch system
