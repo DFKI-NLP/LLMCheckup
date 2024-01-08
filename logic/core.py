@@ -23,7 +23,7 @@ from logic.prompts import Prompts
 from logic.utils import read_and_format_data, get_user_questions_and_parsed_texts
 from logic.write_to_log import log_dialogue_input
 from logic.constants import operations_with_id, deictic_words, confirm, disconfirm, thanks, bye, dialogue_flow_map, \
-    user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations
+    user_prompts, valid_operation_names, operation2set, map2suggestion, no_filter_operations, qatutorial
 
 from parsing.multi_prompt.prompting_parser import MultiPromptParser
 
@@ -83,7 +83,7 @@ class ExplainBot:
             skip_prompts: Whether to skip prompt generation. This is mostly useful for running fine-tuned
                           models where generating prompts is not necessary.
             suggestions: Whether we suggest similar operations to the user.
-            use_multi_prompt: Whether we use a multi-prompt approach for parsing the user input 
+            use_multi_prompt: Whether we use a multi-prompt approach for parsing the user input
         """
         super(ExplainBot, self).__init__()
         # Set seeds
@@ -304,9 +304,9 @@ class ExplainBot:
         bye_scores = util.cos_sim(text, self.bye)
         max_thanks_score = torch.max(thanks_scores)
         max_bye_score = torch.max(bye_scores)
-        if max_thanks_score > max_bye_score and max_thanks_score > 0.50:
+        if max_thanks_score > max_bye_score and max_thanks_score > 0.5:
             return "thanks"
-        elif max_bye_score > 0.50:
+        elif max_bye_score > 0.5:
             return "bye"
         return None
 
@@ -318,8 +318,8 @@ class ExplainBot:
         confirm_score = torch.mean(confirm_scores, dim=-1).item()
         disconfirm_score = torch.mean(disconfirm_scores, dim=-1).item()
         if confirm_score > disconfirm_score:
-            return True, torch.max(confirm_scores.flatten()).item(), confirm_score
-        return False, torch.max(disconfirm_scores.flatten()).item(), disconfirm_score
+            return True, torch.max(confirm_scores.flatten()).item()
+        return False, torch.max(disconfirm_scores.flatten()).item()
 
     def remove_filter_if_needed(self, suggested_operation: str, selected_operation: str):
         if (selected_operation) in no_filter_operations:
@@ -340,6 +340,10 @@ class ExplainBot:
                 [op for op in operation2set[parsed_text_operation] if op != parsed_text_operation])
             suggested_operation = parsed_text.replace(parsed_text_operation, selected_operation)
             suggested_operation = self.remove_filter_if_needed(suggested_operation, selected_operation)
+            for qa_op in qatutorial:
+                if suggested_operation.startswith(qa_op):
+                    suggested_operation = "qatutorial " + suggested_operation
+                    break
             suggestion_text = random.choice(map2suggestion[selected_operation])
         # check whether the user already asked about this operation
         # or we suggested it earlier
@@ -505,10 +509,10 @@ class ExplainBot:
         """
         if self.suggestions and not (self.suggested_operation is None):
             # check if the user agreed to suggestion
-            suggestion_confirmed, max_response_match, score = self.suggestion_confirmed(text)
+            suggestion_confirmed, max_response_match = self.suggestion_confirmed(text)
             username = user_session_conversation.username
             response_id = self.gen_almost_surely_unique_id()
-            if suggestion_confirmed and score > 0.7:
+            if suggestion_confirmed and max_response_match >= 0.5:
                 returned_item = run_action(
                     user_session_conversation, None, self.suggested_operation)
                 logging_info = self.build_logging_info(self.bot_name,

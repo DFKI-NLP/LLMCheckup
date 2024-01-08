@@ -2,8 +2,8 @@ operations_with_id = ["show", "predict", "likelihood", "similar", "nlpattribute 
 
 deictic_words = ["this", "that", "it", "here"]
 
-confirm = ["Yes", "Yes, please", "Ok", "I would like to see it", "Please show it to me", "Fine", "Yes, thank you.", "Sounds good", "Yes, I do.", "I would like to see it, thanks."]
-disconfirm = ["No, thank you", "Nope", "Sorry, no", "No, I want to ask something different", "That's it, thanks!", "No, that's enough."]
+confirm = ["Yes", "Yes, please", "Yes, thanks", "Ok", "Ok, thank you", "Ok, thanks", "I would like to see it", "Please show it to me", "Fine", "Yes, thank you.", "Sounds good", "Yes, I do", "I would like to see it, thanks.", "Yes, I'd like to see it."]
+disconfirm = ["No", "No, thank you", "No, thanks", "Nope", "Sorry, no", "No, I want to ask something different", "No, that's it", "No, I would like to see another operation.", "That's it, thanks!", "No, that's enough.", "I want to ask something else", "I don't need it, thank you", "I am interested in another operation", "Not now, thanks"]
 
 
 thanks = ["Thanks!", "OK!", "I see", "Thanks a lot!", "Thank you.", "Alright, thank you!", "That's nice, thanks a lot :)", "Good, thanks!", "Thank you very much.", "Looks good, thank you!", "Great, thank you very much!", "Ok, thanks!", "Thank you for the answer."]
