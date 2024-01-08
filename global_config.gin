@@ -3,7 +3,7 @@
 #######################
 
 # Model + dataset configuration specific file
-GlobalArgs.config = "./configs/covid_fact_llama.gin"
+GlobalArgs.config = "./configs/ecqa_llama.gin"
 
 # Set the base url to host the demo, if needed
 GlobalArgs.baseurl = "/"
