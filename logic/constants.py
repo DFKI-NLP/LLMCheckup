@@ -23,7 +23,7 @@ prediction = ["predict", "score", "mistake count", "mistake sample"]
 understanding = ["similar", "keywords"]
 explanation = ["nlpattribute topk", "nlpattribute integrated_gradients", "nlpattribute attention", "nlpattribute lime", "nlpattribute input_x_gradient", "rationalize"]
 perturbation = ["cfe", "augment"]
-qatutorial = ["qacfe", "qada", "qafa", "qarationale", "qasim"]
+qatutorial = ["qacfe", "qada", "qafa", "qarationale", "qasim", "qacustominput"]
 valid_operation_names = metadata + prediction + understanding + explanation + perturbation + qatutorial
 valid_operation_names_words = []
 # adding individual words for the cases like "nlpattribute sentence"
@@ -43,7 +43,7 @@ for op in perturbation:
 for op in qatutorial:
     operation2set[op] = qatutorial
 
-no_filter_operations = ["data", "data train", "data test", "countdata", "label", "model", "mistake count", "mistake sample", "keywords", "qacfe", "qada", "qafa", "qarationale", "qasim"]
+no_filter_operations = ["data", "data train", "data test", "countdata", "label", "model", "mistake count", "mistake sample", "keywords", "qacfe", "qada", "qafa", "qarationale", "qasim", "qacustominput"]
 
 map2suggestion = {
     'show': ['Should I provide you with a sample?', 'Would you like to see this sample from the dataset?', 'Should I show the sample?', 'Would you like to see the instance from the dataset?', 'I can also show you the sample from the data.', 'I can show this example, if you like.'],
@@ -72,4 +72,5 @@ map2suggestion = {
     'qafa': ['Would you like to know more about the methods of feature attributions?', 'Would you like to see the feature attribution methods?', 'Would you like to know about the token-level importance scores and feature attributions?', 'Would you like to learn more about the feature attribution methods?', 'Shall I also explain different feature attribution methods?'],
     'qarationale': ['I can also explain how the rationalization works.', 'I can also explain how the rationales are generated.', 'Would you like to know more about the rationalization process?', 'Should I provide explanations for the rationalization operation as well?'],
     'qasim': ['Do you want to learn about the similarity operation?', 'Would you like to learn about the similarity operation?', 'Should I explain the similarity operation as well?', 'I can also provide explanations for the similarity operation.', 'Are you interested in learning more about the similarity operation?'],
+    'qacustominput': ['Would you like to know what the custom input means?', "Should I also explain the custom input setting?", "Should I provide explanations for the custom input as well?", "Would you like to learn more about the custom input setting?", "I can also introduce the custom input setting."]
     }
