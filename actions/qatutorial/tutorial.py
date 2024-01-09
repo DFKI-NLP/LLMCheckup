@@ -51,6 +51,10 @@ def tutorial_operation(conversation, parse_text, i, **kwargs):
         elif ops == "qarationale":
             return_s += "Generates a <b>free-text justification</b> for the model's prediction on a <b>single " \
                         "example</b>."
+        elif ops == "qacustominput":
+            return_s += ("Via the input box(es) below 'Custom Input' on the upper right hand side of the interface, "
+                         "you can enter <b>your own data point</b> to be given to the model and generate explanations "
+                         "for.")
         else:
             raise NotImplementedError(f"Operation {ops} is not supported!")
 

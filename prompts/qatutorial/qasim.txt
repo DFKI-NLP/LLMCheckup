@@ -4,7 +4,7 @@ Parsed: qatutorial qasim [E]
 User: Definition of semantic similarity?
 Parsed: qatutorial qasim [E]
 
-User: Explain me semantic similarity.
+User: Explain semantic similarity to me.
 Parsed: qatutorial qasim [E]
 
 User: Can you provide an overview of semantic similarity in the context of NLP?

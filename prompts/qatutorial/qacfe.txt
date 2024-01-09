@@ -1,10 +1,10 @@
 User: What's counterfactual generation in NLP?
 Parsed: qatutorial qacfe [E]
 
-User: How does counterfactual works?
+User: How does counterfactual work?
 Parsed: qatutorial qacfe [E]
 
-User: What is counterfactual?
+User: What is a counterfactual?
 Parsed: qatutorial qacfe [E]
 
 User: Can you explain the concept of counterfactual generation in NLP?

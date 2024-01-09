@@ -62,7 +62,7 @@ predictions: " predict"
 
 qatutorial : tutorial qaops
 tutorial: " qatutorial"
-qaops: " qacfe" | " qafa" | " qada" | " qarationale" | " qasim"
+qaops: " qacfe" | " qafa" | " qada" | " qarationale" | " qasim" | " qacustominput"
 
 randomprediction:  random ( {topkvalues} )
 random: " randompredict"
