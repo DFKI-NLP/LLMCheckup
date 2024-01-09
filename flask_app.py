@@ -290,7 +290,12 @@ def get_bot_response():
                     BOT.conversation.custom_input = None
                     BOT.conversation.used = True
                     response = "Entered custom input is now removed! <>"
-
+        except torch.cuda.OutOfMemoryError:
+            response = "I recognized a CUDA out of memory. I suggest to choose a smaller " \
+                       "model for your hardware configuration or with GPTQ/4bit quantization. You can do that by " \
+                       "opening the global_config.gin file and editing the value of GlobalArgs.config to an " \
+                       "equivalent with a model of smaller parameter " \
+                       "size, e.g. \"ecqa_llama_gptq.gin\" or \"ecqa_pythia.gin\"."
         except Exception as ext:
             app.logger.info(f"Traceback getting bot response: {traceback.format_exc()}")
             app.logger.info(f"Exception getting bot response: {ext}")
