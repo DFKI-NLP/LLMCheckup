@@ -718,7 +718,8 @@
             .catch(error => console.error('Error accessing microphone:', error));
     }
 
-    document.getElementById('record-btn').addEventListener('click', () => {
+    var record_btn = document.getElementById('record-btn');
+    record_btn.addEventListener('click', () => {
         if (recorder) {
             recorder.stop();
             console.log("stop");

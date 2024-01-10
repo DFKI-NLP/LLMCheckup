@@ -476,7 +476,7 @@ class ExplainBot:
                             counter += 1
                     else:
                         return False, []
-                if counter <= 2:
+                if counter <= 2 and str1[0].lower() == str2[0].lower():
                     return True, idx_list
             else:
                 return False, []
