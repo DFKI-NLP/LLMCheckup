@@ -28,10 +28,10 @@ class MultiPromptParser:
         for operation in operation2attributes:
             for attribute in operation2attributes[operation]:
                 self.attribute2st[attribute] = self.st_model.encode(attribute, convert_to_tensor=True)
-        if "mistral" in self.decoder_model.name_or_path.lower():
-            max_new_tokens = 10
-        else:
+        if "llama" in self.decoder_model.name_or_path.lower():
             max_new_tokens = 20
+        else:
+            max_new_tokens = 10
         self.generation_config = GenerationConfig(
             penalty_alpha=0.6,
             do_sample = True,
@@ -39,7 +39,7 @@ class MultiPromptParser:
             top_p=0.95,
             temperature=0.1,
             repetition_penalty=1.2,
-            max_new_tokens=max_new_tokens,#20,
+            max_new_tokens=max_new_tokens,
             bos_token_id=1,
             eos_token_id=2,
             pad_token_id=2
@@ -99,6 +99,14 @@ class MultiPromptParser:
         offset = len("Output:")
         parsed_operation = parsed_operation[parsed_operation.rindex("Output:") + offset:].strip()
 
+        # for falcon and pythia only since they are not good at parsing ids
+        # we check if we have id word in the user input and in case
+        # "filter id" is missing in the parsed output we add it to the parse
+        if "falcon" in self.decoder_model.name_or_path.lower() or "pythia" in self.decoder_model.name_or_path.lower():
+            op_id = self.find_id(user_input).strip()
+            if len(op_id) > 0:
+                parsed_operation = "filter id " + op_id + " and " + parsed_operation
+
         # each operation consists of:
         # - prefix ("filter id ...")
         # - main_operation (e.g., "cfe", "similar")
@@ -147,16 +155,20 @@ class MultiPromptParser:
     """fallback in case the id was not parsed correctly"""
 
     def find_id(self, user_input):
+        user_input = user_input.lower()
         correct_id = ""
         id_words = ["id", "instance", "sample"]
         for id_word in id_words:
             if id_word in user_input:
-                try:  # if there is no id, e.g.: "counterfactual for this id"
-                    correct_id = user_input[user_input.rindex(id_word) + len(id_word):].split()[0].replace("?",
-                                                                                                           "").replace(
-                        ".", "").replace(",", "")
-                except:
-                    correct_id = ""
+                # if there is no id, e.g.: "counterfactual for this id"
+                for id_candidate in user_input[user_input.rindex(id_word) + len(id_word):].split():
+                    correct_id = id_candidate.replace("?", "").replace(".", "").replace(",", "")
+                    try:
+                        correct_id = w2n.word_to_num(correct_id)
+                        correct_id = str(correct_id)
+                        return correct_id
+                    except:
+                        correct_id = ""
         return correct_id
 
     """implements similarity check with SBERT between the user input and available operations"""
@@ -181,7 +193,7 @@ class MultiPromptParser:
                 operation_prompt = operation2prompt[parsed_operation]
                 parsed_operation = self.generate_with_prompt(operation_prompt, user_input)
         # if we have an id we cannot have a tutorial operation
-        if parsed_operation in tutorial_operations:
+        if parsed_operation in tutorial2operation:
             user_input_words = user_input.split()
             for word in user_input_words:
                 if word in ["id", "sample", "instance", "this", "it"]:
@@ -190,31 +202,26 @@ class MultiPromptParser:
                     operation_prompt = operation2prompt[operation]
                     parsed_operation = self.generate_with_prompt(operation_prompt, user_input)
                     break
-        filter_token = 0
-        and_token = 0
+        non_repeated_tokens = set()
         splitted_parsed_op = parsed_operation.split()
         filtered_pased_op_tokens = []
-        # check that "filter" & "and" tokens do not appear more than once in the parsed output
+        # check that tokens other than numbers do not appear more than once in the parsed output
         for token in splitted_parsed_op:
-            if token == "filter":
-                filter_token += 1
-                if filter_token == 1:
-                    filtered_pased_op_tokens.append(token)
-            elif token == "and":
-                and_token += 1
-                if and_token == 1:
-                    filtered_pased_op_tokens.append(token)
-            elif token == "[E]":
+            is_number_token = isinstance(token, int)
+            if (not(is_number_token) and not(token in non_repeated_tokens)) or is_number_token:
                 filtered_pased_op_tokens.append(token)
+                non_repeated_tokens.add(token)
+            if token == "[E]":
                 break
-            else:
-                filtered_pased_op_tokens.append(token)
+
         for i, token in enumerate(filtered_pased_op_tokens):
             if token == "id" and not (filtered_pased_op_tokens[i + 1] in user_input):
                 # replace hallucinated id
                 found_id = self.find_id(user_input)
                 if len(found_id) > 0:
                     filtered_pased_op_tokens[i + 1] = found_id
+                else:
+                    filtered_pased_op_tokens = filtered_pased_op_tokens[i + 3:]
                 break
         parsed_operation = " ".join(filtered_pased_op_tokens).strip()
 
@@ -224,9 +231,10 @@ class MultiPromptParser:
             main_operation = splitted_op[0]
         elif len(splitted_op) > 4:
             main_operation = splitted_op[4]
-        if not "filter id " in parsed_operation and main_operation in operation2tutorial:  # no filter for tutorial operations
-            parsed_operation = operation2tutorial[main_operation]
-        elif "filter id " in parsed_operation and main_operation in tutorial2operation:  # if we have filter it's not the tutorial
+
+        #if not "filter id " in parsed_operation and main_operation in operation2tutorial:  # no filter for tutorial operations
+        #    parsed_operation = operation2tutorial[main_operation]
+        if "filter id " in parsed_operation and main_operation in tutorial2operation:  # if we have filter it's not the tutorial
             main_operation = tutorial2operation[main_operation]
             splitted_op = parsed_operation.split()
             if len(splitted_op) > 3:
@@ -263,12 +271,15 @@ class MultiPromptParser:
 if __name__ == "__main__":
     # parsing accuracy evaluation (exact matches)
 
-    model_id = "TheBloke/Llama-2-7b-Chat-GPTQ"  #"TheBloke/Mistral-7B-v0.1-GPTQ"
+    model_id = "TheBloke/Llama-2-7b-Chat-GPTQ" #"EleutherAI/pythia-2.8b-v0" #"TheBloke/Llama-2-7b-Chat-GPTQ"  #"TheBloke/Mistral-7B-v0.1-GPTQ" #"tiiuae/falcon-rw-1b"
 
-    quantization_config = GPTQConfig(bits=4, disable_exllama=True)
     # loading model and tokenizer
-    decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto",
-                                                         quantization_config=quantization_config)
+    if "GPTQ" in model_id:
+        quantization_config = GPTQConfig(bits=4, disable_exllama=True)
+        decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto", quantization_config=quantization_config)
+    else:
+        decoder_model = AutoModelForCausalLM.from_pretrained(model_id, low_cpu_mem_usage=True, device_map="auto")
+
     decoder_model.config.pad_token_id = decoder_model.config.eos_token_id
 
     tokenizer = AutoTokenizer.from_pretrained(model_id)

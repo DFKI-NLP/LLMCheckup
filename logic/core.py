@@ -396,7 +396,7 @@ class ExplainBot:
             # tree. If we need to support more complicated parses, we can change this.
             parse_tree, parsed_text = get_parse_tree(decoded_text)
 
-        if self.id_needed(parsed_text) and self.has_deictic(text):
+        if self.id_needed(parsed_text): #and self.has_deictic(text):
             if self.conversation.custom_input is None and self.conversation.prev_id is not None:
                 parsed_text = "filter id " + str(self.conversation.prev_id) + " and " + parsed_text
         # store the previous id value
