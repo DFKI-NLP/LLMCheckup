@@ -40,7 +40,8 @@ ACTION_2_FILENAME = {
     "qa_da": "qada.txt",
     "qa_fa": "qafeature_attribution.txt",
     "qa_rat": "qarationale.txt",
-    "qa_sim": "qasim.txt"
+    "qa_sim": "qasim.txt",
+    "qa_ci": "qacustominput.txt"
 }
 
 

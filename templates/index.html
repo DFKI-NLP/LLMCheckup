@@ -308,6 +308,11 @@
                                 Similarity
                             </button>
                         </div>
+                        <div class="tooltip-wrapper">
+                            <button id="qa_ci" class="idea-button" onclick="sampleQACI()">
+                                Custom Input
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -883,6 +888,10 @@
                 ttmInput.value = data;
             }
         });
+    }
+
+    function sampleQACI(){
+        doSample("qa_ci");
     }
 
     function sampleQAcfe(){

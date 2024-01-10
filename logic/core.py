@@ -463,8 +463,8 @@ class ExplainBot:
             :return:
             """
 
-            str1 = str1.split()
-            str2 = str2.split()
+            str1 = str1.lower().split()
+            str2 = str2.lower().split()
 
             idx_list = []
             if len(str1) == len(str2):
