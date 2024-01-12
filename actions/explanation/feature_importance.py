@@ -1,6 +1,8 @@
 import inseq
 
 from actions.prediction.predict import prediction_generation, convert_str_to_options
+from inseq.data.aggregator import SubwordAggregator
+
 
 SUPPORTED_METHODS = ["integrated_gradients", "attention", "lime", "input_x_gradient"]
 
@@ -123,26 +125,25 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
         input_texts=input_text,
         generated_texts=f"{input_text}{prediction}",
         n_steps=1,
-        return_convergence_delta=True,
-        step_scores=["probability"],  # TODO: Check if necessary
-        show_progress=True,  # TODO: Check if necessary
+        attribute_target=False,
+        step_scores=["probability"],
+        show_progress=True,
         generation_args={}
     )
-    try:
-        out_agg = out.aggregate(inseq.data.aggregator.SubwordAggregator)
-    except ValueError and AssertionError:
-        out_agg = out.aggregate(inseq.data.aggregator.Aggregator)
+    out_agg = out.aggregate()
 
     # Extract 1D heatmap (attributions for first token)
-    final_agg = out_agg[0].aggregate()
-    first_token_attributions = final_agg.target_attributions[:, 0]
+    first_token_attributions = out_agg[0].target_attributions[:, 0]
+    topk_tokens = [out_agg[0].target[i].token for i in k_highest_indices(first_token_attributions, topk)]
 
     # TODO: Possibly reduce to tokens in "claim" and "evidence" (exclude the prompt)
 
     # Get HTML visualization from Inseq
-    heatmap_viz = out_agg.show(return_html=True).split("<html>")[1].split("</html>")[0]
+    heatmap_viz = out_agg.show(return_html=True, do_aggregation=False).split("<html>")[1].split("</html>")[0]
 
-    topk_tokens = [final_agg.target[i].token for i in k_highest_indices(first_token_attributions, topk)]
+    # TODO: Check how to solve the AssertionError: https://github.com/nfelnlp/LLMCheckup/issues/21
+    #subw_agg = out.aggregate(SubwordAggregator)
+    #subw_viz = subw_agg.show(return_html=True, do_aggregation=False).split("<html>")[1].split("</html>")[0]
 
     # TODO: Find sensible verbalization
     return_s = f"<b>Feature attribution method: </b>{method_name}<br>"
