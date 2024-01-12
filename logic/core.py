@@ -366,7 +366,7 @@ class ExplainBot:
             suggested_operation = None
             suggestion_text = ""
         if len(suggestion_text) > 0:
-            suggestion_text = "<br><span style=\"background-color: #9880ff\"><b>Follow-up:</b></span><br><div><span style=\"background-color: #9880ff\">" + suggestion_text + "</span></div>"
+            suggestion_text = "<br><b>Follow-up:</b><br><div>" + suggestion_text + "</div>"
         return suggested_operation, suggestion_text
 
     def compute_parse_text(self, text: str, error_analysis: bool = False):
@@ -504,7 +504,7 @@ class ExplainBot:
                 flag, idx_list = compare_str(item, user_question)
             except TypeError:
                 pass
-            print(flag, idx, idx_list)
+
             if flag:
                 return flag, i, idx_list
 
