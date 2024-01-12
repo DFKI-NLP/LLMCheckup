@@ -1,7 +1,7 @@
 import inseq
 
 from actions.prediction.predict import prediction_generation, convert_str_to_options
-from inseq.data.aggregator import SubwordAggregator
+from inseq.data.aggregator import SequenceAttributionAggregator, SubwordAggregator
 
 
 SUPPORTED_METHODS = ["integrated_gradients", "attention", "lime", "input_x_gradient"]
@@ -107,14 +107,13 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
                       f"Evidence: '{second_field}' \n"
                       f"Claim: '{first_field}' \n"
                       f"Please provide your answer as one of the labels: Refuted or Supported. \n"
-                      f"Veracity prediction: ")
+                      f"Veracity prediction:")
     else:
-        input_text = ( f"Each 3 items in the following list contains the question, choice and prediction. Your task "
-                       f"is to choose one of the choices as the answer for the question.\n"
-                       f"Question: '{first_field}'\n"
-                       f"Choice: '{convert_str_to_options(second_field)}'\n"
-                       f"Prediction: "
-        )
+        input_text = (f"Each 3 items in the following list contains the question, choice and prediction. Your task "
+                      f"is to choose one of the choices as the answer for the question.\n"
+                      f"Question: '{first_field}'\n"
+                      f"Choice: '{convert_str_to_options(second_field)}'\n"
+                      f"Prediction:")
         prediction = second_field.split("-")[int(prediction)]
 
     # Store current system prompt for feature attribution
@@ -123,29 +122,31 @@ def feature_importance_operation(conversation, parse_text, i, **kwargs) -> (str,
     # Attribute text
     out = inseq_model.attribute(
         input_texts=input_text,
-        generated_texts=f"{input_text}{prediction}",
-        n_steps=1,
+        generated_texts=f"{input_text} {prediction}",
         attribute_target=False,
+        n_steps=1,
         step_scores=["probability"],
         show_progress=True,
         generation_args={}
     )
-    out_agg = out.aggregate()
 
-    # Extract 1D heatmap (attributions for first token)
-    first_token_attributions = out_agg[0].target_attributions[:, 0]
-    topk_tokens = [out_agg[0].target[i].token for i in k_highest_indices(first_token_attributions, topk)]
+    # First we aggregate the subword tokens.
+    # The second aggregate call is exactly like the one above:
+    # for attention, [mean, mean] (mean across the layers and heads dimensions)
+    out_agg = out.aggregate(SubwordAggregator).aggregate()
+
+    len_generation = out_agg[0].target_attributions.shape[1]
+    # Extract 1D heatmap (attributions for final token)
+    final_token_attributions = out_agg[0].target_attributions[:, len_generation-1]
+    topk_tokens = [out_agg[0].target[i].token for i in k_highest_indices(final_token_attributions, topk)]
 
     # TODO: Possibly reduce to tokens in "claim" and "evidence" (exclude the prompt)
 
     # Get HTML visualization from Inseq
     heatmap_viz = out_agg.show(return_html=True, do_aggregation=False).split("<html>")[1].split("</html>")[0]
 
-    # TODO: Check how to solve the AssertionError: https://github.com/nfelnlp/LLMCheckup/issues/21
-    #subw_agg = out.aggregate(SubwordAggregator)
-    #subw_viz = subw_agg.show(return_html=True, do_aggregation=False).split("<html>")[1].split("</html>")[0]
-
     # TODO: Find sensible verbalization
+
     return_s = f"<b>Feature attribution method: </b>{method_name}<br>"
     return_s += f"Top {topk} token(s):<br>"
 
