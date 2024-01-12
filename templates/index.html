@@ -613,6 +613,14 @@
 
                 </div>
 
+                <div style="margin-top: 50px">
+                    <div>
+                        <img src="../static/images/red-right-arrow.png" width="40px" height="40px" style="vertical-align:middle;">
+                        <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">
+                            Exporting history</h3>
+                    </div>
+                    <button type="button" class="btn btn-info" style="margin-top: 10px" onclick="export_history()">Export</button>
+                </div>
 
                 <div style="margin-top: 50px">
                     <div>
@@ -627,6 +635,7 @@
                             id="theme_changing"
                             onchange="change_theme(event)"></label>
                 </div>
+
             </div>
 
         </main>
@@ -638,6 +647,24 @@
 </html>
 
 <script>
+    function export_history(){
+        event.preventDefault();
+
+        $.ajax({
+            url: "{{ url_for('.export_history') }}",
+            type: 'POST',
+            data: {},
+            processData: false,
+            contentType: false,
+            success: function (data) {
+                alert("The history is exported under cache folder as JSON file!")
+            },
+            error: function (error) {
+                console.log('Error:', error);
+            }
+        });
+    }
+
     function get_current_prompt() {
         event.preventDefault();
 

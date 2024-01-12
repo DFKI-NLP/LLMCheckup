@@ -222,7 +222,7 @@ parse {
   background-size: cover;
 }
 .msg-bubble {
-  max-width: 600px;
+  max-width: 800px;
   padding: 10px;
   border-radius: 15px;
   background: var(--left-msg-bg);

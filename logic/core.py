@@ -4,6 +4,7 @@ This file contains the core logic for facilitating conversations. It orchestrate
 routines for setting up conversations, controlling the state of the conversation, and running
 the functions to get the responses to user inputs.
 """
+import json
 
 import gin
 import numpy as np
@@ -162,6 +163,20 @@ class ExplainBot:
         self.bye = self.st_model.encode(bye, convert_to_tensor=True)
 
         self.user_questions, self.parsed_texts = get_user_questions_and_parsed_texts()
+
+        self.history = []
+
+    def write_to_history(self, user_text, response):
+        self.history.append({
+            "user_text": user_text,
+            "response": response
+        })
+
+    def export_history(self):
+        jsonString = json.dumps(self.history)
+        jsonFile = open(f"./cache/history.json", "w")
+        jsonFile.write(jsonString)
+        jsonFile.close()
 
     def has_deictic(self, text):
         for deictic in deictic_words:
@@ -351,7 +366,7 @@ class ExplainBot:
             suggested_operation = None
             suggestion_text = ""
         if len(suggestion_text) > 0:
-            suggestion_text = "<br><b>Follow-up:</b><br><div>" + suggestion_text + "</div>"
+            suggestion_text = "<br><span style=\"background-color: #9880ff\"><b>Follow-up:</b></span><br><div><span style=\"background-color: #9880ff\">" + suggestion_text + "</span></div>"
         return suggested_operation, suggestion_text
 
     def compute_parse_text(self, text: str, error_analysis: bool = False):
@@ -489,7 +504,7 @@ class ExplainBot:
                 flag, idx_list = compare_str(item, user_question)
             except TypeError:
                 pass
-
+            print(flag, idx, idx_list)
             if flag:
                 return flag, i, idx_list
 
@@ -550,7 +565,7 @@ class ExplainBot:
         else:
             flag, idx, idx_list = self.check_prompt_availability(text)
 
-            if flag and idx_list != []:
+            if flag:
                 parsed_text = self.parsed_texts[idx]
                 for (_, temp_str) in idx_list:
                     try:

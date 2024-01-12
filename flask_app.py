@@ -140,6 +140,12 @@ def log_feedback():
     return ""
 
 
+@bp.route("/export_history", methods=["Post"])
+def export_history():
+    BOT.export_history()
+    return ""
+
+
 @bp.route("/sample_prompt", methods=["Post"])
 def sample_prompt():
     """Samples a prompt"""
@@ -290,6 +296,7 @@ def get_bot_response():
                     BOT.conversation.custom_input = None
                     BOT.conversation.used = True
                     response = "Entered custom input is now removed! <>"
+                BOT.write_to_history(BOT.user_text, response)
         except torch.cuda.OutOfMemoryError:
             response = "I recognized a CUDA out of memory. I suggest to choose a smaller " \
                        "model for your hardware configuration or with GPTQ/4bit quantization. You can do that by " \
