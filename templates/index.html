@@ -94,7 +94,7 @@
         .mui-switch.mui-switch-anim:checked:before {
             transition: left 0.3s;
         }
-    </style
+    </style>
 </head>
 
 <body>
@@ -109,9 +109,15 @@
             </div>
             <div class="container">
                 <div class="row">
-                    <div id="accordion" class="col-8">
+                    <div id="accordion" class="col-4">
 
                     </div>
+                    <div class="col-4">
+                        <button style="float: right; width: 200px;
+    height: 50px; font-size: 20px; background-color: #fed3ff; border: solid #fed3ff" class="openciv">Custom Input Viewer
+                        </button>
+                    </div>
+
                     <div class="col-4">
                         <button style="float: right; font-size: 20px;" class="opendv">Dataset Viewer</button>
                     </div>
@@ -163,6 +169,14 @@
                     {% endfor %}
                     <br>(Showing first 10)
                 </div>
+            </div>
+
+            <div class="slideSideways_ci" style="background-color: #bdbdbd; display: none">
+                <b>Custom Input history</b>
+                <div id="custom_input_history">
+
+                </div>
+
             </div>
         </main>
 
@@ -561,7 +575,9 @@
                                 onclick="delete_custom_input()" style="background-color: red; width: 100px">Delete
                         </button>
                     </form>
+
                 </div>
+
 
                 <div class="single-select-checkbox" style="margin-top: 50px">
                     <div>
@@ -578,7 +594,8 @@
 
                         </p>
                         <img src="../static/icons/loading-arrow.png" style="height: 40px; margin-bottom: 10px"
-                                 onclick="get_current_prompt()" type="button" data-toggle="tooltip" data-placement="right" title="Refresh to get the current system prompt!">
+                             onclick="get_current_prompt()" type="button" data-toggle="tooltip" data-placement="right"
+                             title="Refresh to get the current system prompt!">
                     </div>
 
                     <input type="radio" id="p_option1" name="_options" value="Option 4" checked>
@@ -615,11 +632,14 @@
 
                 <div style="margin-top: 50px">
                     <div>
-                        <img src="../static/images/red-right-arrow.png" width="40px" height="40px" style="vertical-align:middle;">
+                        <img src="../static/images/red-right-arrow.png" width="40px" height="40px"
+                             style="vertical-align:middle;">
                         <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">
                             Exporting history</h3>
                     </div>
-                    <button type="button" class="btn btn-info" style="margin-top: 10px" onclick="export_history()">Export</button>
+                    <button type="button" class="btn btn-info" style="margin-top: 10px" onclick="export_history()">
+                        Export
+                    </button>
                 </div>
 
                 <div style="margin-top: 50px">
@@ -647,7 +667,7 @@
 </html>
 
 <script>
-    function export_history(){
+    function export_history() {
         event.preventDefault();
 
         $.ajax({
@@ -776,6 +796,17 @@
             $('.slideSideways').show().animate({left: chatWidth / 2});
         }
     });
+
+    $('.openciv').click(function (e) {
+        var chatWidth = $('.ttm-chat').width();
+        if ($('.slideSideways_ci').is(':visible')) {
+            $('.slideSideways_ci').animate({left: chatWidth}, function () {
+                $(this).hide();
+            });
+        } else {
+            $('.slideSideways_ci').show().animate({left: chatWidth / 2});
+        }
+    });
 </script>
 
 <script>
@@ -862,6 +893,20 @@
         } else {
             alert("At least one of the input fields are empty!")
         }
+
+        let cih = document.getElementById("custom_input_history");
+        const temp_div = document.createElement("div");
+        temp_div.style.border = "solid cornflowerblue";
+        const temp_div_1 = document.createElement("div");
+        const node_1 = document.createTextNode(text1);
+        temp_div_1.appendChild(node_1);
+        temp_div.appendChild(temp_div_1);
+
+        const temp_div_2 = document.createElement("div");
+        const node_2 = document.createTextNode(text2);
+        temp_div_2.appendChild(node_2);
+        temp_div.appendChild(temp_div_2)
+        cih.appendChild(temp_div);
     }
 
     function change_theme() {
@@ -917,26 +962,27 @@
         });
     }
 
-    function sampleQACI(){
+    function sampleQACI() {
         doSample("qa_ci");
     }
 
-    function sampleQAcfe(){
+    function sampleQAcfe() {
         doSample("qa_cfe");
     }
-    function sampleQAaug(){
+
+    function sampleQAaug() {
         doSample("qa_da")
     }
 
-    function sampleQAFA(){
+    function sampleQAFA() {
         doSample("qa_fa")
     }
 
-    function sampleQARationale(){
+    function sampleQARationale() {
         doSample("qa_rat")
     }
 
-    function sampleQASim(){
+    function sampleQASim() {
         doSample("qa_sim")
     }
 
@@ -972,11 +1018,11 @@
         doSample("custom_input_prediction");
     }
 
-    function sampleCustomInputFeatureAttribution(){
+    function sampleCustomInputFeatureAttribution() {
         doSample("custom_input_feature_importance");
     }
 
-    function sampleCustomInputSimilarity(){
+    function sampleCustomInputSimilarity() {
         doSample("c_sim");
     }
 

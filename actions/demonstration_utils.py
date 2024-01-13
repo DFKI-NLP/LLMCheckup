@@ -39,7 +39,7 @@ ecqa_cfe_demonstrations = {
     "labels": [
         0,
         4,
-        3
+        2
     ],
     "counterfactuals": [
         "What might a person experience at the scene of a birthday party?",
