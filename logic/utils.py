@@ -2,7 +2,6 @@
 import os
 
 import gin
-import openai
 import pandas as pd
 from os import listdir
 from pandas import DataFrame, Series
@@ -66,12 +65,6 @@ def read_and_format_data(filepath,
         cat_features, num_features = get_numeric_categorical(dataset)
 
     return dataset, y_values, cat_features, num_features
-
-
-def setup_gpt3():
-    with open('openai_key.txt', 'r') as f:
-        key = f.readline().strip()
-        openai.api_key = key
 
 
 def strip_ws(tok):
