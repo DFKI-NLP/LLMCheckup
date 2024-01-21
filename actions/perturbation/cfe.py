@@ -45,7 +45,7 @@ def counterfactuals_operation(conversation, parse_text, i, **kwargs):
 
         prompt_template += get_cfe_prompt_by_demonstrations("covid_fact", claim, evidence, prediction)
     else:
-        prompt_template += get_cfe_prompt_by_demonstrations("covid_fact", question, choices, int(prediction))
+        prompt_template += get_cfe_prompt_by_demonstrations("ecqa", question, choices, int(prediction))
 
     conversation.current_prompt = prompt_template
 
