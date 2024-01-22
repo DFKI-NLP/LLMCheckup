@@ -110,12 +110,13 @@
             <div class="container">
                 <div class="row">
                     <div id="accordion" class="col-4">
-
+                        <button style="float: left; width: 200px;
+                    height: 50px; font-size: 20px; background-color: #fed3ff; border: solid #fed3ff" class="openciv">
+                            Custom Input Viewer
+                        </button>
                     </div>
                     <div class="col-4">
-                        <button style="float: right; width: 200px;
-    height: 50px; font-size: 20px; background-color: #fed3ff; border: solid #fed3ff" class="openciv">Custom Input Viewer
-                        </button>
+
                     </div>
 
                     <div class="col-4">
@@ -532,7 +533,7 @@
                 <br>
                 <input type="radio" id="option3" name="options" value="Option 3" checked>
                 <label for="option3" style="color: #579ffb">Expert without need for assistance</label>
-                <i style="font-size:24px; color: white" class="fa" id="icon" title="Without tutorial">&#xf05a;</i>
+                <i style="font-size:24px; color: white" class="fa" id="icon0" title="Without tutorial">&#xf05a;</i>
             </div>
 
             <div style="margin-top: 50px">
@@ -541,7 +542,7 @@
                          style="vertical-align:middle;">
                     <h3 style="color: #9880ff; display: inline-block; vertical-align: middle; margin-left: 10px;">Custom
                         Input</h3>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon1"
                        title="For ECQA, please enter options splitted by '-'">&#xf05a;</i>
                 </div>
 
@@ -584,7 +585,7 @@
                         <img src="../static/images/pen.png" width="40px" height="40px">
                         <h3 style="color: #9880ff; display: inline-block; vertical-align: middle;">Prompt
                             modification</h3>
-                        <i style="font-size:24px; color: white" class="fa" id="icon"
+                        <i style="font-size:24px; color: white" class="fa" id="icon2"
                            title="Enter/select prompt that will be appended in the original prompt (***for rationalization***)">&#xf05a;</i>
                     </div>
 
@@ -600,32 +601,32 @@
 
                     <input type="radio" id="p_option1" name="_options" value="Option 4" checked>
                     <label for="p_option1" style="color: #579ffb">No additional prompt</label>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon3"
                        title="The original designed prompt will be used">&#xf05a;</i>
                     <br>
 
                     <input type="radio" id="p_option2" name="_options" value="Option 5">
                     <label for="p_option2" style="color: #579ffb">Zero-shot CoT</label>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon4"
                        title="Additional prompt: &quot;Let's think step by step&quot;" \>&#xf05a;</i>
                     <br>
 
                     <input type="radio" id="p_option3" name="_options" value="Option 6">
                     <label for="p_option3" style="color: #579ffb">Plan and Solve</label>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon5"
                        title="Additional prompt: &quot;Let's first understand the problem and devise a plan to solve the problem. Then let's carry out the plan and solve the problem step by step&quot;">&#xf05a;</i>
 
                     <br>
                     <input type="radio" id="p_option4" name="_options" value="Option 7">
                     <label for="p_option4" style="color: #579ffb">Optimization by Prompting (OPRO)</label>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon6"
                        title="Additional prompt: &quot;Take a deep breath and work on this problem step-by-step&quot;">&#xf05a;</i>
 
                     <br>
                     <input type="radio" id="p_option5" name="_options" value="Option 8">
                     <input id="custom_prompt_input" onfocus="document.getElementById('p_option5').checked=true"
                            for="p_option5" placeholder="additional prompt..."/>
-                    <i style="font-size:24px; color: white" class="fa" id="icon"
+                    <i style="font-size:24px; color: white" class="fa" id="icon7"
                        title="Additional prompt: &quot;Take a deep breath and work on this problem step-by-step&quot;">&#xf05a;</i>
 
                 </div>
@@ -914,13 +915,21 @@
         if (document.getElementById("theme_changing").checked) {
             document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "white";
             document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "white";
-            document.getElementById("icon").style.color = "";
+
+            for(let i = 0; i < 8; i++){
+                document.getElementById("icon" + i).style.color = "";
+            }
+
             document.getElementById("input_1").style.color = "";
             document.getElementById("input_2").style.color = "";
         } else {
             document.getElementsByClassName("pins-scroll")[0].style.backgroundColor = "";
             document.getElementsByClassName("ttm-chat")[0].style.backgroundColor = "";
-            document.getElementById("icon").style.color = "white";
+
+            for(let i = 0; i < 8; i++){
+                document.getElementById("icon" + i).style.color = "white";
+            }
+
             document.getElementById("input_1").style.color = "white";
             document.getElementById("input_2").style.color = "white";
         }
