@@ -1,16 +1,15 @@
 """Contains a representation of the conversation.
 
-The file contains a representation of the conversation. The conversation
-class contains routines to write variable to the conversation, read those
-variables and print a representation of them.
+The file contains a representation of the conversation. The conversation class contains routines to
+write variable to the conversation, read those variables and print a representation of them.
 """
 import copy
-import gin
-import pandas as pd
-from pandas import Series
 from typing import Union
 
+import gin
+import pandas as pd
 from logic.dataset_description import DatasetDescription
+from pandas import Series
 
 
 class Variable:
@@ -52,22 +51,25 @@ class Conversation:
     This class defines the state of the conversation.
     """
 
-    def __init__(self,
-                 class_names: dict = None,
-                 rounding_precision: int = 3,
-                 index_col: int = 0,
-                 target_var_name: str = "y",
-                 default_metric: str = "accuracy",
-                 eval_file_path: str = None,
-                 feature_definitions: dict = None,
-                 decoder = None,
-                 text_fields: list[str] = None,
-        ):
+    def __init__(
+        self,
+        class_names: dict = None,
+        llm_augmentation: bool = True,
+        rounding_precision: int = 3,
+        index_col: int = 0,
+        target_var_name: str = "y",
+        default_metric: str = "accuracy",
+        eval_file_path: str = None,
+        feature_definitions: dict = None,
+        decoder=None,
+        text_fields: list[str] = None,
+    ):
         """
 
         Args:
             data_folder:
             class_names:
+            llm_augmentation:
             rounding_precision:
             index_col:
             target_var_name:
@@ -91,9 +93,9 @@ class Conversation:
         self.username = "unknown"
 
         # The description
-        self.describe = DatasetDescription(index_col=index_col,
-                                           target_var_name=target_var_name,
-                                           eval_file_path=eval_file_path)
+        self.describe = DatasetDescription(
+            index_col=index_col, target_var_name=target_var_name, eval_file_path=eval_file_path
+        )
 
         # Set initial followup to brief description about the data and model
         self.followup = self.describe.get_text_description()
@@ -114,6 +116,9 @@ class Conversation:
         self.user_input = None
         self.prompt_type = "none"
 
+        # Set data augmentation mode (LLM prompting or NLPAug)
+        self.llm_augmentation = llm_augmentation
+
         self.current_prompt = ""
 
         self.precomputation_of_prediction = pd.DataFrame({"id": [], "prediction": []})
@@ -126,7 +131,7 @@ class Conversation:
             return self.feature_definitions[feature_name]
 
     def get_class_name_from_label(self, label: int):
-        """Gets the class name from label"""
+        """Gets the class name from label."""
         if self.class_names is None:
             return str(label)
         else:
@@ -154,26 +159,24 @@ class Conversation:
         dataset = self.stored_vars["dataset"].contents["X"]
         return list(dataset.index)
 
-    def add_dataset(self,
-                    data: pd.DataFrame,
-                    y_value: Series,
-                    categorical: list[str],
-                    numeric: list[str]):
+    def add_dataset(
+        self, data: pd.DataFrame, y_value: Series, categorical: list[str], numeric: list[str]
+    ):
         """Stores data as the dataset in the conversation."""
         dataset = {
-            'X': data,
-            'y': y_value,
-            'cat': categorical,
-            'numeric': numeric,
-            'ids_to_regenerate': []
+            "X": data,
+            "y": y_value,
+            "cat": categorical,
+            "numeric": numeric,
+            "ids_to_regenerate": [],
         }
-        var = Variable(name='dataset', contents=dataset, kind='dataset')
+        var = Variable(name="dataset", contents=dataset, kind="dataset")
         self._store_var(var)
         return var
 
     def build_temp_dataset(self, save=True):
         """Builds a temporary data set for filtering modifications."""
-        temp_dataset = copy.deepcopy(self.get_var('dataset'))
+        temp_dataset = copy.deepcopy(self.get_var("dataset"))
         if save:
             self._update_temp_dataset(temp_dataset)
             self.parse_operation = []
@@ -214,10 +217,10 @@ class Conversation:
 
     def __repr__(self):
         """Could be cool to change this to a graph representation."""
-        out = '<p> Stored Variables:<br>'
+        out = "<p> Stored Variables:<br>"
         for var_name in self.stored_vars:
-            out += f'&emsp;{var_name}<br>'
-        out += '</p>'
+            out += f"&emsp;{var_name}<br>"
+        out += "</p>"
         return out
 
 
